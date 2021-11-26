@@ -1,7 +1,6 @@
 package by.ghoncharko.webproject.command;
 
 
-
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.model.service.UserService;
@@ -16,6 +15,7 @@ public class RegistrationCommand implements Command {
     private static final String LAST_NAME_REQUEST_PARAM = "Fname";
     private static final String ERROR_REGISTRATION_ATTRIBUTE = "errorRegistrationMessage";
     private static final String ERROR_REGISTRATION_MESSAGE = "Create unique login";
+
     @Override
     public CommandResponse execute(CommandRequest request) {
 
@@ -28,13 +28,15 @@ public class RegistrationCommand implements Command {
         if (user.isPresent()) {
             return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
         }
-        request.addAttributeToJsp(ERROR_REGISTRATION_ATTRIBUTE,ERROR_REGISTRATION_MESSAGE);
+        request.addAttributeToJsp(ERROR_REGISTRATION_ATTRIBUTE, ERROR_REGISTRATION_MESSAGE);
         return requestFactory.createForwardResponse(PagePath.REGISTRATION_PAGE_PATH);
     }
-    public static RegistrationCommand getInstance(){
+
+    public static RegistrationCommand getInstance() {
         return Holder.INSTANCE;
     }
-    private static class Holder{
+
+    private static class Holder {
         private static final RegistrationCommand INSTANCE = new RegistrationCommand();
     }
 }

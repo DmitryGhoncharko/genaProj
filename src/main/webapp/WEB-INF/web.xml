@@ -11,7 +11,7 @@
     </session-config>
     <jsp-config>
         <taglib>
-            <taglib-uri>by.ghoncharko.webtask</taglib-uri>
+            <taglib-uri>by.ghoncharko.webproject</taglib-uri>
             <taglib-location>WEB-INF/tld/welcomeUserTag.tld</taglib-location>
         </taglib>
     </jsp-config>

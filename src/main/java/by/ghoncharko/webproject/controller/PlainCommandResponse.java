@@ -1,7 +1,6 @@
 package by.ghoncharko.webproject.controller;
 
 
-
 import by.ghoncharko.webproject.command.CommandResponse;
 
 import java.util.Objects;

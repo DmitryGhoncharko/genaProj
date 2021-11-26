@@ -1,10 +1,9 @@
 package by.ghoncharko.webproject.command;
 
-
 import by.ghoncharko.webproject.controller.RequestFactory;
 
-public class LogoutCommand implements Command{
-    private  final RequestFactory requestFactory = RequestFactory.getInstance();
+public class LogoutCommand implements Command {
+    private final RequestFactory requestFactory = RequestFactory.getInstance();
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
 
     @Override
@@ -24,10 +23,12 @@ public class LogoutCommand implements Command{
                         .isPresent()
         );
     }
-    public static LogoutCommand getInstance(){
+
+    public static LogoutCommand getInstance() {
         return Holder.INSTANCE;
     }
-    private static class Holder{
+
+    private static class Holder {
         private static final LogoutCommand INSTANCE = new LogoutCommand();
     }
 }

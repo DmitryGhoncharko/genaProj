@@ -1,7 +1,6 @@
 package by.ghoncharko.webproject.controller;
 
 
-
 import by.ghoncharko.webproject.command.CommandRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,10 +53,12 @@ public class WrappingCommandRequest implements CommandRequest {
             session.invalidate();
         }
     }
+
     @Override
-    public void removeFromSession(String name){
+    public void removeFromSession(String name) {
         request.getSession().removeAttribute(name);
     }
+
     @Override
     public void createSession() {
         request.getSession(true);

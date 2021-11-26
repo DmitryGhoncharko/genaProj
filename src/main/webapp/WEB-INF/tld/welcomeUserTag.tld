@@ -9,7 +9,7 @@
     <uri>by.ghoncharko.webtask</uri>
     <tag>
         <name>welcomeUser</name>
-        <tag-class>by.ghoncharko.webtask.tag.WelcomeUserTag</tag-class>
+        <tag-class>by.ghoncharko.webproject.tag.WelcomeUserTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <description>Text prefix before user name</description>

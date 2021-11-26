@@ -1,8 +1,6 @@
 package by.ghoncharko.webproject.filter;
 
 
-
-
 import by.ghoncharko.webproject.command.CommandRegistry;
 import by.ghoncharko.webproject.entity.Role;
 import by.ghoncharko.webproject.entity.User;

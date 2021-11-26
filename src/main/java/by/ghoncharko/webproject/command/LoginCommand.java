@@ -1,6 +1,5 @@
 package by.ghoncharko.webproject.command;
 
-
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.model.service.UserService;
