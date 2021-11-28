@@ -6,13 +6,17 @@ import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-public class OrderStatusDaoImpl extends AbstractDao<OrderStatus> {
+public class OrderStatusDaoImpl implements Dao<OrderStatus> {
     private static final Logger LOG = LogManager.getLogger(OrderStatusDaoImpl.class);
     private static final String SQL_CREATE_ORDER_STATUS = "INSERT INTO order_status" +
             " (status_name) VALUES (?)";
@@ -20,10 +24,10 @@ public class OrderStatusDaoImpl extends AbstractDao<OrderStatus> {
     private static final String SQL_FIND_ORDER_STATUS_BY_ID = "SELECT status_name FROM order_status WHERE id = ?";
     private static final String SQL_UPDATE_ORDER_STATUS = "UPDATE order_status SET status_name = ? WHERE id = ?";
     private static final String SQL_DELETE_ORDER_STATUS = "DELETE FROM order_status WHERE id = ?";
-
+    private final Connection connection;
 
     private OrderStatusDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class OrderStatusDaoImpl extends AbstractDao<OrderStatus> {
             LOG.error("cannot create order status", e);
             throw new DaoException("cannot create order status", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot create order status");
         throw new DaoException();
@@ -68,7 +72,7 @@ public class OrderStatusDaoImpl extends AbstractDao<OrderStatus> {
             LOG.error("cannot find all order status",e);
             throw new DaoException("cannot create order status", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return orderStatusList;
     }
@@ -91,7 +95,7 @@ public class OrderStatusDaoImpl extends AbstractDao<OrderStatus> {
             LOG.error("SQLException in method findEntityById",e);
             throw new DaoException("SQLException in method findEntityById",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
@@ -111,7 +115,7 @@ public class OrderStatusDaoImpl extends AbstractDao<OrderStatus> {
             LOG.error("cannot update order status",e);
             throw new DaoException("cannot update order status",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update order status");
         throw new DaoException("cannot update order status");
@@ -131,7 +135,7 @@ public class OrderStatusDaoImpl extends AbstractDao<OrderStatus> {
             LOG.error("cannot delete order status",e);
             throw new DaoException("cannot delete order status",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }

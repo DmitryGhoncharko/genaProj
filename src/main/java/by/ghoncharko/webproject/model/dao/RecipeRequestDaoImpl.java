@@ -1,18 +1,27 @@
 package by.ghoncharko.webproject.model.dao;
 
 
-import by.ghoncharko.webproject.entity.*;
+import by.ghoncharko.webproject.entity.Drug;
+import by.ghoncharko.webproject.entity.Producer;
+import by.ghoncharko.webproject.entity.RecipeRequest;
+import by.ghoncharko.webproject.entity.Role;
+import by.ghoncharko.webproject.entity.StatusRecipeRequest;
+import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-public class RecipeRequestDaoImpl extends AbstractDao<RecipeRequest> {
+public class RecipeRequestDaoImpl implements Dao<RecipeRequest> {
     private static final Logger LOG = LogManager.getLogger(RecipeRequestDaoImpl.class);
     private static final String SQL_CREATE_RECIPE_REQUEST = "INSERT INTO recipe_request" +
             " (user_id, drug_id, status_id, date_start, date_end) VALUES (?,?,?,?,?)";
@@ -41,9 +50,9 @@ public class RecipeRequestDaoImpl extends AbstractDao<RecipeRequest> {
             " SET user_id = ? , drug_id = ? , status_id = ?, date_start = ?, date_end = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_RECIPE_REQUEST = "DELETE FROM recipe_request WHERE id = ?";
-
+    private final Connection connection;
     private RecipeRequestDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
 
@@ -74,7 +83,7 @@ public class RecipeRequestDaoImpl extends AbstractDao<RecipeRequest> {
             LOG.error("cannot create recipe request",e);
             throw new DaoException("cannot create recipe request",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot create recipe request");
         throw new DaoException();
@@ -123,7 +132,7 @@ public class RecipeRequestDaoImpl extends AbstractDao<RecipeRequest> {
             LOG.error("cannot find all recipe request",e);
             throw new DaoException("cannot find all recipe request",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return recipeRequestList;
     }
@@ -169,7 +178,7 @@ public class RecipeRequestDaoImpl extends AbstractDao<RecipeRequest> {
             LOG.error("cannot find recipe request by id",e);
             throw new DaoException("cannot find recipe request by id",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
@@ -193,7 +202,7 @@ public class RecipeRequestDaoImpl extends AbstractDao<RecipeRequest> {
             LOG.error("cannot update recipe request",e);
             throw new DaoException("cannot update recipe request",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update recipe request");
         throw new DaoException();
@@ -213,7 +222,7 @@ public class RecipeRequestDaoImpl extends AbstractDao<RecipeRequest> {
             LOG.error("cannot delete recipe request",e);
             throw new DaoException("cannot update recipe request",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }

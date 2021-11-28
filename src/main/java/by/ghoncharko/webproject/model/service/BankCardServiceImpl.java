@@ -4,6 +4,7 @@ package by.ghoncharko.webproject.model.service;
 import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.exception.DaoException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
+import by.ghoncharko.webproject.model.dao.BankCardDao;
 import by.ghoncharko.webproject.model.dao.BankCardDaoImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +21,7 @@ public class BankCardServiceImpl implements BankCardService {
     public boolean findBankCardByUserId(Integer userId) {
         Connection connection = connectionPool.getConnection();
         try {
-            BankCardDaoImpl bankCardDao = new BankCardDaoImpl(connection);
+            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
             Optional<BankCard> bankCard = bankCardDao.findBankCardByUserId(userId);
             if (bankCard.isPresent()) {
                 return true;

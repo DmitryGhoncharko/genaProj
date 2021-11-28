@@ -1,18 +1,28 @@
 package by.ghoncharko.webproject.model.dao;
 
 
-import by.ghoncharko.webproject.entity.*;
+import by.ghoncharko.webproject.entity.Drug;
+import by.ghoncharko.webproject.entity.Producer;
+import by.ghoncharko.webproject.entity.Recipe;
+import by.ghoncharko.webproject.entity.Role;
+import by.ghoncharko.webproject.entity.Status;
+import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-public class RecipeDaoImpl extends AbstractDao<Recipe> {
+public class RecipeDaoImpl implements RecipeDao {
     private static final Logger LOG = LogManager.getLogger(RecipeDaoImpl.class);
 
     private static final String SQL_CREATE_RECIPE = "INSERT INTO recipe" +
@@ -50,9 +60,9 @@ public class RecipeDaoImpl extends AbstractDao<Recipe> {
             " SET user_id = ?, drug_id = ?, date_start = ?, date_end = ?, status_id = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_ENTITY = "DELETE FROM recipe WHERE id = ?";
-
+    private final Connection connection;
     public RecipeDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -81,7 +91,7 @@ public class RecipeDaoImpl extends AbstractDao<Recipe> {
             LOG.error("cannot create recipe entity", e);
             throw new DaoException("cannot create recipe entity", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot create recipe entity");
         throw new DaoException();
@@ -130,7 +140,7 @@ public class RecipeDaoImpl extends AbstractDao<Recipe> {
             LOG.error("cannot find all recipes", e);
             throw new DaoException("cannot find all recipes", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return recipeList;
     }
@@ -178,11 +188,11 @@ public class RecipeDaoImpl extends AbstractDao<Recipe> {
             LOG.error("cannot find recipe by id", e);
             throw new DaoException("cannot find recipe by id", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
-
+    @Override
     public Optional<Recipe> findEntityByUserIdAndDrugId(Integer userId, Integer drugId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
@@ -227,7 +237,7 @@ public class RecipeDaoImpl extends AbstractDao<Recipe> {
             LOG.error("cannot find recipe by id", e);
             throw new DaoException("cannot find recipe by id", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
@@ -251,7 +261,7 @@ public class RecipeDaoImpl extends AbstractDao<Recipe> {
             LOG.error("cannot update recipe", e);
             throw new DaoException("cannot update recipe", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update recipe");
         throw new DaoException();
@@ -271,7 +281,7 @@ public class RecipeDaoImpl extends AbstractDao<Recipe> {
             LOG.error("canot delete recipe", e);
             throw new DaoException("canot delete recipe", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }

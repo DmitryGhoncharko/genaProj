@@ -6,12 +6,16 @@ import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RoleDaoImpl extends AbstractDao<Role>{
+public class RoleDaoImpl implements Dao<Role> {
     private static final Logger LOG = LogManager.getLogger(RecipeDaoImpl.class);
     private static final String SQL_CREATE_ROLE = "INSERT INTO role (id,role_name) VALUES(?,?)";
     private static final String SQL_FIND_ALL_ROLES = "SELECT id, role_name FROM role";
@@ -19,8 +23,9 @@ public class RoleDaoImpl extends AbstractDao<Role>{
             " WHERE id = ?";
     private static final String SQL_UPDATE_ROLE = "UPDATE role SET role_name = ? WHERE id = ?";
     private static final String SQL_DELETE_ROLE = "DELETE FROM role WHERE id = ?";
+    private final Connection connection;
     private RoleDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class RoleDaoImpl extends AbstractDao<Role>{
             LOG.error("cannot cerate role",e);
             throw new DaoException("cannot cerate role",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot cerate role");
         throw new DaoException();
@@ -65,7 +70,7 @@ public class RoleDaoImpl extends AbstractDao<Role>{
             LOG.error("cannot find all roles",e);
             throw new DaoException("cannot find all roles",e);
         }finally {
-            close(statement);
+            Dao.closeStatement(statement);
         }
         return   roleList;
     }
@@ -87,7 +92,7 @@ public class RoleDaoImpl extends AbstractDao<Role>{
             LOG.error("cannot find role by id",e);
             throw new DaoException("cannot find role by id",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
@@ -107,7 +112,7 @@ public class RoleDaoImpl extends AbstractDao<Role>{
             LOG.error("cannot update entity",e);
             throw new DaoException("cannot update entity",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update entity");
         throw new DaoException();
@@ -127,7 +132,7 @@ public class RoleDaoImpl extends AbstractDao<Role>{
             LOG.error("cannot delete role",e);
             throw new DaoException("cannot delete role",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }

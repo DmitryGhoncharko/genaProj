@@ -7,13 +7,17 @@ import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-public class UserDaoImpl extends AbstractDao<User> {
+public class UserDaoImpl implements UserDao {
     private static final Logger LOG = LogManager.getLogger(UserDaoImpl.class);
     private static final String SQL_CREATE_USER = "INSERT INTO user" +
             " (login, password, role_id, first_name, last_name)" +
@@ -38,9 +42,9 @@ public class UserDaoImpl extends AbstractDao<User> {
             " FROM user" +
             " INNER JOIN role ON user.role_id = role.id" +
             " WHERE login = ?";
-
+    private final Connection connection;
     public UserDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -69,7 +73,7 @@ public class UserDaoImpl extends AbstractDao<User> {
             LOG.error("cannot create user", e);
             throw new DaoException("cannot create user", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot create user");
         throw new DaoException("cannot create user");
@@ -100,7 +104,7 @@ public class UserDaoImpl extends AbstractDao<User> {
             LOG.error("cannot find all users", e);
             throw new DaoException("cannot find all users", e);
         } finally {
-            close(statement);
+            Dao.closeStatement(statement);
         }
         return userList;
     }
@@ -129,7 +133,7 @@ public class UserDaoImpl extends AbstractDao<User> {
             LOG.error("cannot find user by id", e);
             throw new DaoException("cannot find all users", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
@@ -153,7 +157,7 @@ public class UserDaoImpl extends AbstractDao<User> {
             LOG.error("cannot update user", e);
             throw new DaoException("cannot update user", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update user");
         throw new DaoException("cannot update user");
@@ -173,11 +177,11 @@ public class UserDaoImpl extends AbstractDao<User> {
             LOG.error("cannot delete user", e);
             throw new DaoException("cannot delete user", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }
-
+    @Override
     public Optional<User> findUserByLogin(String login) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
@@ -200,7 +204,7 @@ public class UserDaoImpl extends AbstractDao<User> {
             LOG.error("cannot find user by login", e);
             throw new DaoException("cannot find user by login", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }

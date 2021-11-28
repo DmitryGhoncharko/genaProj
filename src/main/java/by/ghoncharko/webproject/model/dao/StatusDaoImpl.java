@@ -6,13 +6,17 @@ import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-public class StatusDaoImpl extends AbstractDao<Status> {
+public class StatusDaoImpl implements Dao<Status> {
     private static final Logger LOG = LogManager.getLogger(StatusDaoImpl.class);
 
     private static final String SQL_CREATE_STATUS = "INSERT INTO status (status_name) VALUES (?)";
@@ -21,8 +25,9 @@ public class StatusDaoImpl extends AbstractDao<Status> {
             " WHERE id = ?";
     private static final String SQL_UPDATE_STATUS = "UPDATE status SET status_name = ? WHERE  id = ?";
     private static final String SQL_DELETE_STATUS = "DELETE FROM status WHERE id = ?";
+    private final Connection connection;
     private StatusDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class StatusDaoImpl extends AbstractDao<Status> {
             LOG.error("cannot create status",e);
             throw new DaoException("cannot create status",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot create status");
         throw new DaoException();
@@ -65,7 +70,7 @@ public class StatusDaoImpl extends AbstractDao<Status> {
             LOG.error("cannot find all statuses",e);
             throw new DaoException("cannot find all statuses",e);
         }finally {
-            close(statement);
+            Dao.closeStatement(statement);
         }
         return statusList;
     }
@@ -88,7 +93,7 @@ public class StatusDaoImpl extends AbstractDao<Status> {
             LOG.error("cannot find status by id",e);
             throw new DaoException("cannot find status by id",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
@@ -108,7 +113,7 @@ public class StatusDaoImpl extends AbstractDao<Status> {
             LOG.error("cannot update status",e);
             throw  new DaoException("cannot update status",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update status");
         throw new DaoException();
@@ -128,7 +133,7 @@ public class StatusDaoImpl extends AbstractDao<Status> {
             LOG.error("cannot delete status",e);
             throw new DaoException("cannot delete status",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }

@@ -4,6 +4,7 @@ package by.ghoncharko.webproject.model.service;
 import by.ghoncharko.webproject.entity.Drug;
 import by.ghoncharko.webproject.exception.DaoException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
+import by.ghoncharko.webproject.model.dao.DrugDao;
 import by.ghoncharko.webproject.model.dao.DrugDaoImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +21,8 @@ public class DrugServiceImpl implements Service<Drug> {
     public List<Drug> findAll() {
         Connection connection = connectionPool.getConnection();
         try {
-            return new DrugDaoImpl(connection).findAll();
+            DrugDao drugDao = new DrugDaoImpl(connection);
+            return drugDao.findAll();
         } catch (DaoException e) {
             LOG.error("dao exception in methot findAll drugService", e);
             return Collections.emptyList();
@@ -32,7 +34,8 @@ public class DrugServiceImpl implements Service<Drug> {
         Connection connection = connectionPool.getConnection();
 
         try {
-            return new DrugDaoImpl(connection).findAllWhereCountMoreThanZeroWithStatusActiveByUserId(userId);
+            DrugDao drugDao = new DrugDaoImpl(connection);
+            return drugDao.findAllWhereCountMoreThanZeroWithStatusActiveByUserId(userId);
         } catch (DaoException e) {
             LOG.error("dao exception in methot findAll drugService", e);
             return Collections.emptyList();
@@ -44,7 +47,8 @@ public class DrugServiceImpl implements Service<Drug> {
         Connection connection = connectionPool.getConnection();
 
         try {
-            return new DrugDaoImpl(connection).findAllWhereCountMoreThanZero();
+            DrugDao drugDao = new DrugDaoImpl(connection);
+            return drugDao.findAllWhereCountMoreThanZero();
         } catch (DaoException e) {
             LOG.error("dao exception in methot findAll drugService", e);
             return Collections.emptyList();

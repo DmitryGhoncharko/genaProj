@@ -5,6 +5,7 @@ import by.ghoncharko.webproject.entity.RolesHolder;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.DaoException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
+import by.ghoncharko.webproject.model.dao.UserDao;
 import by.ghoncharko.webproject.model.dao.UserDaoImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,8 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll() {
         final Connection connection = connectionPool.getConnection();
         try {
-            return new UserDaoImpl(connection).findAll();
+            UserDao userDao = new UserDaoImpl(connection);
+            return userDao.findAll();
         } catch (DaoException e) {
             LOG.error("DaoException", e);
             return Collections.emptyList();
@@ -40,7 +42,8 @@ public class UserServiceImpl implements UserService {
             return Optional.empty();
         }
         try {
-            Optional<User> user = new UserDaoImpl(connection).findUserByLogin(login);
+            final UserDao userDao = new UserDaoImpl(connection);
+            Optional<User> user = userDao.findUserByLogin(login);
             if (user.isPresent()) {
                 String userPasswordFromDB = user.get().getPassword();
                 if (BCrypt.checkpw(password, userPasswordFromDB)) {
@@ -67,7 +70,7 @@ public class UserServiceImpl implements UserService {
                     withFirstName(firstName).
                     withLastName(lastName).
                     withRole(RolesHolder.CLIENT).build();
-            UserDaoImpl userDao = new UserDaoImpl(connection);
+            UserDao userDao = new UserDaoImpl(connection);
             User userWithId = userDao.create(user);
             return Optional.of(userWithId);
         } catch (DaoException e) {

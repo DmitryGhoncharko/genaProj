@@ -6,12 +6,21 @@ import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BankCardDaoImpl extends AbstractDao<BankCard> {
+/**
+ * BankCard dao class
+ *
+ * @author Dmitry Ghoncharko
+ */
+public class BankCardDaoImpl implements BankCardDao {
     private static final Logger LOG = LogManager.getLogger(BankCardDaoImpl.class);
     private static final String SQL_CREATE_BANK_CARD = "INSERT INTO card (user_id, balance) VALUES (?,?)";
     private static final String SQL_FIND_ALL_BANK_CARDS = "SELECT id, user_id, balance FROM card";
@@ -19,9 +28,10 @@ public class BankCardDaoImpl extends AbstractDao<BankCard> {
     private static final String SQL_FIND_BANK_CARD_BY_ID = "SELECT id, user_id, balance FROM card WHERE id = ?";
     private static final String SQL_UPDATE_BANK_CARD = "UPDATE card SET  balance = ? WHERE id = ?";
     private static final String SQL_DELETE_BANK_CARD = "DELETE FROM card  WHERE id=?";
+    private final Connection connection;
 
     public BankCardDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -45,7 +55,7 @@ public class BankCardDaoImpl extends AbstractDao<BankCard> {
             LOG.error("SQLException in method create bankCard", e);
             throw new DaoException("SQLException in method create bankCard", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("DaoException in method create bankCard when we try create entity");
         throw new DaoException("DaoException in method create bankCard");
@@ -70,7 +80,7 @@ public class BankCardDaoImpl extends AbstractDao<BankCard> {
             LOG.error("SQLException when we try findAll entities in BankCard", e);
             throw new DaoException("SQLException when we try findAll entities in BankCard", e);
         } finally {
-            close(statement);
+            Dao.closeStatement(statement);
         }
         return bankCardList;
     }
@@ -93,13 +103,14 @@ public class BankCardDaoImpl extends AbstractDao<BankCard> {
         } catch (SQLException e) {
             LOG.error("SQLException when we try to findEntityById bankCard", e);
             throw new DaoException("SQLException when we try to findEntityById bankCard", e);
-        }finally {
-            close(preparedStatement);
+        } finally {
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot find bankCard entity by id");
         return Optional.empty();
     }
 
+    @Override
     public Optional<BankCard> findBankCardByUserId(Integer userId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
@@ -117,8 +128,8 @@ public class BankCardDaoImpl extends AbstractDao<BankCard> {
         } catch (SQLException e) {
             LOG.error("SQLException when we try to findEntityById bankCard", e);
             throw new DaoException("SQLException when we try to findEntityById bankCard", e);
-        }finally {
-            close(preparedStatement);
+        } finally {
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot find bankCard by User id");
         return Optional.empty();
@@ -137,9 +148,9 @@ public class BankCardDaoImpl extends AbstractDao<BankCard> {
             }
         } catch (SQLException e) {
             LOG.error("Cannot update BankCard entity", e);
-            throw new DaoException("Cannot update BankCard entity",e);
+            throw new DaoException("Cannot update BankCard entity", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("Cannot update bank card");
         throw new DaoException();
@@ -156,10 +167,10 @@ public class BankCardDaoImpl extends AbstractDao<BankCard> {
                 return true;
             }
         } catch (SQLException e) {
-            LOG.error("cannod delete bank card",e);
-            throw new DaoException("cannod delete bank card",e);
+            LOG.error("cannod delete bank card", e);
+            throw new DaoException("cannod delete bank card", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot delete bank card");
         return false;

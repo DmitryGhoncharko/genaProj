@@ -6,13 +6,17 @@ import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-public class ProducerDaoImpl extends AbstractDao<Producer> {
+public class ProducerDaoImpl implements Dao<Producer> {
     private static final Logger LOG = LogManager.getLogger(ProducerDaoImpl.class);
 
     private static final String SQL_CREATE_PRODUCER = "INSERT INTO producer (producer_name) VALUES(?)";
@@ -23,10 +27,10 @@ public class ProducerDaoImpl extends AbstractDao<Producer> {
             " SET producer_name = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_PRODUCER = "DELETE FROM producer WHERE id = ?";
-
+    private final Connection connection;
 
     private ProducerDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -47,7 +51,7 @@ public class ProducerDaoImpl extends AbstractDao<Producer> {
             LOG.error("cannot create producer", e);
             throw new DaoException("cannot create producer", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot create producer");
         throw new DaoException("cannot create producer");
@@ -71,7 +75,7 @@ public class ProducerDaoImpl extends AbstractDao<Producer> {
             LOG.error("cannot find all producers", e);
             throw new DaoException("cannot find all producers", e);
         } finally {
-            close(statement);
+            Dao.closeStatement(statement);
         }
         return producerList;
     }
@@ -93,7 +97,7 @@ public class ProducerDaoImpl extends AbstractDao<Producer> {
             LOG.error("cannot find producer by id", e);
             throw new DaoException("cannot find producer by id", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
@@ -113,7 +117,7 @@ public class ProducerDaoImpl extends AbstractDao<Producer> {
             LOG.error("cannot update producer", e);
             throw new DaoException("cannot update producer", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update producer");
         throw new DaoException("cannot update producer");
@@ -133,7 +137,7 @@ public class ProducerDaoImpl extends AbstractDao<Producer> {
             LOG.error("cannot delete producer", e);
             throw new DaoException("cannot delete producer", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }

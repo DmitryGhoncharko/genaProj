@@ -1,17 +1,26 @@
 package by.ghoncharko.webproject.model.dao;
 
 
-import by.ghoncharko.webproject.entity.*;
+import by.ghoncharko.webproject.entity.Drug;
+import by.ghoncharko.webproject.entity.Order;
+import by.ghoncharko.webproject.entity.OrderStatus;
+import by.ghoncharko.webproject.entity.Producer;
+import by.ghoncharko.webproject.entity.Role;
+import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class OrderDaoImpl extends AbstractDao<Order> {
+public class OrderDaoImpl implements OrderDao {
     private static final Logger LOG = LogManager.getLogger(OrderDaoImpl.class);
     private static final String SQL_CREATE_ORDER = "INSERT INTO drug_order" +
             " (user_id, drug_id, count,  status_id, final_price)" +
@@ -64,9 +73,9 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             " WHERE id = ?";
     private static final String SQL_UPDATE_ORDER_STATUS_BY_USER_ID_AND_DRUG_ID = "update drug_order set status_id = ? where user_id =? AND drug_id = ? AND  id = ?";
     private static final String SQL_DELETE_ORDER = "DELETE  FROM drug_order WHERE  id = ?";
-
+    private final Connection connection;
     public OrderDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -95,11 +104,12 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot create order",e);
             throw new DaoException("cannot create order",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot create order");
         throw new DaoException();
     }
+    @Override
     public boolean create(Integer userId, Integer drugId, Integer count, OrderStatus status, Double finalPrice) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
@@ -117,7 +127,7 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot create order",e);
             throw new DaoException("cannot create order",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }
@@ -165,12 +175,12 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot find all orders", e);
             throw new DaoException("cannot find all orders", e);
         } finally {
-            close(statement);
+            Dao.closeStatement(statement);
         }
         return orderList;
     }
-
-    public List<Order> findAll(Integer userId) throws DaoException {
+    @Override
+    public List<Order> findAllByUserId(Integer userId) throws DaoException {
         List<Order> orderList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         try {
@@ -214,7 +224,7 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot find all orders", e);
             throw new DaoException("cannot find all orders", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return orderList;
     }
@@ -262,10 +272,11 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot find entity by id",e);
             throw new DaoException("cannot find entity by id",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
+    @Override
     public Optional<Order> findEntityByUserIdAndDrugIdWithStatusActive(Integer userId, Integer drugId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
@@ -310,11 +321,11 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot find entity by id",e);
             throw new DaoException("cannot find entity by id",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
-
+    @Override
     public boolean update(Integer userId, Integer drugId, OrderStatus status, Integer orderId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
@@ -331,7 +342,7 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot update order",e );
             throw new DaoException("cannot update order",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update order");
         throw new DaoException();
@@ -355,11 +366,12 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot update order",e );
             throw new DaoException("cannot update order",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update order");
         throw new DaoException();
     }
+    @Override
     public boolean update(Order entity, Integer count, Double finalPrice) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
@@ -378,7 +390,7 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot update order",e );
             throw new DaoException("cannot update order",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update order");
         throw new DaoException();
@@ -397,10 +409,11 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot delete order",e);
             throw new DaoException("cannot delete order",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }
+    @Override
     public boolean deleteByOrderId(Integer orderId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
@@ -414,7 +427,7 @@ public class OrderDaoImpl extends AbstractDao<Order> {
             LOG.error("cannot delete order",e);
             throw new DaoException("cannot delete order",e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }

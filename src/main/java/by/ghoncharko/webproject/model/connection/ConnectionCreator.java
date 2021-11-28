@@ -45,20 +45,20 @@ class ConnectionCreator {
             DATABASE_DRIVER = PROPERTIES.getProperty(PROPERTY_DRIVER);
             Class.forName(DATABASE_DRIVER);
         } catch (FileNotFoundException e) {
-            LOG.fatal("FileNotFoundException", e.getMessage());
+            LOG.fatal("FileNotFoundException", e);
             throw new RuntimeException("FileNotFoundException", e);
         } catch (IOException e) {
-            LOG.fatal("IOException", e.getMessage());
+            LOG.fatal("IOException", e);
             throw new RuntimeException("IOException", e);
         } catch (ClassNotFoundException e) {
-            LOG.fatal("ClassNotFoundException", e.getMessage());
+            LOG.fatal("ClassNotFoundException", e);
             throw new RuntimeException("ClassNotFoundException", e);
         }
     }
 
     /**
      * @return new connection to database
-     * @throws SQLException
+     * @throws SQLException when DATABASE_URL or DATABASE_USER or DATABASE_PASSWORD is incorrect
      */
     static Connection getConnecion() throws SQLException {
         return DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);

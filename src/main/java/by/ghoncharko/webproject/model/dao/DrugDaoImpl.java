@@ -7,12 +7,16 @@ import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DrugDaoImpl extends AbstractDao<Drug> {
+public class DrugDaoImpl implements DrugDao {
     private static final Logger LOG = LogManager.getLogger(DrugDaoImpl.class);
     private static final String SQL_CREATE_DRUG = "INSERT INTO drug" +
             " (name, price, count, description, producer_id, need_receip)" +
@@ -45,10 +49,10 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             " WHERE id = ?";
     private static final String SQL_GET_DRUG_COUNT_BY_DRUG_ID = "SELECT count from drug where id = ?";
     private static final String SQL_DELETE_DRUG = "DELETE FROM drug WHERE id=?";
-
+    private final Connection connection;
 
     public DrugDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -80,7 +84,7 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             LOG.error("cannot create drug", e);
             throw new DaoException("cannot create drug", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot create drug");
         throw new DaoException();
@@ -112,10 +116,11 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             LOG.error("cannot find all drugs", e);
             throw new DaoException("cannot find all drugs", e);
         } finally {
-            close(statement);
+            Dao.closeStatement(statement);
         }
         return drugList;
     }
+    @Override
     public List<Drug> findAllWhereCountMoreThanZero() throws DaoException {
         List<Drug> drugList = new ArrayList<>();
         Statement statement = null;
@@ -141,10 +146,11 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             LOG.error("cannot find all drugs", e);
             throw new DaoException("cannot find all drugs", e);
         } finally {
-            close(statement);
+            Dao.closeStatement(statement);
         }
         return drugList;
     }
+    @Override
     public List<Drug> findAllWhereCountMoreThanZeroWithStatusActiveByUserId(Integer userId) throws DaoException {
         List<Drug> drugList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -171,7 +177,7 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             LOG.error("cannot find all drugs", e);
             throw new DaoException("cannot find all drugs", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return drugList;
     }
@@ -201,11 +207,11 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             LOG.error("cannot find drug by id", e);
             throw new DaoException("cannot find drug by id", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
-
+    @Override
     public Integer getCountByDrugId(Integer drugId) throws DaoException {
         PreparedStatement preparedStatement = null;
 
@@ -220,7 +226,7 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             LOG.error("Exception in method getCountByDrugId", e);
             throw new DaoException("Exception in method getCountByDrugId", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         throw new DaoException("Exception in method getCountByDrugId");
     }
@@ -245,12 +251,12 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             LOG.error("cannot update drug", e);
             throw new DaoException("cannot update drug", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update drug");
         throw new DaoException();
     }
-
+    @Override
     public boolean update(Integer count, Integer drugId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
@@ -265,7 +271,7 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             LOG.error("cannot update drug", e);
             throw new DaoException("cannot update drug", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot update drug");
         throw new DaoException();
@@ -285,7 +291,7 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
             LOG.error("cannot delete drug", e);
             throw new DaoException("cannot delete drug", e);
         } finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }

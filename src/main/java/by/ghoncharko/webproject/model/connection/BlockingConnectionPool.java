@@ -40,7 +40,7 @@ public class BlockingConnectionPool implements ConnectionPool {
                 freeConnections.add(proxyConnection);
                 LOG.info("Connection created");
             } catch (SQLException e) {
-                LOG.error("Couldn't create connection to database", e.getMessage());
+                LOG.error("Couldn't create connection to database", e);
             }
         }
         if (freeConnections.size() == 0) {
@@ -67,13 +67,13 @@ public class BlockingConnectionPool implements ConnectionPool {
     }
 
     public Connection getConnection() {
-        Connection connection = null;
+        ProxyConnection connection = null;
         try {
             connection = new ProxyConnection(freeConnections.take());
-            givenAwayConnections.add((ProxyConnection) connection);
+            givenAwayConnections.add(connection);
         } catch (InterruptedException e) {
-            LOG.error("InterruptedException in method getConnection", e.getMessage());
-            Thread.currentThread().isInterrupted();
+            LOG.error("InterruptedException in method getConnection", e);
+            Thread.currentThread().interrupt();
         }
         return connection;
     }
@@ -84,8 +84,8 @@ public class BlockingConnectionPool implements ConnectionPool {
             try {
                 freeConnections.put((ProxyConnection) connection);
             } catch (InterruptedException e) {
-                LOG.error("InterruptedException", e.getMessage());
-                Thread.currentThread().isInterrupted();
+                LOG.error("InterruptedException", e);
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -101,9 +101,9 @@ public class BlockingConnectionPool implements ConnectionPool {
         try {
             freeConnections.take().reallyCLose();
         } catch (InterruptedException e) {
-            LOG.error("InterruptedException in method destroy pool", e.getMessage());
+            LOG.error("InterruptedException in method destroy pool", e);
         } catch (SQLException e) {
-            LOG.error("SQLException in method destroy pool", e.getMessage());
+            LOG.error("SQLException in method destroy pool", e);
         }
     }
 
@@ -114,7 +114,7 @@ public class BlockingConnectionPool implements ConnectionPool {
             try {
                 DriverManager.deregisterDriver(driver);
             } catch (SQLException e) {
-                LOG.error("SQLException in method deregisterDrivers", e.getMessage());
+                LOG.error("SQLException in method deregisterDrivers", e);
             }
 
         }

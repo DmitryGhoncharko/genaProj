@@ -6,13 +6,17 @@ import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-public class StatusRecipeRequestDaoImpl extends AbstractDao<StatusRecipeRequest> {
+public class StatusRecipeRequestDaoImpl implements Dao<StatusRecipeRequest> {
     private static final Logger LOG = LogManager.getLogger(StatusRecipeRequest.class);
 
     private static final String SQL_CREATE_STATUS_RECIPE_REQUEST = "INSERT INTO status_recipe_request" +
@@ -24,9 +28,9 @@ public class StatusRecipeRequestDaoImpl extends AbstractDao<StatusRecipeRequest>
     private static final String SQL_UPDATE_STATUS_RECIPE_REQUEST = "UPDATE status_recipe_request SET name = ? WHERE id = ?";
     private static final String SQL_DELETE_STATUS_RECIPE_REQUEST = "DELETE FROM status_recipe_request" +
             " WHERE id = ?";
-
+    private final Connection connection;
     private StatusRecipeRequestDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -47,7 +51,7 @@ public class StatusRecipeRequestDaoImpl extends AbstractDao<StatusRecipeRequest>
             LOG.error("cannot creaate status recipe request",e);
             throw new DaoException("cannot creaate status recipe request",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("cannot creaate status recipe request");
         throw new DaoException("cannot creaate status recipe request");
@@ -71,7 +75,7 @@ public class StatusRecipeRequestDaoImpl extends AbstractDao<StatusRecipeRequest>
             LOG.error("cannot find all status recipe request",e);
             throw new DaoException("cannot find all status recipe request",e);
         }finally {
-            close(statement);
+            Dao.closeStatement(statement);
         }
         return statusRecipeRequestList;
     }
@@ -94,7 +98,7 @@ public class StatusRecipeRequestDaoImpl extends AbstractDao<StatusRecipeRequest>
             LOG.error("cannot find status recipe request by id",e);
             throw new DaoException("cannot find status recipe request by id",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return Optional.empty();
     }
@@ -114,7 +118,7 @@ public class StatusRecipeRequestDaoImpl extends AbstractDao<StatusRecipeRequest>
             LOG.error("Cannot update status recipe request",e);
             throw new DaoException("Cannot update status recipe request",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         LOG.error("Cannot update status recipe request");
         throw new DaoException();
@@ -134,7 +138,7 @@ public class StatusRecipeRequestDaoImpl extends AbstractDao<StatusRecipeRequest>
             LOG.error("cannot delete status recipe request",e);
             throw new DaoException("cannot delete status recipe request",e);
         }finally {
-            close(preparedStatement);
+            Dao.closeStatement(preparedStatement);
         }
         return false;
     }
