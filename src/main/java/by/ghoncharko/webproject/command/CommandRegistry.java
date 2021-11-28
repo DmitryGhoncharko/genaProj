@@ -20,8 +20,9 @@ public class CommandRegistry {
     private static final CommandRegistry RECIPES_PAGE_COMMAND = new CommandRegistry(ShowRecipesPageCommand.getInstance(), "recipes");
     private static final CommandRegistry ORDER_PAGE_COMMAND = new CommandRegistry(ShowOrderPageCommand.getInstance(), "order");
     private static final CommandRegistry PAY_COMMAND = new CommandRegistry(PayCommand.getInstance(), "pay");
+    private static final CommandRegistry DELETE_FROM_ORDER_COMMAND = new CommandRegistry(DeleteFromOrderCommand.getInstance(),"deleteFromOrder");
     private static final List<CommandRegistry> COMMAND_REGISTRY_LIST = Arrays.asList(MAIN_PAGE, LOGIN_PAGE, LOGIN_COMMAND, REGISTRATION_PAGE, REGISTRATION_COMMAND, LOGOUT_COMMAND, ERROR_PAGE_COMMAND, PREPARATES_PAGE, ADD_TO_BUCKET_COMMAND,
-            RECIPES_PAGE_COMMAND, ORDER_PAGE_COMMAND, PAY_COMMAND);
+            RECIPES_PAGE_COMMAND, ORDER_PAGE_COMMAND, PAY_COMMAND, DELETE_FROM_ORDER_COMMAND);
     private final Command command;
     private final String commandName;
     private final List<Role> allowedRoles;

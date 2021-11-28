@@ -13,4 +13,5 @@ public interface OrderService extends Service<Order> {
 
    boolean pay(Integer userId, Integer drugId, boolean isNeedRecipe, Integer count, Double finalPrice, Integer orderId);
 
+   boolean deleteFromOrderByOrderId(Integer orderId);
 }

@@ -21,6 +21,20 @@ public class OrderServiceImpl implements OrderService {
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     @Override
+    public boolean deleteFromOrderByOrderId(Integer orderId) {
+       Connection connection = connectionPool.getConnection();
+       OrderDaoImpl orderDao = new OrderDaoImpl(connection);
+       try{
+          return orderDao.deleteByOrderId(orderId);
+       }catch (DaoException e){
+           LOG.error("Dao exception",e);
+       }finally {
+           Service.connectionClose(connection);
+       }
+       return false;
+    }
+
+    @Override
     public boolean pay(Integer userId, Integer drugId, boolean isNeedRecipe, Integer count, Double finalPrice, Integer orderId) {
         Connection connection = connectionPool.getConnection();
         Service.autoCommitFalse(connection);

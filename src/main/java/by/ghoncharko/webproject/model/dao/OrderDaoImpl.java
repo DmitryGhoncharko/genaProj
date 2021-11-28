@@ -401,4 +401,21 @@ public class OrderDaoImpl extends AbstractDao<Order> {
         }
         return false;
     }
+    public boolean deleteByOrderId(Integer orderId) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_DELETE_ORDER);
+            preparedStatement.setInt(1, orderId);
+            int countRows = preparedStatement.executeUpdate();
+            if (countRows > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot delete order",e);
+            throw new DaoException("cannot delete order",e);
+        } finally {
+            close(preparedStatement);
+        }
+        return false;
+    }
 }

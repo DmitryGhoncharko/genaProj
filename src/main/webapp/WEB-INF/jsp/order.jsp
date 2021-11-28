@@ -98,8 +98,12 @@
                 <input hidden="" name="orderFinalPrice" value="${order.finalPrice}"> <h6 class="card-subtitle mb-2 text-muted"
             >${order.finalPrice}</h6> </input>
                 <button class="navbar-toggler" formaction="/controller?command=pay" formmethod="post">Pay</button>
-                <button class="navbar-toggler" formaction="/controller?command=deleteOrder" formmethod="post">Delete</button>
-                <button class="navbar-toggler" formaction="/controller?command=updateOrder" formmethod="post">Update</button>
+                <button class="navbar-toggler" formaction="/controller?command=deleteFromOrder" formmethod="post">Delete</button>
+                <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                    <div class="alert alert-danger" role="alert">
+                            ${requestScope.errorDelete}
+                    </div>
+                </c:if>
             </form>
         </c:forEach>
     </div>
