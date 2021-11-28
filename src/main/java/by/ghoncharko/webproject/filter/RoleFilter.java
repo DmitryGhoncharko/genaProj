@@ -5,7 +5,11 @@ import by.ghoncharko.webproject.command.CommandRegistry;
 import by.ghoncharko.webproject.entity.Role;
 import by.ghoncharko.webproject.entity.User;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +17,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Role filter
+ *
+ * @author Dmitry Ghoncharko
+ */
 @WebFilter(filterName = "roleFilter")
 public class RoleFilter implements Filter {
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
@@ -45,16 +54,16 @@ public class RoleFilter implements Filter {
 
         return checkUserUnauthorizedAndAccesNotRestricted(currentUserRole, allowedRoles)
                 || (checkUserAuthorizedAndAccesNotRestricted(currentUserRole, allowedRoles)
-                || (checkUserAuthorizedAndAccesRestricted(currentUserRole, allowedRoles) ? true : false));
+                || (checkUserAuthorizedAndAccesRestricted(currentUserRole, allowedRoles)));
     }
 
     private boolean checkUserUnauthorizedAndAccesNotRestricted(Optional<Role> currentUserRole, List<Role> allowedRoles) {
 
-        return !currentUserRole.isPresent() && allowedRoles.size() == 0 ? true : false;
+        return !currentUserRole.isPresent() && allowedRoles.size() == 0;
     }
 
     private boolean checkUserAuthorizedAndAccesNotRestricted(Optional<Role> currentUserRole, List<Role> allowedRoles) {
-        return currentUserRole.isPresent() && allowedRoles.size() == 0 ? true : false;
+        return currentUserRole.isPresent() && allowedRoles.size() == 0;
     }
 
     private boolean checkUserAuthorizedAndAccesRestricted(Optional<Role> currentUserRole, List<Role> allowedRoles) {

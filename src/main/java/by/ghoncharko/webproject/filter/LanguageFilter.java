@@ -1,6 +1,10 @@
 package by.ghoncharko.webproject.filter;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Language filter
+ *
+ * @author Dmitry Ghoncharko
+ */
 @WebFilter(filterName = "languageFiler")
 public class LanguageFilter implements Filter {
 
