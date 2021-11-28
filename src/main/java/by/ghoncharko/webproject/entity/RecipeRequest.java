@@ -16,9 +16,11 @@ public class RecipeRequest implements Entity {
     private Date dateStart;
     private Date dateEnd;
     private StatusRecipeRequest status;
-    private RecipeRequest(){
+
+    private RecipeRequest() {
 
     }
+
     public Integer getId() {
         return id;
     }

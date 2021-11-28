@@ -15,13 +15,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Controller for request from client
+ *
+ * @author Dmitry Ghoncharko
+ */
 @WebServlet("/controller")
 public class Controller extends HttpServlet {
     private static final Logger LOG = LogManager.getLogger(Controller.class);
 
     private static final String COMMAND_NAME_PARAM = "command";
 
-    private final RequestFactory requestFactory = RequestFactory.getInstance();
+    private static final RequestFactory REQUEST_FACTORY = RequestFactory.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
@@ -38,7 +43,7 @@ public class Controller extends HttpServlet {
     private void processRequest(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         final String commandName = httpRequest.getParameter(COMMAND_NAME_PARAM);
         final Command command = Command.of(commandName);
-        final CommandRequest commandRequest = requestFactory.createRequest(httpRequest);
+        final CommandRequest commandRequest = REQUEST_FACTORY.createRequest(httpRequest);
         final CommandResponse commandResponse = command.execute(commandRequest);
         proceedWithResponse(httpRequest, httpResponse, commandResponse);
     }

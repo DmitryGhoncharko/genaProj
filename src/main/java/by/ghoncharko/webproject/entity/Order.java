@@ -83,6 +83,7 @@ public class Order implements Entity {
             newOrder.drug = drug;
             return this;
         }
+
         public Builder withCount(int count) {
             newOrder.count = count;
             return this;

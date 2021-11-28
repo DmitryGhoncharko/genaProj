@@ -16,6 +16,7 @@ public class BankCard implements Entity {
 
     }
 
+
     public Integer getId() {
         return id;
     }
