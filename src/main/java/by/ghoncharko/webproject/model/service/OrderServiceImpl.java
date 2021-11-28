@@ -102,18 +102,38 @@ public class OrderServiceImpl implements OrderService {
         Service.autoCommitFalse(connection);
         OrderDaoImpl orderDao = new OrderDaoImpl(connection);
         RecipeDaoImpl recipeDao = new RecipeDaoImpl(connection);
+
         Double finalPrice = count * price;
         try {
             if (isNeedRecipe) {
                 Optional<Recipe> recipe = recipeDao.findEntityByUserIdAndDrugId(userId, drugId);
                 if (recipe.isPresent()) {
-                    return orderDao.create(userId, drugId, count, OrderStatusHolder.ACTIVE, finalPrice);
+                   Optional<Order> order =  orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId,drugId);
+                    if(order.isPresent()){
+                        if(orderDao.update(order.get(),count,finalPrice)){
+                            return true;
+                        }else {
+                            Service.rollbackConnection(connection);
+                            return false;
+                        }
+                    }
+                    if(orderDao.create(userId, drugId, count, OrderStatusHolder.ACTIVE, finalPrice)){
+                        return true;
+                    }
+                }
+                Service.rollbackConnection(connection);
+                return false;
+            }
+            Optional<Order> order =  orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId,drugId);
+            if(order.isPresent()){
+                if(orderDao.update(order.get(),count,finalPrice)){
+                    return true;
                 }
                 Service.rollbackConnection(connection);
                 return false;
             }
             boolean isCreated = orderDao.create(userId, drugId, count, OrderStatusHolder.ACTIVE, finalPrice);
-            if (isCreated) {
+            if(isCreated){
                 return true;
             }
         } catch (DaoException e) {

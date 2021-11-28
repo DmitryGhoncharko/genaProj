@@ -8,4 +8,5 @@ public final class PagePath {
     public static final String ERROR_PAGE_PATH = "/WEB-INF/jsp/error.jsp";
     public static final String PREPARATES_PAGE_PATH = "/WEB-INF/jsp/preparates.jsp";
     public static final String ORDER_PAGE_PATH = "/WEB-INF/jsp/order.jsp";
+    public static final String RECIPES_PAGE_PATH = "/WEB-INF/jsp/recipes.jsp";
 }

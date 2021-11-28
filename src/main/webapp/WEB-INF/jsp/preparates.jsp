@@ -82,25 +82,45 @@
 <div class="container mt-4">
     <div class="row">
         <c:forEach var="drug" items="${requestScope.drugs}">
+
+<%--            <c:forEach var="order" items="${requestScope.orders}">--%>
             <form action="/controller?command=addToBucket" method="post">
                 <div class="col-auto mb-3"></div>
                 <div class="card" style="width: 18rem;"></div>
                 <div class="card-body "></div>
-
                 <input hidden="" name="drugId" type="text" value="${drug.id}"> <h5 class="card-title">${drug.id}</h5> </input>
                 <input hidden="" name="drugName" value="${drug.name}"> <h5 class="card-title">${drug.name}</h5> </input>
                 <input hidden="" name="drugNeedRecipe" value="${drug.needRecipe}"> <h6 class="card-subtitle mb-2 text-muted"
-                                      >${drug.needRecipe}</h6> </input>
-                <input hidden="" name="drugCount" value="${drug.count}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.count}</h6> </input>
+                                          >${drug.needRecipe}</h6> </input>
+<%--                <c:choose>--%>
+<%--                    <c:when test="${order.drug.id eq drug.id}">--%>
+<%--                        <input hidden="" name="drugCount" value="${drug.count-order.count}}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.count-order.count}</h6> </input>--%>
+<%--                    </c:when>--%>
+<%--                    <c:otherwise>--%>
+                        <input hidden="" name="drugCount" value="${drug.count}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.count}</h6> </input>
+<%--                    </c:otherwise>--%>
+<%--                </c:choose>--%>
                 <input hidden="" name="drugPrice" value="${drug.price}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.price}</h6> </input>
                 <input hidden="" name="drugDescription" value="${drug.description}">
                 <p class="card-text" >${drug.description}</p> </input>
                 <input hidden="" name="drugProducer" value="${drug.producer.name}"> <a >${drug.producer.name}</a> </input>
-                <input type="number" name="countUserBuyDrugs" placeholder="count drugs" min="1" max="${drug.count}"> Count Drugs</input>
+<%--                <c:choose>--%>
+<%--                    <c:when test="${order.drug.id eq drug.id}">--%>
+<%--                        <input type="number" name="countUserBuyDrugs" placeholder="count drugs" min="1" max="${drug.count-order.count}"> Count Drugs</input>--%>
+<%--                    </c:when>--%>
+<%--                    <c:otherwise>--%>
+                    <input type="number" name="countUserBuyDrugs" placeholder="count drugs" min="1" max="${drug.count}"> Count Drugs</input>
+<%--                    </c:otherwise>--%>
+<%--                </c:choose>--%>
 <%--                add info about user input invalid count drugs for buy --%>
                 <c:choose>
                     <c:when test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
                         <button  class="navbar-toggler">AddToBucket</button>
+                        <c:if test="${not empty requestScope.error && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                            <div class="alert alert-danger" role="alert">
+                                ${requestScope.error}
+                            </div>
+                        </c:if>
                     </c:when>
                     <c:otherwise>
                         <a class="btn btn-primary" role="button">Please login as Client</a>
@@ -108,6 +128,7 @@
                 </c:choose>
                 </input>
             </form>
+<%--            </c:forEach>--%>
         </c:forEach>
     </div>
 </div>

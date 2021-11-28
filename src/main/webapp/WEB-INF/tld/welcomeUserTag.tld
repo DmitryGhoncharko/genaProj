@@ -6,7 +6,7 @@
     <description>Simple tags library</description>
     <tlib-version>1.0</tlib-version>
     <short-name>welc</short-name>
-    <uri>by.ghoncharko.webtask</uri>
+    <uri>by.ghoncharko.webproject</uri>
     <tag>
         <name>welcomeUser</name>
         <tag-class>by.ghoncharko.webproject.tag.WelcomeUserTag</tag-class>

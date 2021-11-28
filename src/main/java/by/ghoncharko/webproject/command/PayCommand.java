@@ -34,7 +34,7 @@ public class PayCommand implements Command {
         }
         //todo new pagePath to currentPage and show error add bank card
         request.addAttributeToJsp("error", "something wrong");
-        return requestFactory.createForwardResponse(PagePath.ORDER_PAGE_PATH);
+        return requestFactory.createForwardResponse("/controller?command=order");
 
     }
 

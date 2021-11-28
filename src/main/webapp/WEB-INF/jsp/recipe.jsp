@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="by.ghoncharko.webproject.entity.RolesHolder" %>
 <html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -45,9 +46,9 @@
                         <a class="nav-link" href="/controller?command=/">Home <span class="sr-only">(current)</span></a>
                     </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/controller?command=preparates">Preparates</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/controller?command=preparates">Preparates</a>
+                    </li>
                     <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
                         <li class="nav-item">
                             <a class="nav-link" href="/controller?command=recipes">Bucket</a>
@@ -62,11 +63,6 @@
                     <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
                         <li class="nav-item">
                             <a class="nav-link" href="/controller?command=order">Order</a>
-                        </li>
-                    </c:if>
-                    <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/controller?command=bankCard">My bank card</a>
                         </li>
                     </c:if>
                 </ul>
@@ -85,21 +81,37 @@
 </header>
 <div class="container mt-4">
     <div class="row">
-        <c:forEach var="order" items="${requestScope.orders}">
-            <form >
+        <c:forEach var="drug" items="${requestScope.recipes}">
+            <form action="/controller?command=recipecmnd" method="post">
                 <div class="col-auto mb-3"></div>
                 <div class="card" style="width: 18rem;"></div>
                 <div class="card-body "></div>
-                <input hidden="" name="orderId" value="${order.id}"><h5 class="card-title">${order.drug.name}</h5></input>
-                <input hidden="" name="isNeedRecipe" value="${order.drug.needRecipe}">
-                <input hidden="" name="drugId" value="${order.drug.id}">
-                <input hidden="" name="drugName" type="text" value="${order.drug.name}"> <h5 class="card-title">${order.drug.name}</h5> </input>
-                <input hidden="" name="orderCount" value="${order.count}"> <h5 class="card-title">${order.count}</h5> </input>
-                <input hidden="" name="orderFinalPrice" value="${order.finalPrice}"> <h6 class="card-subtitle mb-2 text-muted"
-            >${order.finalPrice}</h6> </input>
-                <button class="navbar-toggler" formaction="/controller?command=pay" formmethod="post">Pay</button>
-                <button class="navbar-toggler" formaction="/controller?command=deleteOrder" formmethod="post">Delete</button>
-                <button class="navbar-toggler" formaction="/controller?command=updateOrder" formmethod="post">Update</button>
+
+                <input hidden="" name="drugId" type="text" value="${drug.id}"> <h5 class="card-title">${drug.id}</h5> </input>
+                <input hidden="" name="drugName" value="${drug.name}"> <h5 class="card-title">${drug.name}</h5> </input>
+                <input hidden="" name="drugNeedRecipe" value="${drug.needRecipe}"> <h6 class="card-subtitle mb-2 text-muted"
+            >${drug.needRecipe}</h6> </input>
+                <input hidden="" name="drugCount" value="${drug.count}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.count}</h6> </input>
+                <input hidden="" name="drugPrice" value="${drug.price}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.price}</h6> </input>
+                <input hidden="" name="drugDescription" value="${drug.description}">
+                <p class="card-text" >${drug.description}</p> </input>
+                <input hidden="" name="drugProducer" value="${drug.producer.name}"> <a >${drug.producer.name}</a> </input>
+                <input type="number" name="countUserBuyDrugs" placeholder="count drugs" min="1" max="${drug.count}"> Count Drugs</input>
+                    <%--                add info about user input invalid count drugs for buy --%>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
+                        <button  class="navbar-toggler">Продлить рецепт</button>
+                        <c:if test="${not empty requestScope.error && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                            <div class="alert alert-danger" role="alert">
+                                    ${requestScope.error}
+                            </div>
+                        </c:if>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-primary" role="button">Please login as Client</a>
+                    </c:otherwise>
+                </c:choose>
+                </input>
             </form>
         </c:forEach>
     </div>

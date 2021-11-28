@@ -1,7 +1,5 @@
 package by.ghoncharko.webproject.command;
 
-
-
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.model.service.OrderService;
@@ -25,13 +23,14 @@ public class AddToBucketCommand implements Command {
             final OrderService orderService = OrderServiceImpl.getInstance();
             final boolean isCreated = orderService.createOrderWithStatusActive(userId, drugId, drugCount, drugPrice, isNeedRecipe);
             //show error message on jsp page
-
-            if (isCreated) {
-                return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+            if (!isCreated) {
+                request.addAttributeToJsp("error","need recipe");
+                request.addAttributeToJsp("drugId", drugId);
+                return requestFactory.createForwardResponse("/controller?command=preparates");
             }
+            return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
         }
-//        request.addAttributeToJsp("error","cannot add to bucket");
-        return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+        return null;
     }
 
     public static AddToBucketCommand getInstance() {

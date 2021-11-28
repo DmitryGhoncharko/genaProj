@@ -28,8 +28,21 @@ public class DrugServiceImpl implements Service<Drug> {
             Service.connectionClose(connection);
         }
     }
+    public List<Drug> findAllWhereCountMoreThanZeroByUserId(Integer userId){
+        Connection connection = connectionPool.getConnection();
+
+        try {
+            return new DrugDaoImpl(connection).findAllWhereCountMoreThanZeroWithStatusActiveByUserId(userId);
+        } catch (DaoException e) {
+            LOG.error("dao exception in methot findAll drugService", e);
+            return Collections.emptyList();
+        }finally {
+            Service.connectionClose(connection);
+        }
+    }
     public List<Drug> findAllWhereCountMoreThanZero(){
         Connection connection = connectionPool.getConnection();
+
         try {
             return new DrugDaoImpl(connection).findAllWhereCountMoreThanZero();
         } catch (DaoException e) {

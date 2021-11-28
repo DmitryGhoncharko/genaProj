@@ -24,8 +24,14 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
     private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO = "SELECT" +
             " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
             " FROM drug" +
+            " INNER JOIN producer ON producer_id=producer.id" +
+            " WHERE count > 0";
+    private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID = "SELECT DISTINCT" +
+            " drug.id, name, price, drug.count- IFNULL(d.count,0), description, producer.id, producer_name, need_receip" +
+            " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id " +
-            " WHERE count>0";
+            " LEFT JOIN drug_order d on ? = d.user_id and drug.id = d.drug_id and d.status_id = 1" +
+            " WHERE drug.count>0";
     private static final String SQL_FIND_DRUG_BY_ID = "SELECT" +
             " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
             " FROM drug " +
@@ -139,6 +145,37 @@ public class DrugDaoImpl extends AbstractDao<Drug> {
         }
         return drugList;
     }
+    public List<Drug> findAllWhereCountMoreThanZeroWithStatusActiveByUserId(Integer userId) throws DaoException {
+        List<Drug> drugList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID);
+            preparedStatement.setInt(1,userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Drug drug = new Drug.Builder().
+                        withId(resultSet.getInt(1)).
+                        withName(resultSet.getString(2)).
+                        withPrice(resultSet.getDouble(3)).
+                        withCount(resultSet.getInt(4)).
+                        withDescription(resultSet.getString(5)).
+                        withProducer(new Producer.Builder().
+                                withId(resultSet.getInt(6)).
+                                withName(resultSet.getString(7)).
+                                build()).
+                        withNeedReceip(resultSet.getBoolean(8)).
+                        build();
+                drugList.add(drug);
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot find all drugs", e);
+            throw new DaoException("cannot find all drugs", e);
+        } finally {
+            close(preparedStatement);
+        }
+        return drugList;
+    }
+
     @Override
     public Optional<Drug> findEntityById(Integer id) throws DaoException {
         PreparedStatement preparedStatement = null;

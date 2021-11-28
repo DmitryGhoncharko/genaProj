@@ -8,8 +8,7 @@ public class ShowRecipesPageCommand implements Command {
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-
-        return null;
+        return requestFactory.createForwardResponse(PagePath.RECIPES_PAGE_PATH);
     }
 
     public static ShowRecipesPageCommand getInstance() {
