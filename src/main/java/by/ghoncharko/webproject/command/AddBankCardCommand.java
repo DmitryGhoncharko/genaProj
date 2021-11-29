@@ -25,4 +25,10 @@ public class AddBankCardCommand implements Command{
         }
         return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
     }
+    public static AddBankCardCommand getInstance(){
+        return Holder.INSTANCE;
+    }
+    private static class Holder{
+        private static final AddBankCardCommand INSTANCE = new AddBankCardCommand();
+    }
 }

@@ -18,4 +18,10 @@ public class DeleteBankCardCommand implements Command {
         }
         return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
     }
+    public static DeleteBankCardCommand getInstance(){
+        return Holder.INSTANCE;
+    }
+    private static class Holder{
+        private static final DeleteBankCardCommand INSTANCE = new DeleteBankCardCommand();
+    }
 }

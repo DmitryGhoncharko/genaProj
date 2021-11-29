@@ -34,13 +34,13 @@
                 <input name="cardId" value="${bankCard.id}" hidden="">
                 <a>card id ${bankCard.id}</a>
                 <a>card balance ${bankCard.balance}</a>
-                <button formaction="/command=deleteCard" formmethod="post">delete card</button>
-                <button formaction="/command=addCard" formmethod="post">add card</button>
+                <button formaction="/controller?command=deleteCard" formmethod="post">delete card</button>
             </form>
         </c:forEach>
     </div>
-    <form action="/controller?command=addBankCard">
+    <form action="/controller?command=addCard" method="post">
         <input placeholder="balance" name="balance">
+        <button>add card</button>
     </form>
 </div>
 </body>
