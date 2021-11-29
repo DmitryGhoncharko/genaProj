@@ -45,9 +45,9 @@
                         <a class="nav-link" href="/controller?command=/">Home <span class="sr-only">(current)</span></a>
                     </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/controller?command=preparates">Preparates</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/controller?command=preparates">Preparates</a>
+                    </li>
                     <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
                         <li class="nav-item">
                             <a class="nav-link" href="/controller?command=recipes">Bucket</a>
@@ -66,7 +66,7 @@
                     </c:if>
                     <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
                         <li class="nav-item">
-                            <a class="nav-link" href="/controller?command=bankCard">My bank card</a>
+                            <a class="nav-link" href="/controller?command=bankCard">My bank cards</a>
                         </li>
                     </c:if>
                 </ul>
@@ -86,19 +86,38 @@
 <div class="container mt-4">
     <div class="row">
         <c:forEach var="order" items="${requestScope.orders}">
-            <form >
+            <form>
                 <div class="col-auto mb-3"></div>
                 <div class="card" style="width: 18rem;"></div>
                 <div class="card-body "></div>
-                <input hidden="" name="orderId" value="${order.id}"><h5 class="card-title">${order.drug.name}</h5></input>
+                <input hidden="" name="orderId" value="${order.id}"><h5
+                    class="card-title">${order.drug.name}</h5></input>
                 <input hidden="" name="isNeedRecipe" value="${order.drug.needRecipe}">
                 <input hidden="" name="drugId" value="${order.drug.id}">
-                <input hidden="" name="drugName" type="text" value="${order.drug.name}"> <h5 class="card-title">${order.drug.name}</h5> </input>
-                <input hidden="" name="orderCount" value="${order.count}"> <h5 class="card-title">${order.count}</h5> </input>
-                <input hidden="" name="orderFinalPrice" value="${order.finalPrice}"> <h6 class="card-subtitle mb-2 text-muted"
+                <input hidden="" name="drugName" type="text" value="${order.drug.name}"> <h5
+                    class="card-title">${order.drug.name}</h5> </input>
+                <input hidden="" name="orderCount" value="${order.count}"> <h5
+                    class="card-title">${order.count}</h5> </input>
+                <input hidden="" name="orderFinalPrice" value="${order.finalPrice}"> <h6
+                    class="card-subtitle mb-2 text-muted"
             >${order.finalPrice}</h6> </input>
                 <button class="navbar-toggler" formaction="/controller?command=pay" formmethod="post">Pay</button>
-                <button class="navbar-toggler" formaction="/controller?command=deleteFromOrder" formmethod="post">Delete</button>
+
+                    <select name="cardId" >
+                                <c:forEach var="bankCard" items="${requestScope.bankCards}">
+                                   <option value="${bankCard.id}">
+                                       <button class="btn btn-primary">
+                                               card id ${bankCard.id}
+                                               <br/>
+                                               balance ${bankCard.balance}
+                                       </button>
+                                   </option>
+                                </c:forEach>
+                               </select>
+
+                <button class="navbar-toggler" formaction="/controller?command=deleteFromOrder" formmethod="post">
+                    Delete
+                </button>
                 <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
                     <div class="alert alert-danger" role="alert">
                             ${requestScope.errorDelete}

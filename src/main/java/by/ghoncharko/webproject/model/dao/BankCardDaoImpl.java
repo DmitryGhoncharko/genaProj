@@ -24,6 +24,8 @@ public class BankCardDaoImpl implements BankCardDao {
     private static final Logger LOG = LogManager.getLogger(BankCardDaoImpl.class);
     private static final String SQL_CREATE_BANK_CARD = "INSERT INTO card (user_id, balance) VALUES (?,?)";
     private static final String SQL_FIND_ALL_BANK_CARDS = "SELECT id, user_id, balance FROM card";
+    private static final String SQL_FIND_ALL_BANK_CARDS_BY_USER_ID = "SELECT id, user_id, balance FROM card WHERE user_id = ?";
+    private static final String SQL_FIND_BANK_CARD_BY_CARD_ID = "SELECT id, user_id, balance FROM card WHERE id = ?";
     private static final String SQL_FIND_BANK_CARD_BY_USER_ID = "SELECT id, user_id, balance FROM card WHERE user_id = ?";
     private static final String SQL_FIND_BANK_CARD_BY_ID = "SELECT id, user_id, balance FROM card WHERE id = ?";
     private static final String SQL_UPDATE_BANK_CARD = "UPDATE card SET  balance = ? WHERE id = ?";
@@ -62,6 +64,27 @@ public class BankCardDaoImpl implements BankCardDao {
     }
 
     @Override
+    public boolean addBankCard(Double balance, Integer userId) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_CREATE_BANK_CARD, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setDouble(2, balance);
+            final int updatedRows = preparedStatement.executeUpdate();
+            if (updatedRows > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("SQLException in method create bankCard", e);
+            throw new DaoException("SQLException in method create bankCard", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        LOG.error("DaoException in method create bankCard when we try create entity");
+        throw new DaoException("DaoException in method create bankCard");
+    }
+
+    @Override
     public List<BankCard> findAll() throws DaoException {
         List<BankCard> bankCardList = new ArrayList<>();
         Statement statement = null;
@@ -84,7 +107,54 @@ public class BankCardDaoImpl implements BankCardDao {
         }
         return bankCardList;
     }
-
+    @Override
+    public List<BankCard> findAllBankCardsByUserId(Integer userId) throws DaoException {
+        List<BankCard> bankCardList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_FIND_ALL_BANK_CARDS_BY_USER_ID);
+            preparedStatement.setInt(1,userId);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                BankCard bankCard = new BankCard.Builder().
+                        withId(resultSet.getInt(1)).
+                        withUserId(resultSet.getInt(2)).
+                        withBalance(resultSet.getDouble(3)).
+                        build();
+                bankCardList.add(bankCard);
+            }
+        } catch (SQLException e) {
+            LOG.error("SQLException when we try findAll entities in BankCard", e);
+            throw new DaoException("SQLException when we try findAll entities in BankCard", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        return bankCardList;
+    }
+    @Override
+    public Optional<BankCard> findAllBankCardsByCardId(Integer cardId) throws DaoException {
+        List<BankCard> bankCardList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_CARD_ID);
+            preparedStatement.setInt(1,cardId);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                BankCard bankCard = new BankCard.Builder().
+                        withId(resultSet.getInt(1)).
+                        withUserId(resultSet.getInt(2)).
+                        withBalance(resultSet.getDouble(3)).
+                        build();
+                return Optional.of(bankCard);
+            }
+        } catch (SQLException e) {
+            LOG.error("SQLException when we try findAll entities in BankCard", e);
+            throw new DaoException("SQLException when we try findAll entities in BankCard", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        return Optional.empty();
+    }
     @Override
     public Optional<BankCard> findEntityById(Integer id) throws DaoException {
         PreparedStatement preparedStatement = null;
@@ -162,6 +232,25 @@ public class BankCardDaoImpl implements BankCardDao {
         try {
             preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_CARD);
             preparedStatement.setInt(1, entity.getId());
+            int countRows = preparedStatement.executeUpdate();
+            if (countRows > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("cannod delete bank card", e);
+            throw new DaoException("cannod delete bank card", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        LOG.error("cannot delete bank card");
+        return false;
+    }
+    @Override
+    public boolean deleteByCardId(Integer cardId) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_CARD);
+            preparedStatement.setInt(1, cardId);
             int countRows = preparedStatement.executeUpdate();
             if (countRows > 0) {
                 return true;

@@ -63,6 +63,11 @@
                             <a class="nav-link" href="/controller?command=order">Order</a>
                         </li>
                     </c:if>
+                    <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/controller?command=card">Show my bank cards</a>
+                        </li>
+                    </c:if>
                 </ul>
             </div>
             <c:choose>

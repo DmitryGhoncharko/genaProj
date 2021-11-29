@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,68 @@ public class BankCardServiceImpl implements BankCardService {
             LOG.error("DaoException", e);
 
         } finally {
+            Service.connectionClose(connection);
+        }
+        return false;
+    }
+    @Override
+    public List<BankCard> getBankCardsByUserId(Integer userId) {
+        Connection connection = connectionPool.getConnection();
+        try {
+            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+            List<BankCard> bankCard = bankCardDao.findAllBankCardsByUserId(userId);
+            return bankCard;
+        } catch (DaoException e) {
+            LOG.error("DaoException", e);
+
+        } finally {
+            Service.connectionClose(connection);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Optional<BankCard> getBankCardsByCardId(Integer cardId) {
+        Connection connection = connectionPool.getConnection();
+        try {
+            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+            Optional<BankCard> bankCard = bankCardDao.findAllBankCardsByCardId(cardId);
+            if(bankCard.isPresent()){
+                return bankCard;
+            }
+            return Optional.empty();
+        } catch (DaoException e) {
+            LOG.error("DaoException", e);
+
+        } finally {
+            Service.connectionClose(connection);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean deleteByCardId(Integer cardId) {
+        Connection connection = connectionPool.getConnection();
+        try{
+            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+            return bankCardDao.deleteByCardId(cardId);
+        }catch (DaoException e){
+
+        }finally {
+            Service.connectionClose(connection);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addBankCard(Double balance, Integer userId) {
+        Connection connection = connectionPool.getConnection();
+        BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+        try{
+           return bankCardDao.addBankCard(balance,userId);
+        }catch (DaoException e){
+
+        }finally {
             Service.connectionClose(connection);
         }
         return false;

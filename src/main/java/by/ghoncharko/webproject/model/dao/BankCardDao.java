@@ -3,6 +3,7 @@ package by.ghoncharko.webproject.model.dao;
 import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.exception.DaoException;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,4 +20,12 @@ public interface BankCardDao extends Dao<BankCard> {
      * @see BankCard
      */
     Optional<BankCard> findBankCardByUserId(Integer userId) throws DaoException;
+
+    List<BankCard> findAllBankCardsByUserId(Integer userId) throws DaoException;
+
+    Optional<BankCard> findAllBankCardsByCardId(Integer cardId) throws DaoException;
+
+    boolean deleteByCardId(Integer cardId) throws DaoException;
+
+    boolean addBankCard(Double balance, Integer userId) throws DaoException;
 }

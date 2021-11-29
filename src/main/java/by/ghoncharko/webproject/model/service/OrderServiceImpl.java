@@ -32,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean pay(Integer userId, Integer drugId, boolean isNeedRecipe, Integer count, Double finalPrice, Integer orderId) {
+    public boolean pay(Integer userId, Integer drugId, boolean isNeedRecipe, Integer count, Double finalPrice, Integer orderId, Integer cardId) {
         Connection connection = connectionPool.getConnection();
         Service.autoCommitFalse(connection);
         try {
@@ -40,10 +40,10 @@ public class OrderServiceImpl implements OrderService {
                 RecipeDao recipeDao = new RecipeDaoImpl(connection);
                 Optional<Recipe> recipe = recipeDao.findEntityByUserIdAndDrugId(userId, drugId);
                 if (recipe.isPresent()) {
-                    return  validateAndPay(userId, drugId, count, finalPrice, connection, orderId);
+                    return  validateAndPay(userId, drugId, count, finalPrice, connection, orderId,cardId);
                 }
             }else {
-                return validateAndPay(userId, drugId, count, finalPrice, connection, orderId);
+                return validateAndPay(userId, drugId, count, finalPrice, connection, orderId,cardId);
             }
             Service.rollbackConnection(connection);
             return false;
@@ -56,9 +56,9 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    private boolean validateAndPay(Integer userId, Integer drugId, Integer count, Double finalPrice, Connection connection, Integer orderId) throws DaoException {
+    private boolean validateAndPay(Integer userId, Integer drugId, Integer count, Double finalPrice, Connection connection, Integer orderId, Integer cardId) throws DaoException {
         BankCardDao bankCardDao = new BankCardDaoImpl(connection);
-        Optional<BankCard> bankCard = bankCardDao.findBankCardByUserId(userId);
+        Optional<BankCard> bankCard = bankCardDao.findAllBankCardsByCardId(cardId);
         if (bankCard.isPresent()) {
             Double balance = bankCard.get().getBalance();
             double balanceAfterPay = balance - finalPrice;

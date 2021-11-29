@@ -81,7 +81,7 @@
 </header>
 <div class="container mt-4">
     <div class="row">
-        <c:forEach var="drug" items="${requestScope.recipes}">
+        <c:forEach var="recipe" items="${requestScope.recipes}">
             <form action="/controller?command=recipecmnd" method="post">
                 <div class="col-auto mb-3"></div>
                 <div class="card" style="width: 18rem;"></div>

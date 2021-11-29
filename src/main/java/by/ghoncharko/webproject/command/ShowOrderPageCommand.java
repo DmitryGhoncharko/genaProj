@@ -1,8 +1,12 @@
 package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
+import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.Order;
 import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.model.service.BankCardService;
+import by.ghoncharko.webproject.model.service.BankCardServiceImpl;
+import by.ghoncharko.webproject.model.service.OrderService;
 import by.ghoncharko.webproject.model.service.OrderServiceImpl;
 
 import java.util.List;
@@ -16,9 +20,11 @@ public class ShowOrderPageCommand implements Command {
         final Optional<Object> userFromSession = request.retrieveFromSession("user");
         User user = (User) userFromSession.get();
         Integer userId = user.getId();
-        OrderServiceImpl orderService = new OrderServiceImpl();
-
+        OrderService orderService = new OrderServiceImpl();
+        BankCardService bankCardService = new BankCardServiceImpl();
+        List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
         List<Order> orderList = orderService.findAllWithStatusActive(userId);
+        request.addAttributeToJsp("bankCards",bankCardList);
         request.addAttributeToJsp("orders", orderList);
         return requestFactory.createForwardResponse(PagePath.ORDER_PAGE_PATH);
     }

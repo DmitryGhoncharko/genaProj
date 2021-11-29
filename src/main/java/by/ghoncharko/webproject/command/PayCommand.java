@@ -2,6 +2,7 @@ package by.ghoncharko.webproject.command;
 
 
 import by.ghoncharko.webproject.controller.RequestFactory;
+import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.model.service.BankCardService;
 import by.ghoncharko.webproject.model.service.BankCardServiceImpl;
@@ -22,11 +23,12 @@ public class PayCommand implements Command {
         Optional<Object> userFromSession = request.retrieveFromSession("user");
         User user = (User) userFromSession.get();
         Double finalPrice = Double.valueOf(request.getParameter("orderFinalPrice"));
+        Integer bankCardId = Integer.valueOf(request.getParameter("cardId"));
         BankCardService bankCardService = new BankCardServiceImpl();
         OrderService orderService = new OrderServiceImpl();
-        boolean haveBankCard = bankCardService.findBankCardByUserId(user.getId());
-        if (haveBankCard) {
-            boolean isPayed = orderService.pay(user.getId(), drugId, isNeedRecipe, orderCount, finalPrice, orderId);
+        Optional<BankCard> bankCard = bankCardService.getBankCardsByCardId(bankCardId);
+        if (bankCard.isPresent()) {
+            boolean isPayed = orderService.pay(user.getId(), drugId, isNeedRecipe, orderCount, finalPrice, orderId, bankCardId);
             if (isPayed) {
                 //todo new pagePath to currentPage
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);

@@ -11,7 +11,7 @@ public interface OrderService extends Service<Order> {
 
    List<Order> findAllWithStatusActive(Integer userId);
 
-   boolean pay(Integer userId, Integer drugId, boolean isNeedRecipe, Integer count, Double finalPrice, Integer orderId);
+   boolean pay(Integer userId, Integer drugId, boolean isNeedRecipe, Integer count, Double finalPrice, Integer orderId, Integer cardId);
 
    boolean deleteFromOrderByOrderId(Integer orderId);
 }
