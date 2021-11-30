@@ -5,13 +5,13 @@ import by.ghoncharko.webproject.entity.Drug;
 import by.ghoncharko.webproject.entity.Producer;
 import by.ghoncharko.webproject.entity.RecipeRequest;
 import by.ghoncharko.webproject.entity.Role;
-import by.ghoncharko.webproject.entity.StatusRecipeRequest;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,37 +21,33 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class RecipeRequestDaoImpl implements Dao<RecipeRequest> {
+public class RecipeRequestDaoImpl implements RecipeRequestDao {
     private static final Logger LOG = LogManager.getLogger(RecipeRequestDaoImpl.class);
     private static final String SQL_CREATE_RECIPE_REQUEST = "INSERT INTO recipe_request" +
-            " (user_id, drug_id, status_id, date_start, date_end) VALUES (?,?,?,?,?)";
+            " (user_id, drug_id, date_start, date_end) VALUES (?,?,?,?)";
     private static final String SQL_GET_ALL_RECIPE_REQUESTS = "SELECT" +
             " recipe_request.id,recipe_request.date_start,recipe_request.date_end, u.id,login,password,first_name," +
             " last_name,role_id,role_name, d.id,d.name,d.price,d.count,d.description,d.need_receip,d.producer_id,p.producer_name," +
-            " srr.id, srr.name" +
             " FROM recipe_request " +
             " INNER JOIN user u ON recipe_request.user_id = u.id" +
             " INNER JOIN role r ON u.role_id = r.id" +
             " INNER JOIN drug d ON recipe_request.drug_id = d.id" +
-            " INNER JOIN producer p ON d.producer_id = p.id" +
-            " INNER JOIN status_recipe_request srr ON recipe_request.status_id = srr.id";
+            " INNER JOIN producer p ON d.producer_id = p.id";
     private static final String SQL_GET_RECIPE_REQUEST_BY_ID = "SELECT" +
             " recipe_request.id,recipe_request.date_start,recipe_request.date_end, u.id,login,password,first_name," +
             " last_name,role_id,role_name, d.id,d.name,d.price,d.count,d.description,d.need_receip,d.producer_id,p.producer_name," +
-            " srr.id, srr.name" +
             " FROM recipe_request " +
             " INNER JOIN user u ON recipe_request.user_id = u.id" +
             " INNER JOIN role r ON u.role_id = r.id" +
             " INNER JOIN drug d ON recipe_request.drug_id = d.id" +
             " INNER JOIN producer p ON d.producer_id = p.id" +
-            " INNER JOIN status_recipe_request srr ON recipe_request.status_id = srr.id" +
             " WHERE recipe_request.id = ?";
     private static final String SQL_UPDATE_RECIPE_REQUEST = "UPDATE recipe_request" +
             " SET user_id = ? , drug_id = ? , status_id = ?, date_start = ?, date_end = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_RECIPE_REQUEST = "DELETE FROM recipe_request WHERE id = ?";
     private final Connection connection;
-    private RecipeRequestDaoImpl(Connection connection) {
+    public RecipeRequestDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
@@ -64,9 +60,8 @@ public class RecipeRequestDaoImpl implements Dao<RecipeRequest> {
             preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE_REQUEST, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setInt(1, entity.getUser().getId());
             preparedStatement.setInt(2, entity.getDrug().getId());
-            preparedStatement.setInt(3, entity.getStatus().getId());
-            preparedStatement.setDate(4, entity.getDateStart());
-            preparedStatement.setDate(5, entity.getDateEnd());
+            preparedStatement.setDate(3, entity.getDateStart());
+            preparedStatement.setDate(4, entity.getDateEnd());
             int countRows = preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (countRows > 0 && resultSet.next()) {
@@ -74,10 +69,32 @@ public class RecipeRequestDaoImpl implements Dao<RecipeRequest> {
                         withId(resultSet.getInt(1)).
                         withUser(entity.getUser()).
                         withDrug(entity.getDrug()).
-                        withStatus(entity.getStatus()).
                         withDateStart(entity.getDateStart()).
                         withDateEnd(entity.getDateEnd()).
                         build();
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot create recipe request",e);
+            throw new DaoException("cannot create recipe request",e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        LOG.error("cannot create recipe request");
+        throw new DaoException();
+    }
+
+    @Override
+    public boolean createRecipeRequestByUserIdAndDrugIdWithDateStartAndDateEnd(Integer userId, Integer drugId, Date dateStart, Date dateEnd) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE_REQUEST);
+            preparedStatement.setInt(1,userId);
+            preparedStatement.setInt(2,drugId);
+            preparedStatement.setDate(3,dateStart);
+            preparedStatement.setDate(4,dateEnd);
+            int countRows = preparedStatement.executeUpdate();
+            if (countRows > 0) {
+                return true;
             }
         } catch (SQLException e) {
             LOG.error("cannot create recipe request",e);
@@ -121,9 +138,7 @@ public class RecipeRequestDaoImpl implements Dao<RecipeRequest> {
                                 withProducer(new Producer.Builder().
                                         withId(resultSet.getInt(17)).
                                         withName(resultSet.getString(18)).build()).build()
-                        ).withStatus(new StatusRecipeRequest.Builder().withId(resultSet.getInt(19)).
-                        withName(resultSet.getString(20)).build()).
-                        build();
+                        ).build();
                 recipeRequestList.add(recipeRequest);
 
             }
@@ -169,9 +184,7 @@ public class RecipeRequestDaoImpl implements Dao<RecipeRequest> {
                                 withProducer(new Producer.Builder().
                                         withId(resultSet.getInt(17)).
                                         withName(resultSet.getString(18)).build()).build()
-                        ).withStatus(new StatusRecipeRequest.Builder().withId(resultSet.getInt(19)).
-                        withName(resultSet.getString(20)).build()).
-                        build();
+                        ).build();
                 return Optional.of(recipeRequest);
             }
         } catch (SQLException e) {
@@ -190,10 +203,9 @@ public class RecipeRequestDaoImpl implements Dao<RecipeRequest> {
             preparedStatement = connection.prepareStatement(SQL_UPDATE_RECIPE_REQUEST);
             preparedStatement.setInt(1, entity.getUser().getId());
             preparedStatement.setInt(2, entity.getDrug().getId());
-            preparedStatement.setInt(3, entity.getStatus().getId());
-            preparedStatement.setDate(4, entity.getDateStart());
-            preparedStatement.setDate(5, entity.getDateEnd());
-            preparedStatement.setInt(6, entity.getId());
+            preparedStatement.setDate(3, entity.getDateStart());
+            preparedStatement.setDate(4, entity.getDateEnd());
+            preparedStatement.setInt(5, entity.getId());
             int countRows = preparedStatement.executeUpdate();
             if (countRows > 0) {
                 return entity;

@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 
-public class DrugServiceImpl implements Service<Drug> {
+public class DrugServiceImpl implements DrugService {
     private static final Logger LOG = LogManager.getLogger(DrugServiceImpl.class);
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
@@ -30,6 +30,7 @@ public class DrugServiceImpl implements Service<Drug> {
             Service.connectionClose(connection);
         }
     }
+    @Override
     public List<Drug> findAllWhereCountMoreThanZeroByUserId(Integer userId){
         Connection connection = connectionPool.getConnection();
 
@@ -43,6 +44,7 @@ public class DrugServiceImpl implements Service<Drug> {
             Service.connectionClose(connection);
         }
     }
+    @Override
     public List<Drug> findAllWhereCountMoreThanZero(){
         Connection connection = connectionPool.getConnection();
 

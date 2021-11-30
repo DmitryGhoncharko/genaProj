@@ -15,7 +15,6 @@ public class RecipeRequest implements Entity {
     private Drug drug;
     private Date dateStart;
     private Date dateEnd;
-    private StatusRecipeRequest status;
 
     private RecipeRequest() {
 
@@ -41,9 +40,7 @@ public class RecipeRequest implements Entity {
         return dateEnd;
     }
 
-    public StatusRecipeRequest getStatus() {
-        return status;
-    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -54,8 +51,7 @@ public class RecipeRequest implements Entity {
                 Objects.equals(user, that.user) &&
                 Objects.equals(drug, that.drug) &&
                 Objects.equals(dateStart, that.dateStart) &&
-                Objects.equals(dateEnd, that.dateEnd) &&
-                Objects.equals(status, that.status);
+                Objects.equals(dateEnd, that.dateEnd);
     }
 
     @Override
@@ -66,13 +62,12 @@ public class RecipeRequest implements Entity {
                 ", drug=" + drug +
                 ", dateStart=" + dateStart +
                 ", dateEnd=" + dateEnd +
-                ", status=" + status +
                 '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, drug, dateStart, dateEnd, status);
+        return Objects.hash(id, user, drug, dateStart, dateEnd);
     }
 
     public static class Builder {
@@ -106,12 +101,6 @@ public class RecipeRequest implements Entity {
             newRecipeRequest.dateEnd = dateEnd;
             return this;
         }
-
-        public Builder withStatus(StatusRecipeRequest status) {
-            newRecipeRequest.status = status;
-            return this;
-        }
-
         public RecipeRequest build() {
             return newRecipeRequest;
         }

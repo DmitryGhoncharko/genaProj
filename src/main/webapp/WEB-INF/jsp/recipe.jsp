@@ -39,17 +39,12 @@
                 <div class="card" style="width: 18rem;"></div>
                 <div class="card-body "></div>
 
-                <input hidden="" name="drugId" type="text" value="${drug.id}"> <h5 class="card-title">${drug.id}</h5> </input>
-                <input hidden="" name="drugName" value="${drug.name}"> <h5 class="card-title">${drug.name}</h5> </input>
-                <input hidden="" name="drugNeedRecipe" value="${drug.needRecipe}"> <h6 class="card-subtitle mb-2 text-muted"
-            >${drug.needRecipe}</h6> </input>
-                <input hidden="" name="drugCount" value="${drug.count}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.count}</h6> </input>
-                <input hidden="" name="drugPrice" value="${drug.price}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.price}</h6> </input>
-                <input hidden="" name="drugDescription" value="${drug.description}">
-                <p class="card-text" >${drug.description}</p> </input>
-                <input hidden="" name="drugProducer" value="${drug.producer.name}"> <a >${drug.producer.name}</a> </input>
-                <input type="number" name="countUserBuyDrugs" placeholder="count drugs" min="1" max="${drug.count}"> Count Drugs</input>
-                    <%--                add info about user input invalid count drugs for buy --%>
+                <input hidden="" name="recipeId" type="text" value="${recipe.id}"> <h5 class="card-title">${recipe.id}</h5> </input>
+                <input hidden="" name="userId" value="${recipe.user.id}">
+                <input hidden="" name="drugId" value="${recipe.drug.id}">
+                <input hidden="" name="drugName" value="${recipe.drug.name}"> <h6 class="card-subtitle mb-2 text-muted" >${recipe.drug.name}</h6> </input>
+                <input hidden="" name="recipeDateStart" value="${recipe.dateStart}"> <h6 class="card-subtitle mb-2 text-muted" >${recipe.dateStart}</h6> </input>
+                <input hidden="" name="recipeDateEnd" value="${recipe.dateEnd}"> <h6 class="card-subtitle mb-2 text-muted" >${recipe.dateEnd}</h6> </input>
                 <c:choose>
                     <c:when test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
                         <button  class="navbar-toggler">Продлить рецепт</button>

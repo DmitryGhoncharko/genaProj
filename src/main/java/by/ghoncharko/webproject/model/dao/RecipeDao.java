@@ -3,6 +3,7 @@ package by.ghoncharko.webproject.model.dao;
 import by.ghoncharko.webproject.entity.Recipe;
 import by.ghoncharko.webproject.exception.DaoException;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,4 +21,6 @@ public interface RecipeDao extends Dao<Recipe> {
      * @see Recipe
      */
     Optional<Recipe> findEntityByUserIdAndDrugId(Integer userId, Integer drugId) throws DaoException;
+
+    List<Recipe> findRecipesByUserId(Integer userId) throws DaoException;
 }
