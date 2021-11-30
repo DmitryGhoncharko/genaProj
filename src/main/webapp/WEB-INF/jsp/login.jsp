@@ -154,6 +154,11 @@
     }
 </style>
 
+<html>
+<head>
+
+</head>
+<body>
 <div class="container">
     <div class="row">
 
@@ -175,6 +180,9 @@
             </form>
         </div>
 
-    </div><!-- /.row -->
+    </div>
 </div>
-<!-- /.container -->
+</body>
+</html>
+
+

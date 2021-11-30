@@ -28,60 +28,7 @@
 </head>
 <body>
 <header>
-    <div class="container-fluide">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">
-                <img src="<c:url value="${pageContext.request.contextPath}/static/icon.png"/>" width="70" height="65"
-                     class="d-inline-block align-top" alt="">
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/controller?command=/">Home <span class="sr-only">(current)</span></a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/controller?command=preparates">Preparates</a>
-                    </li>
-                    <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/controller?command=recipes">Bucket</a>
-                        </li>
-                    </c:if>
-
-                    <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/controller?command=recipes">Recipes</a>
-                        </li>
-                    </c:if>
-                    <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/controller?command=order">Order</a>
-                        </li>
-                    </c:if>
-                    <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/controller?command=bankCard">My bank cards</a>
-                        </li>
-                    </c:if>
-                </ul>
-            </div>
-            <c:choose>
-                <c:when test="${not empty sessionScope.user}">
-                    <a class="btn btn-primary" href="/controller?command=logout" role="button">Logout</a>
-                </c:when>
-                <c:otherwise>
-                    <a class="btn btn-primary" href="/controller?command=login" role="button">Login</a>
-                </c:otherwise>
-            </c:choose>
-            <a class="nav-link" href="/controller?command=registration">Registration</a>
-        </nav>
-    </div>
+    <jsp:include page="header.jsp"></jsp:include>
 </header>
 <div class="container mt-4">
     <div class="row">

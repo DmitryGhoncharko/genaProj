@@ -27,6 +27,9 @@
     <title>Title</title>
 </head>
 <body>
+<header>
+    <jsp:include page="header.jsp"></jsp:include>
+</header>
 <div class="container mt-4">
     <div class="row">
         <c:forEach var="bankCard" items="${requestScope.bankCards}">
