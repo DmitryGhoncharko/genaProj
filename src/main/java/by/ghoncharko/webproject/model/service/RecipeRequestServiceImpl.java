@@ -13,16 +13,18 @@ import java.util.List;
 public class RecipeRequestServiceImpl implements RecipeRequestService{
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
     @Override
-    public boolean createRecipeRequestByUserIdAndDrugIdWithDateStartAndDateEnd(Integer userId, Integer drugId, Date dateStart, Date dateEnd) {
-        Connection connection = connectionPool.getConnection();
-        RecipeRequestDao recipeRequestDao = new RecipeRequestDaoImpl(connection);
-       try{
-           return recipeRequestDao.createRecipeRequestByUserIdAndDrugIdWithDateStartAndDateEnd(userId, drugId, dateStart, dateEnd);
-       }catch (DaoException e){
+    public boolean createRecipeRequestByUserIdAndDrugIdWithDateStartAndDateEnd(Integer userId, Integer drugId, Date dateStart, Date dateEnd, boolean isNeedRecipe) {
+        if(isNeedRecipe){
+            Connection connection = connectionPool.getConnection();
+            RecipeRequestDao recipeRequestDao = new RecipeRequestDaoImpl(connection);
+            try{
+                return recipeRequestDao.createRecipeRequestByUserIdAndDrugIdWithDateStartAndDateEnd(userId, drugId, dateStart, dateEnd);
+            }catch (DaoException e){
 
-       }finally {
-           Service.connectionClose(connection);
-       }
+            }finally {
+                Service.connectionClose(connection);
+            }
+        }
        return false;
     }
 

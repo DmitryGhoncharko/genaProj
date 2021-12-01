@@ -42,6 +42,7 @@
                 <input hidden="" name="recipeId" type="text" value="${recipe.id}"> <h5 class="card-title">${recipe.id}</h5> </input>
                 <input hidden="" name="userId" value="${recipe.user.id}">
                 <input hidden="" name="drugId" value="${recipe.drug.id}">
+                <input hidden="" name="isNeedRecipe" value="${recipe.drug.needRecipe}">
                 <input hidden="" name="drugName" value="${recipe.drug.name}"> <h6 class="card-subtitle mb-2 text-muted" >${recipe.drug.name}</h6> </input>
                 <input hidden="" name="recipeDateStart" value="${recipe.dateStart}"> <h6 class="card-subtitle mb-2 text-muted" >${recipe.dateStart}</h6> </input>
                 <input hidden="" name="recipeDateEnd" value="${recipe.dateEnd}"> <h6 class="card-subtitle mb-2 text-muted" >${recipe.dateEnd}</h6> </input>

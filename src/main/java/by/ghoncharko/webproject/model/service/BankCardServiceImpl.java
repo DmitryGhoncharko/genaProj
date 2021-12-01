@@ -6,6 +6,7 @@ import by.ghoncharko.webproject.exception.DaoException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
 import by.ghoncharko.webproject.model.dao.BankCardDao;
 import by.ghoncharko.webproject.model.dao.BankCardDaoImpl;
+import by.ghoncharko.webproject.validator.ValidateAddBankCard;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -86,14 +87,17 @@ public class BankCardServiceImpl implements BankCardService {
 
     @Override
     public boolean addBankCard(Double balance, Integer userId) {
-        Connection connection = connectionPool.getConnection();
-        BankCardDao bankCardDao = new BankCardDaoImpl(connection);
-        try{
-           return bankCardDao.addBankCard(balance,userId);
-        }catch (DaoException e){
+        boolean isValide = ValidateAddBankCard.getInstance().validateAddBankCard(balance,userId);
+        if(isValide){
+            Connection connection = connectionPool.getConnection();
+            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+            try{
+                return bankCardDao.addBankCard(balance,userId);
+            }catch (DaoException e){
 
-        }finally {
-            Service.connectionClose(connection);
+            }finally {
+                Service.connectionClose(connection);
+            }
         }
         return false;
     }

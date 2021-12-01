@@ -41,7 +41,7 @@
             </form>
         </c:forEach>
     </div>
-    <form action="/controller?command=addCard" method="post">
+    <form action="/controller?command=addCard" method="post" novalidate>
         <input placeholder="balance" name="balance">
         <button>add card</button>
     </form>

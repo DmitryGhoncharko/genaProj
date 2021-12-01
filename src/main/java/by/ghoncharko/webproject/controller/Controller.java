@@ -20,6 +20,7 @@ import java.io.IOException;
  *
  * @author Dmitry Ghoncharko
  */
+//todo create cathocng exceptions
 @WebServlet("/controller")
 public class Controller extends HttpServlet {
     private static final Logger LOG = LogManager.getLogger(Controller.class);

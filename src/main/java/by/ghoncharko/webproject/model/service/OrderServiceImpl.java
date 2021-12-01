@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -118,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             if (isNeedRecipe) {
                 Optional<Recipe> recipe = recipeDao.findEntityByUserIdAndDrugId(userId, drugId);
-                if (recipe.isPresent()) {
+                if (recipe.isPresent() && recipe.get().getDateEnd().after(new Date(new java.util.Date().getDate()))) {
                    Optional<Order> order =  orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId,drugId);
                     if(order.isPresent()){
                         if(orderDao.update(order.get(),count,finalPrice)){

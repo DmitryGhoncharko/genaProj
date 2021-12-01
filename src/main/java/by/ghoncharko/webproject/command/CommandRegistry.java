@@ -20,11 +20,11 @@ public class CommandRegistry {
     private static final CommandRegistry RECIPES_PAGE = new CommandRegistry(ShowRecipesPageCommand.getInstance(), "recipes");
     private static final CommandRegistry ORDER_PAGE = new CommandRegistry(ShowOrderPageCommand.getInstance(), "order");
     private static final CommandRegistry PAY_COMMAND = new CommandRegistry(PayCommand.getInstance(), "pay");
-    private static final CommandRegistry DELETE_FROM_ORDER_COMMAND = new CommandRegistry(DeleteFromOrderCommand.getInstance(),"deleteFromOrder");
-    private static final CommandRegistry BANK_CARDS_PAGE = new CommandRegistry(ShowBankCardsPage.getInstance(),"card");
-    private static final CommandRegistry ADD_BANK_CARD_COMMAND = new CommandRegistry(AddBankCardCommand.getInstance(),"addCard");
-    private static final CommandRegistry DELETE_BANK_CARD_COMMAND = new CommandRegistry(DeleteBankCardCommand.getInstance(),"deleteCard");
-    private static final CommandRegistry CREATE_RECIPE_REQUEST_COMMAND = new CommandRegistry(CreateRecipeRequestCommand.getInstance(),"recipecmnd");
+    private static final CommandRegistry DELETE_FROM_ORDER_COMMAND = new CommandRegistry(DeleteFromOrderCommand.getInstance(), "deleteFromOrder");
+    private static final CommandRegistry BANK_CARDS_PAGE = new CommandRegistry(ShowBankCardsPage.getInstance(), "card");
+    private static final CommandRegistry ADD_BANK_CARD_COMMAND = new CommandRegistry(AddBankCardCommand.getInstance(), "addCard");
+    private static final CommandRegistry DELETE_BANK_CARD_COMMAND = new CommandRegistry(DeleteBankCardCommand.getInstance(), "deleteCard");
+    private static final CommandRegistry CREATE_RECIPE_REQUEST_COMMAND = new CommandRegistry(CreateRecipeRequestCommand.getInstance(), "recipecmnd");
     private static final List<CommandRegistry> COMMAND_REGISTRY_LIST = Arrays.asList(MAIN_PAGE, LOGIN_PAGE, LOGIN_COMMAND, REGISTRATION_PAGE, REGISTRATION_COMMAND, LOGOUT_COMMAND, ERROR_PAGE, PREPARATES_PAGE, ADD_TO_BUCKET_COMMAND,
             RECIPES_PAGE, ORDER_PAGE, PAY_COMMAND, DELETE_FROM_ORDER_COMMAND, BANK_CARDS_PAGE, ADD_BANK_CARD_COMMAND, DELETE_BANK_CARD_COMMAND, CREATE_RECIPE_REQUEST_COMMAND);
     private final Command command;

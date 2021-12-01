@@ -7,6 +7,8 @@ import by.ghoncharko.webproject.exception.DaoException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
 import by.ghoncharko.webproject.model.dao.UserDao;
 import by.ghoncharko.webproject.model.dao.UserDaoImpl;
+import by.ghoncharko.webproject.validator.ValidateAuthenticate;
+import by.ghoncharko.webproject.validator.ValidateRegistration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mindrot.jbcrypt.BCrypt;
@@ -38,22 +40,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> authenticate(String login, String password) {
         final Connection connection = connectionPool.getConnection();
-        if (login == null || password == null) {
-            return Optional.empty();
-        }
-        try {
-            final UserDao userDao = new UserDaoImpl(connection);
-            Optional<User> user = userDao.findUserByLogin(login);
-            if (user.isPresent()) {
-                String userPasswordFromDB = user.get().getPassword();
-                if (BCrypt.checkpw(password, userPasswordFromDB)) {
-                    return user;
+        boolean loginAndPasswordValide = ValidateAuthenticate.getInstance().validate(login, password);
+        if (loginAndPasswordValide) {
+            try {
+                final UserDao userDao = new UserDaoImpl(connection);
+                Optional<User> user = userDao.findUserByLogin(login);
+                if (user.isPresent()) {
+                    String userPasswordFromDB = user.get().getPassword();
+                    if (BCrypt.checkpw(password, userPasswordFromDB)) {
+                        return user;
+                    }
                 }
+            } catch (DaoException e) {
+                e.printStackTrace();
+            } finally {
+                Service.connectionClose(connection);
             }
-        } catch (DaoException e) {
-            e.printStackTrace();
-        } finally {
-            Service.connectionClose(connection);
         }
         return Optional.empty();
     }
@@ -61,28 +63,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> createClient(String login, String password, String firstName, String lastName) {
         Connection connection = connectionPool.getConnection();
-
-        try {
-            String hashedPassword = BCrypt.hashpw(password, SALT);
-            User user = new User.Builder().
-                    withLogin(login).
-                    withPassword(hashedPassword).
-                    withFirstName(firstName).
-                    withLastName(lastName).
-                    withRole(RolesHolder.CLIENT).build();
-            UserDao userDao = new UserDaoImpl(connection);
-            User userWithId = userDao.create(user);
-            return Optional.of(userWithId);
-        } catch (DaoException e) {
-            LOG.error("DaoException", e);
-            return Optional.empty();
-        } finally {
-            Service.connectionClose(connection);
+        boolean isValide = ValidateRegistration.getInstance().validateRegistration(login, password, firstName, lastName);
+        if(isValide){
+            try {
+                String hashedPassword = BCrypt.hashpw(password, SALT);
+                User user = new User.Builder().
+                        withLogin(login).
+                        withPassword(hashedPassword).
+                        withFirstName(firstName).
+                        withLastName(lastName).
+                        withRole(RolesHolder.CLIENT).build();
+                UserDao userDao = new UserDaoImpl(connection);
+                User userWithId = userDao.create(user);
+                return Optional.of(userWithId);
+            } catch (DaoException e) {
+                LOG.error("DaoException", e);
+                return Optional.empty();
+            } finally {
+                Service.connectionClose(connection);
+            }
         }
-
+        return Optional.empty();
     }
 
-    static UserServiceImpl getInstance() {
+  public   static UserServiceImpl getInstance() {
         return Holder.INSTANCE;
     }
 
