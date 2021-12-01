@@ -10,20 +10,24 @@ import java.util.List;
 import java.util.Optional;
 
 public class ShowBankCardsPage implements Command{
+    private static final String USER_ATTRIBUTE_NAME = "user";
+    private static final String BANK_CARDS_ATTRIBUTE_NAME = "bankCards";
+    private static final String ERROR_ATTRIBUTE_NAME = "error";
+    private static final String ERROR_ATTRIBUTE_MESSAGE = "dont have permission to this";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
     @Override
     public CommandResponse execute(CommandRequest request) {
         BankCardService bankCardService = new BankCardServiceImpl();
-        Optional<Object> userFromSession = request.retrieveFromSession("user");
+        Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
         if(userFromSession.isPresent()){
             User user = (User) userFromSession.get();
             int userId = user.getId();
             List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
-            request.addAttributeToJsp("bankCards", bankCardList);
+            request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
             return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
         }
-        request.addAttributeToJsp("error", "dont have permission to this");
+        request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);
         return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
     }
     public static ShowBankCardsPage getInstance(){

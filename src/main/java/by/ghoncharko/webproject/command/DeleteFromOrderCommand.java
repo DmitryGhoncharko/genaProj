@@ -5,17 +5,21 @@ import by.ghoncharko.webproject.model.service.OrderService;
 import by.ghoncharko.webproject.model.service.OrderServiceImpl;
 
 public class DeleteFromOrderCommand implements Command{
-private final  RequestFactory requestFactory = RequestFactory.getInstance();
+    private static final String ORDER_ID_PARAM_NAME = "orderId";
+    private static final String DRUG_ID_ATTRIBUTE_NAME = "drugId";
+    private static final String ERROR_ATTRIBUTE_NAME = "errorDelete";
+    private static final String ERROR_ATTRIBUTE_MESSAGE = "cannod delete from order";
+    private final  RequestFactory requestFactory = RequestFactory.getInstance();
     @Override
     public CommandResponse execute(CommandRequest request) {
-        Integer orderId = Integer.valueOf(request.getParameter("orderId"));
+        Integer orderId = Integer.valueOf(request.getParameter(ORDER_ID_PARAM_NAME));
         OrderService orderService = new OrderServiceImpl();
         if(orderService.deleteFromOrderByOrderId(orderId)){
             return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
         }
         final Integer drugId = Integer.valueOf(request.getParameter("drugId"));
-        request.addAttributeToJsp("drugId",drugId);
-        request.addAttributeToJsp("errorDelete","cannod delete from order");
+        request.addAttributeToJsp(DRUG_ID_ATTRIBUTE_NAME,drugId);
+        request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);
         return  requestFactory.createForwardResponse(PagePath.ORDER_PAGE_PATH);
     }
     public static DeleteFromOrderCommand getInstance(){
