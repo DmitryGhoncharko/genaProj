@@ -6,6 +6,9 @@ public class LogoutCommand implements Command {
     private final RequestFactory requestFactory = RequestFactory.getInstance();
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
 
+    private LogoutCommand() {
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
         if (noLoggedInUserPresent(request)) {

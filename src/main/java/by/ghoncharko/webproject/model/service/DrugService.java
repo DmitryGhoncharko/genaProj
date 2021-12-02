@@ -12,4 +12,5 @@ public interface DrugService extends Service<Drug> {
     boolean deleteByDrugId(Integer drugId);
 
     boolean update(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription , String drugProducerName);
+    boolean create(String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription , String drugProducerName);
 }

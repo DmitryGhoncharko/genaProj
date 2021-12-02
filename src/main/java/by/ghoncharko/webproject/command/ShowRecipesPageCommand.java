@@ -15,15 +15,18 @@ public class ShowRecipesPageCommand implements Command {
     private static final String RECIPES_ATTRIBUTE_NAME = "recipes";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
+    private ShowRecipesPageCommand() {
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
-        RecipeService recipeService = new RecipeServiceImpl();
-        Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
-        if(userFromSession.isPresent()){
-            User user =(User)userFromSession.get();
-            int userId = user.getId();
-            List<Recipe> recipeList = recipeService.findRecipesByUserId(userId);
-            request.addAttributeToJsp(RECIPES_ATTRIBUTE_NAME,recipeList);
+        final RecipeService recipeService = new RecipeServiceImpl();
+        final Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
+        if (userFromSession.isPresent()) {
+            final User user = (User) userFromSession.get();
+            final int userId = user.getId();
+            final List<Recipe> recipeList = recipeService.findRecipesByUserId(userId);
+            request.addAttributeToJsp(RECIPES_ATTRIBUTE_NAME, recipeList);
             return requestFactory.createForwardResponse(PagePath.RECIPES_PAGE_PATH);
         }
         return null;

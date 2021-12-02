@@ -17,6 +17,9 @@ public class LoginCommand implements Command {
             "length password minimum 6";
     private static final String ERROR_LOGIN_PASS_ATTRIBUTE = "errorLoginPassMessage";
 
+    private LoginCommand() {
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
         if (request.sessionExists() && request.retrieveFromSession(USER_SESSION_ATTRIBUTE_NAME).isPresent()) {

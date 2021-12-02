@@ -13,15 +13,18 @@ public class AddBankCardCommand implements Command {
     private static final String ERROR_ATTRIBUTE_NAME = "error";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
+    private AddBankCardCommand() {
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
         final BankCardService bankCardService = new BankCardServiceImpl();
         final Double balance = Double.valueOf(request.getParameter(BALANCE_PARAM_NAME));
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
         if (userFromSession.isPresent()) {
-            User user = (User) userFromSession.get();
-            Integer userId = user.getId();
-            boolean isCreated = bankCardService.addBankCard(balance, userId);
+            final User user = (User) userFromSession.get();
+            final Integer userId = user.getId();
+            final boolean isCreated = bankCardService.addBankCard(balance, userId);
             if (isCreated) {
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
             }

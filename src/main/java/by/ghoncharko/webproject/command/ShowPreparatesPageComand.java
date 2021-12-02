@@ -1,7 +1,6 @@
 package by.ghoncharko.webproject.command;
 
 
-
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.Drug;
 import by.ghoncharko.webproject.entity.User;
@@ -17,20 +16,24 @@ public class ShowPreparatesPageComand implements Command {
     private static final String DRUGS_ATTRIBUTE_NAME = "drugs";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
+    private ShowPreparatesPageComand() {
+
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
-        Optional<Object> user = request.retrieveFromSession(USER_aTTRIBUTE_NAME);
+        final Optional<Object> user = request.retrieveFromSession(USER_aTTRIBUTE_NAME);
         final DrugServiceImpl drugService = new DrugServiceImpl();
         User userFromSession = null;
-        final OrderService orderService= new OrderServiceImpl();
-        if(user.isPresent()){
+        final OrderService orderService = new OrderServiceImpl();
+        if (user.isPresent()) {
             userFromSession = (User) user.get();
             final List<Drug> drugList = drugService.findAllWhereCountMoreThanZeroByUserId(userFromSession.getId());
             request.addAttributeToJsp(DRUGS_ATTRIBUTE_NAME, drugList);
             return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
         }
-        List<Drug> drugList = drugService.findAllWhereCountMoreThanZero();
-        request.addAttributeToJsp("drugs",drugList);
+        final List<Drug> drugList = drugService.findAllWhereCountMoreThanZero();
+        request.addAttributeToJsp("drugs", drugList);
         return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
     }
 

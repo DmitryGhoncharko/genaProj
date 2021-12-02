@@ -18,6 +18,9 @@ public class AddToBucketCommand implements Command {
     private static final String DRUG_ID_ATTRIBUTE_NAME = "drugId";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
+    private AddToBucketCommand() {
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
         final Integer drugId = Integer.valueOf(request.getParameter(DRUG_ID_PARAM_NAME));

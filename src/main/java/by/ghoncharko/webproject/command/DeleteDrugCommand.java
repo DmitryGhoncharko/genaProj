@@ -7,17 +7,20 @@ import by.ghoncharko.webproject.model.service.DrugServiceImpl;
 
 import java.util.Optional;
 
-public class DeleteDrugCommand implements Command{
+public class DeleteDrugCommand implements Command {
     private final RequestFactory requestFactory = RequestFactory.getInstance();
+
+    private DeleteDrugCommand() {
+    }
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-        Optional<Object> userFromSession = request.retrieveFromSession("user");
-        if(userFromSession.isPresent()){
-            int drugId = Integer.valueOf(request.getParameter("drugId"));
-            DrugService drugService = new DrugServiceImpl();
-            boolean isDeleted = drugService.deleteByDrugId(drugId);
-            if(isDeleted){
+        final Optional<Object> userFromSession = request.retrieveFromSession("user");
+        if (userFromSession.isPresent()) {
+            final int drugId = Integer.valueOf(request.getParameter("drugId"));
+            final DrugService drugService = new DrugServiceImpl();
+            final boolean isDeleted = drugService.deleteByDrugId(drugId);
+            if (isDeleted) {
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
             }
         }

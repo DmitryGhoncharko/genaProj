@@ -85,8 +85,8 @@ public class ProxyConnection implements Connection {
     public void close() throws SQLException {
         if (!this.getAutoCommit()) {
             this.commit();
+            this.setAutoCommit(true);
         }
-        this.setAutoCommit(true);
         BlockingConnectionPool.getInstance().releaseConnection(this);
     }
 

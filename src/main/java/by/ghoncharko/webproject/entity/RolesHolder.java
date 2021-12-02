@@ -2,6 +2,10 @@ package by.ghoncharko.webproject.entity;
 
 
 public final class RolesHolder {
+    private RolesHolder() {
+
+    }
+
     public static final Role CLIENT = new Role.Builder().
             withId(1).withRoleName("client").build();
     public static final Role PHARMACY = new Role.Builder().

@@ -23,21 +23,24 @@ public class PayCommand implements Command {
     private static final String ERROR_ATTRIBUTE_MESSAGE = "something wrong";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
+    private PayCommand() {
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
-        Integer orderId = Integer.valueOf(request.getParameter(ORDER_ID_PARAM_NAME));
-        boolean isNeedRecipe = Boolean.parseBoolean(request.getParameter(IS_NEED_RECIPE_PARAM_NAME));
-        Integer drugId = Integer.valueOf(request.getParameter(DRUG_ID_PARAM_NAME));
-        Integer orderCount = Integer.valueOf(request.getParameter(ORDER_COUNT_PARAM_NAME));
-        Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
-        User user = (User) userFromSession.get();
-        Double finalPrice = Double.valueOf(request.getParameter(ORDER_FINAL_PRICE_PARAM_NAME));
-        Integer bankCardId = Integer.valueOf(request.getParameter(CARD_ID_PARAM_NAME));
-        BankCardService bankCardService = new BankCardServiceImpl();
-        OrderService orderService = new OrderServiceImpl();
-        Optional<BankCard> bankCard = bankCardService.getBankCardsByCardId(bankCardId);
+        final Integer orderId = Integer.valueOf(request.getParameter(ORDER_ID_PARAM_NAME));
+        final boolean isNeedRecipe = Boolean.parseBoolean(request.getParameter(IS_NEED_RECIPE_PARAM_NAME));
+        final Integer drugId = Integer.valueOf(request.getParameter(DRUG_ID_PARAM_NAME));
+        final Integer orderCount = Integer.valueOf(request.getParameter(ORDER_COUNT_PARAM_NAME));
+        final Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
+        final User user = (User) userFromSession.get();
+        final Double finalPrice = Double.valueOf(request.getParameter(ORDER_FINAL_PRICE_PARAM_NAME));
+        final Integer bankCardId = Integer.valueOf(request.getParameter(CARD_ID_PARAM_NAME));
+        final BankCardService bankCardService = new BankCardServiceImpl();
+        final OrderService orderService = new OrderServiceImpl();
+        final Optional<BankCard> bankCard = bankCardService.getBankCardsByCardId(bankCardId);
         if (bankCard.isPresent()) {
-            boolean isPayed = orderService.pay(user.getId(), drugId, isNeedRecipe, orderCount, finalPrice, orderId, bankCardId);
+            final boolean isPayed = orderService.pay(user.getId(), drugId, isNeedRecipe, orderCount, finalPrice, orderId, bankCardId);
             if (isPayed) {
                 //todo new pagePath to currentPage
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);

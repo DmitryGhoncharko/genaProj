@@ -18,16 +18,19 @@ public class ShowOrderPageCommand implements Command {
     private static final String ORDERS_ATTRIBUTE_NAME = "orders";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
+    private ShowOrderPageCommand() {
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
-        User user = (User) userFromSession.get();
-        Integer userId = user.getId();
-        OrderService orderService = new OrderServiceImpl();
-        BankCardService bankCardService = new BankCardServiceImpl();
-        List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
-        List<Order> orderList = orderService.findAllWithStatusActive(userId);
-        request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME,bankCardList);
+        final User user = (User) userFromSession.get();
+        final Integer userId = user.getId();
+        final OrderService orderService = new OrderServiceImpl();
+        final BankCardService bankCardService = new BankCardServiceImpl();
+        final List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
+        final List<Order> orderList = orderService.findAllWithStatusActive(userId);
+        request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
         request.addAttributeToJsp(ORDERS_ATTRIBUTE_NAME, orderList);
         return requestFactory.createForwardResponse(PagePath.ORDER_PAGE_PATH);
     }

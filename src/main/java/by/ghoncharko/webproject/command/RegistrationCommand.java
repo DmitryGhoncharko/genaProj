@@ -16,6 +16,9 @@ public class RegistrationCommand implements Command {
     private static final String ERROR_REGISTRATION_ATTRIBUTE = "errorRegistrationMessage";
     private static final String ERROR_REGISTRATION_MESSAGE = "Create unique login";
 
+    private RegistrationCommand() {
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
 
@@ -23,7 +26,7 @@ public class RegistrationCommand implements Command {
         final String userPassword = request.getParameter(PASSWORD_REQUEST_PARAM);
         final String userName = request.getParameter(FIRST_NAME_REQUEST_PARAM);
         final String userSurName = request.getParameter(LAST_NAME_REQUEST_PARAM);
-        Optional<User> user = UserService.getInstance().createClient(userLogin, userPassword,
+        final Optional<User> user = UserService.getInstance().createClient(userLogin, userPassword,
                 userName, userSurName);
         if (user.isPresent()) {
             return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);

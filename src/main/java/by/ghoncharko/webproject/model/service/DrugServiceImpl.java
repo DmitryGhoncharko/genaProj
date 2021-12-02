@@ -105,6 +105,45 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
+    public boolean create(String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) {
+        Connection connection = connectionPool.getConnection();
+        DrugDao drugDao = new DrugDaoImpl(connection);
+        ProducerDao producerDao = new ProducerDaoImpl(connection);
+        try{
+            Optional<Producer> producer = producerDao.findProducerByName(drugProducerName);
+            if(producer.isPresent()){
+                Drug drug = new Drug.Builder().
+                        withCount(drugCount).
+                        withDescription(drugDescription).
+                        withName(drugName).
+                        withNeedReceip(drugNeedRecipe).
+                        withPrice(drugPrice).
+                        withProducer(producer.get()).
+                        build();
+                drugDao.create(drug);
+                return true;
+            }else {
+                Producer createdProducer = producerDao.create(new Producer.Builder().withName(drugProducerName).build());
+                Drug drug = new Drug.Builder().
+                        withCount(drugCount).
+                        withDescription(drugDescription).
+                        withName(drugName).
+                        withNeedReceip(drugNeedRecipe).
+                        withPrice(drugPrice).
+                        withProducer(createdProducer).
+                        build();
+                drugDao.create(drug);
+                return true;
+            }
+        }catch (DaoException e){
+
+        }finally {
+            Service.connectionClose(connection);
+        }
+        return false;
+    }
+
+    @Override
     public boolean deleteByDrugId(Integer drugId) {
         Connection connection = connectionPool.getConnection();
         try{
