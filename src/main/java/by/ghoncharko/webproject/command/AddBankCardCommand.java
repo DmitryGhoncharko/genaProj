@@ -1,9 +1,10 @@
 package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
+import by.ghoncharko.webproject.entity.RolesHolder;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.model.service.BankCardService;
-import by.ghoncharko.webproject.model.service.BankCardServiceImpl;
+
 
 import java.util.Optional;
 
@@ -18,17 +19,22 @@ public class AddBankCardCommand implements Command {
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-        final BankCardService bankCardService = new BankCardServiceImpl();
-        final Double balance = Double.valueOf(request.getParameter(BALANCE_PARAM_NAME));
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
         if (userFromSession.isPresent()) {
             final User user = (User) userFromSession.get();
-            final Integer userId = user.getId();
+            final BankCardService bankCardService = BankCardService.getInstance();
+            final double balance = Double.parseDouble(request.getParameter(BALANCE_PARAM_NAME));
+            final boolean userRoleAsClient = user.getRole().equals(RolesHolder.CLIENT);
+            final int userId = user.getId();
             final boolean isCreated = bankCardService.addBankCard(balance, userId);
-            if (isCreated) {
+            if (isCreated && userRoleAsClient) {
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
             }
+            //cannot add bank card
+            request.addAttributeToJsp("eror", "");
+            return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
         }
+        //need authorize as client
         request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, "");
         return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
     }

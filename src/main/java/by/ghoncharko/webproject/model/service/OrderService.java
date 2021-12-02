@@ -14,4 +14,8 @@ public interface OrderService extends Service<Order> {
    boolean pay(Integer userId, Integer drugId, boolean isNeedRecipe, Integer count, Double finalPrice, Integer orderId, Integer cardId);
 
    boolean deleteFromOrderByOrderId(Integer orderId);
+
+   static OrderService getInstance() {
+      return OrderServiceImpl.getInstance();
+   }
 }

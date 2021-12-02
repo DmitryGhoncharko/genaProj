@@ -7,5 +7,7 @@ import java.util.List;
 public interface RecipeService extends Service<Recipe> {
     List<Recipe> findRecipesByUserId(Integer userId);
 
-
+    static RecipeService getInstance() {
+        return RecipeServiceImpl.getInstance();
+    }
 }

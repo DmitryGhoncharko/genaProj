@@ -12,6 +12,8 @@ import java.util.List;
 
 public class RecipeRequestServiceImpl implements RecipeRequestService{
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
+    private RecipeRequestServiceImpl(){
+    }
     @Override
     public boolean createRecipeRequestByUserIdAndDrugIdWithDateStartAndDateEnd(Integer userId, Integer drugId, Date dateStart, Date dateEnd, boolean isNeedRecipe) {
         if(isNeedRecipe){
@@ -33,7 +35,7 @@ public class RecipeRequestServiceImpl implements RecipeRequestService{
         return null;
     }
 
-    public static RecipeRequestServiceImpl getInstance(){
+     static RecipeRequestServiceImpl getInstance(){
         return Holder.INSTANCE;
     }
     private static class Holder{

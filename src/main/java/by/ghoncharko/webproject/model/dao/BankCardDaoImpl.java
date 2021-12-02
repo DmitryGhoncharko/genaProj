@@ -133,13 +133,12 @@ public class BankCardDaoImpl implements BankCardDao {
     }
     @Override
     public Optional<BankCard> findAllBankCardsByCardId(Integer cardId) throws DaoException {
-        List<BankCard> bankCardList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_CARD_ID);
             preparedStatement.setInt(1,cardId);
             final ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 BankCard bankCard = new BankCard.Builder().
                         withId(resultSet.getInt(1)).
                         withUserId(resultSet.getInt(2)).

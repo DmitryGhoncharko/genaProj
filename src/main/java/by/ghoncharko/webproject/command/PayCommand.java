@@ -3,11 +3,12 @@ package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.BankCard;
+import by.ghoncharko.webproject.entity.RolesHolder;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.model.service.BankCardService;
-import by.ghoncharko.webproject.model.service.BankCardServiceImpl;
+
 import by.ghoncharko.webproject.model.service.OrderService;
-import by.ghoncharko.webproject.model.service.OrderServiceImpl;
+
 
 import java.util.Optional;
 
@@ -28,24 +29,28 @@ public class PayCommand implements Command {
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-        final Integer orderId = Integer.valueOf(request.getParameter(ORDER_ID_PARAM_NAME));
-        final boolean isNeedRecipe = Boolean.parseBoolean(request.getParameter(IS_NEED_RECIPE_PARAM_NAME));
-        final Integer drugId = Integer.valueOf(request.getParameter(DRUG_ID_PARAM_NAME));
-        final Integer orderCount = Integer.valueOf(request.getParameter(ORDER_COUNT_PARAM_NAME));
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
-        final User user = (User) userFromSession.get();
-        final Double finalPrice = Double.valueOf(request.getParameter(ORDER_FINAL_PRICE_PARAM_NAME));
-        final Integer bankCardId = Integer.valueOf(request.getParameter(CARD_ID_PARAM_NAME));
-        final BankCardService bankCardService = new BankCardServiceImpl();
-        final OrderService orderService = new OrderServiceImpl();
-        final Optional<BankCard> bankCard = bankCardService.getBankCardsByCardId(bankCardId);
-        if (bankCard.isPresent()) {
-            final boolean isPayed = orderService.pay(user.getId(), drugId, isNeedRecipe, orderCount, finalPrice, orderId, bankCardId);
-            if (isPayed) {
-                //todo new pagePath to currentPage
-                return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+        if(userFromSession.isPresent()){
+            final Integer orderId = Integer.valueOf(request.getParameter(ORDER_ID_PARAM_NAME));
+            final boolean isNeedRecipe = Boolean.parseBoolean(request.getParameter(IS_NEED_RECIPE_PARAM_NAME));
+            final Integer drugId = Integer.valueOf(request.getParameter(DRUG_ID_PARAM_NAME));
+            final Integer orderCount = Integer.valueOf(request.getParameter(ORDER_COUNT_PARAM_NAME));
+            final User user = (User) userFromSession.get();
+            final Double finalPrice = Double.valueOf(request.getParameter(ORDER_FINAL_PRICE_PARAM_NAME));
+            final Integer bankCardId = Integer.valueOf(request.getParameter(CARD_ID_PARAM_NAME));
+            final BankCardService bankCardService = BankCardService.getInstance();
+            final OrderService orderService = OrderService.getInstance();
+            final Optional<BankCard> bankCard = bankCardService.getBankCardsByCardId(bankCardId);
+            final boolean userRoleAsClient = user.getRole().equals(RolesHolder.CLIENT);
+            if (bankCard.isPresent() && userRoleAsClient) {
+                final boolean isPayed = orderService.pay(user.getId(), drugId, isNeedRecipe, orderCount, finalPrice, orderId, bankCardId);
+                if (isPayed) {
+                    //todo new pagePath to currentPage
+                    return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+                }
             }
         }
+
         //todo new pagePath to currentPage and show error add bank card
         request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);
         return requestFactory.createForwardResponse("/controller?command=order");

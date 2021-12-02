@@ -16,4 +16,8 @@ public interface BankCardService extends Service<BankCard> {
     boolean deleteByCardId(Integer cardId);
 
     boolean addBankCard(Double balance, Integer userId);
+
+    static BankCardService getInstance() {
+        return BankCardServiceImpl.getInstance();
+    }
 }

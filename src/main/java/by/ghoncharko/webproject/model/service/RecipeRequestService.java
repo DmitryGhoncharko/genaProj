@@ -6,4 +6,8 @@ import java.sql.Date;
 
 public interface RecipeRequestService extends Service<RecipeRequest>{
     boolean createRecipeRequestByUserIdAndDrugIdWithDateStartAndDateEnd(Integer userId, Integer drugId, Date dateStart, Date dateEnd, boolean isNeedRecipe);
+
+     static RecipeRequestService getInstance() {
+        return RecipeRequestServiceImpl.getInstance();
+    }
 }

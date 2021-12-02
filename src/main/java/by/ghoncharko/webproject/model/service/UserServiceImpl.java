@@ -22,7 +22,9 @@ public class UserServiceImpl implements UserService {
     private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
     private static final String SALT = BCrypt.gensalt();
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
+    private UserServiceImpl(){
 
+    }
     @Override
     public List<User> findAll() {
         final Connection connection = connectionPool.getConnection();
@@ -86,7 +88,7 @@ public class UserServiceImpl implements UserService {
         return Optional.empty();
     }
 
-  public   static UserServiceImpl getInstance() {
+     static UserServiceImpl getInstance() {
         return Holder.INSTANCE;
     }
 

@@ -10,24 +10,34 @@ import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 
-public class RecipeServiceImpl implements RecipeService{
+public class RecipeServiceImpl implements RecipeService {
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
+
+    private RecipeServiceImpl() {
+    }
+
     @Override
     public List<Recipe> findRecipesByUserId(Integer userId) {
         final Connection connection = connectionPool.getConnection();
-        RecipeDao recipeDao = new RecipeDaoImpl(connection);
-        try{
+        final RecipeDao recipeDao = new RecipeDaoImpl(connection);
+        try {
             return recipeDao.findRecipesByUserId(userId);
-        }catch (DaoException e){
+        } catch (DaoException e) {
 
-        }finally {
+        } finally {
             Service.connectionClose(connection);
         }
         return Collections.emptyList();
     }
 
     @Override
-    public List<Recipe> findAll()  {
+    public List<Recipe> findAll() {
         return null;
+    }
+     static RecipeServiceImpl getInstance(){
+        return Holder.INSTANCE;
+    }
+    private static class Holder{
+        private static final RecipeServiceImpl INSTANCE = new RecipeServiceImpl();
     }
 }

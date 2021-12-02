@@ -2,9 +2,10 @@ package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.BankCard;
+import by.ghoncharko.webproject.entity.RolesHolder;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.model.service.BankCardService;
-import by.ghoncharko.webproject.model.service.BankCardServiceImpl;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -21,14 +22,17 @@ public class ShowBankCardsPage implements Command {
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-        final BankCardService bankCardService = new BankCardServiceImpl();
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
         if (userFromSession.isPresent()) {
             final User user = (User) userFromSession.get();
             final int userId = user.getId();
-            final List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
-            request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
-            return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
+            final boolean userRoleAsClient = user.getRole().equals(RolesHolder.CLIENT);
+            if (userRoleAsClient) {
+                final BankCardService bankCardService = BankCardService.getInstance();
+                final List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
+                request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
+                return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
+            }
         }
         request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);
         return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);

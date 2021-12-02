@@ -8,13 +8,13 @@ import by.ghoncharko.webproject.model.service.UserService;
 import java.util.Optional;
 
 public class RegistrationCommand implements Command {
-    private static final RequestFactory requestFactory = RequestFactory.getInstance();
     private static final String LOGIN_REQUEST_PARAM = "login";
     private static final String PASSWORD_REQUEST_PARAM = "password";
     private static final String FIRST_NAME_REQUEST_PARAM = "Lname";
     private static final String LAST_NAME_REQUEST_PARAM = "Fname";
     private static final String ERROR_REGISTRATION_ATTRIBUTE = "errorRegistrationMessage";
     private static final String ERROR_REGISTRATION_MESSAGE = "Create unique login";
+    private final RequestFactory requestFactory = RequestFactory.getInstance();
 
     private RegistrationCommand() {
     }

@@ -19,12 +19,15 @@ public class BankCardServiceImpl implements BankCardService {
     private static final Logger LOG = LogManager.getLogger(BankCardServiceImpl.class);
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
+    private BankCardServiceImpl() {
+    }
+
     @Override
     public boolean findBankCardByUserId(Integer userId) {
-        Connection connection = connectionPool.getConnection();
+        final Connection connection = connectionPool.getConnection();
         try {
-            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
-            Optional<BankCard> bankCard = bankCardDao.findBankCardByUserId(userId);
+            final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+            final Optional<BankCard> bankCard = bankCardDao.findBankCardByUserId(userId);
             if (bankCard.isPresent()) {
                 return true;
             }
@@ -36,13 +39,13 @@ public class BankCardServiceImpl implements BankCardService {
         }
         return false;
     }
+
     @Override
     public List<BankCard> getBankCardsByUserId(Integer userId) {
-        Connection connection = connectionPool.getConnection();
+        final Connection connection = connectionPool.getConnection();
         try {
-            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
-            List<BankCard> bankCard = bankCardDao.findAllBankCardsByUserId(userId);
-            return bankCard;
+            final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+            return bankCardDao.findAllBankCardsByUserId(userId);
         } catch (DaoException e) {
             LOG.error("DaoException", e);
 
@@ -54,14 +57,10 @@ public class BankCardServiceImpl implements BankCardService {
 
     @Override
     public Optional<BankCard> getBankCardsByCardId(Integer cardId) {
-        Connection connection = connectionPool.getConnection();
+        final Connection connection = connectionPool.getConnection();
         try {
-            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
-            Optional<BankCard> bankCard = bankCardDao.findAllBankCardsByCardId(cardId);
-            if(bankCard.isPresent()){
-                return bankCard;
-            }
-            return Optional.empty();
+            final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+            return bankCardDao.findAllBankCardsByCardId(cardId);
         } catch (DaoException e) {
             LOG.error("DaoException", e);
 
@@ -73,13 +72,13 @@ public class BankCardServiceImpl implements BankCardService {
 
     @Override
     public boolean deleteByCardId(Integer cardId) {
-        Connection connection = connectionPool.getConnection();
-        try{
-            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+        final Connection connection = connectionPool.getConnection();
+        try {
+            final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
             return bankCardDao.deleteByCardId(cardId);
-        }catch (DaoException e){
-
-        }finally {
+        } catch (DaoException e) {
+            LOG.error("DaoException", e);
+        } finally {
             Service.connectionClose(connection);
         }
         return false;
@@ -87,15 +86,15 @@ public class BankCardServiceImpl implements BankCardService {
 
     @Override
     public boolean addBankCard(Double balance, Integer userId) {
-        boolean isValide = ValidateAddBankCard.getInstance().validateAddBankCard(balance,userId);
-        if(isValide){
-            Connection connection = connectionPool.getConnection();
-            BankCardDao bankCardDao = new BankCardDaoImpl(connection);
-            try{
-                return bankCardDao.addBankCard(balance,userId);
-            }catch (DaoException e){
-
-            }finally {
+        final boolean isValide = ValidateAddBankCard.getInstance().validateAddBankCard(balance, userId);
+        if (isValide) {
+            final Connection connection = connectionPool.getConnection();
+            final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+            try {
+                return bankCardDao.addBankCard(balance, userId);
+            } catch (DaoException e) {
+                LOG.error("DaoException", e);
+            } finally {
                 Service.connectionClose(connection);
             }
         }
@@ -104,10 +103,19 @@ public class BankCardServiceImpl implements BankCardService {
 
     @Override
     public List<BankCard> findAll() {
-        return null;
+        final Connection connection = connectionPool.getConnection();
+        try {
+            final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+            return bankCardDao.findAll();
+        } catch (DaoException e) {
+            LOG.error("DaoException", e);
+        } finally {
+            Service.connectionClose(connection);
+        }
+        return Collections.emptyList();
     }
 
-    public static BankCardServiceImpl getInstance() {
+     static BankCardServiceImpl getInstance() {
         return Holder.INSTANCE;
     }
 
