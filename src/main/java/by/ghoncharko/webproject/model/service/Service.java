@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface Service<T extends Entity> {
-    List<T> findAll() throws DaoException;
+    List<T> findAll();
 
     static void connectionClose(Connection connection) {
         try {

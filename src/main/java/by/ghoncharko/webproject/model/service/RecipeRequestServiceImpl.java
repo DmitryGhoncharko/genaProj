@@ -29,7 +29,7 @@ public class RecipeRequestServiceImpl implements RecipeRequestService{
     }
 
     @Override
-    public List<RecipeRequest> findAll() throws DaoException {
+    public List<RecipeRequest> findAll() {
         return null;
     }
 

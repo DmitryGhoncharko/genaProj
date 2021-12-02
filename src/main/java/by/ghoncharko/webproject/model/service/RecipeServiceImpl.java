@@ -27,7 +27,7 @@ public class RecipeServiceImpl implements RecipeService{
     }
 
     @Override
-    public List<Recipe> findAll() throws DaoException {
+    public List<Recipe> findAll()  {
         return null;
     }
 }

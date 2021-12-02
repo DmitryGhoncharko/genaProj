@@ -161,25 +161,30 @@
             <form class="form-horizontal" action="/controller?command=registrationcmnd" method="post">
                 <span class="heading">Регистрация</span>
                 <div class="form-group">
-                    <input type="text" name="Fname"  pattern=".{1,35}" class="form-control"  placeholder="First Name" required="required">
+                    <input type="text" name="drugName"  pattern=".{1,35}" class="form-control"  placeholder="First Name" required="required">
                 </div>
                 <div class="form-group">
-                    <input type="text" name="Lname"  pattern=".{1,35}" class="form-control"  placeholder="Last Name" required="required">
+                    <input type="number" name="drugPrice"  pattern=".{1,35}" class="form-control"  placeholder="Last Name" required="required">
                 </div>
                 <div class="form-group">
-                    <input type="text" pattern=".{6,35}" class="form-control" id="inputText" name="login" placeholder="Login" required="required">
+                    <input type="text" pattern=".{6,35}" class="form-control" id="inputText" name="drugCount" placeholder="Login" required="required">
                 </div>
                 <div class="form-group">
-                    <input type="password" name="password"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control" id="inputPassword" placeholder="Password" required="required">
+                    <input type="password" name="drugDescription"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control"  placeholder="Password" required="required">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="drugProducerName"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control" placeholder="Password" required="required">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="drugNeedRecipe"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control"  placeholder="Password" required="required">
                 </div>
                 <div class="form-group">
                     <c:if test="${not empty requestScope.errorLoginPassMessage}">
                         <b>${requestScope.errorLoginPassMessage}</b>
                     </c:if>
-                    <button type="submit" class="btn btn-default">Зарегистрироваться</button>
+                    <button type="submit" class="btn btn-default">Create drug</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-

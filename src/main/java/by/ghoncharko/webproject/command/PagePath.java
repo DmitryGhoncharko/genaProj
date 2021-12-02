@@ -10,4 +10,5 @@ public final class PagePath {
     public static final String ORDER_PAGE_PATH = "/WEB-INF/jsp/order.jsp";
     public static final String RECIPES_PAGE_PATH = "/WEB-INF/jsp/recipe.jsp";
     public static final String BANK_CARDS_PAGE_PATH = "/WEB-INF/jsp/bankCards.jsp";
+    public static final String CREATE_DRUG_PAGE_PATH = "/WEB-INF/jsp/createPreparate.jsp";
 }

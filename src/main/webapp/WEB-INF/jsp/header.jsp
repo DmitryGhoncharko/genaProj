@@ -46,6 +46,16 @@
                         <a class="nav-link" href="/controller?command=card">Show my bank cards</a>
                     </li>
                 </c:if>
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/controller?command=createPreparatePage">Create new preparate</a>
+                    </li>
+                </c:if>
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/controller?command=addNewDrug">Add new drug</a>
+                    </li>
+                </c:if>
             </ul>
         </div>
         <c:choose>

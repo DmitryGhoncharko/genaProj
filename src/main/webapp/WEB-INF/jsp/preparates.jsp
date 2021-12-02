@@ -35,42 +35,63 @@
     <div class="row">
         <c:forEach var="drug" items="${requestScope.drugs}">
 
-<%--            <c:forEach var="order" items="${requestScope.orders}">--%>
-            <form action="/controller?command=addToBucket" method="post">
+            <form>
                 <div class="col-auto mb-3"></div>
                 <div class="card" style="width: 18rem;"></div>
                 <div class="card-body "></div>
-                <input hidden="" name="drugId" type="text" value="${drug.id}"> <h5 class="card-title">${drug.id}</h5> </input>
-                <input hidden="" name="drugName" value="${drug.name}"> <h5 class="card-title">${drug.name}</h5> </input>
-                <input hidden="" name="drugNeedRecipe" value="${drug.needRecipe}"> <h6 class="card-subtitle mb-2 text-muted"
-                                          >${drug.needRecipe}</h6> </input>
-<%--                <c:choose>--%>
-<%--                    <c:when test="${order.drug.id eq drug.id}">--%>
-<%--                        <input hidden="" name="drugCount" value="${drug.count-order.count}}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.count-order.count}</h6> </input>--%>
-<%--                    </c:when>--%>
-<%--                    <c:otherwise>--%>
-                        <input hidden="" name="drugCount" value="${drug.count}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.count}</h6> </input>
-<%--                    </c:otherwise>--%>
-<%--                </c:choose>--%>
-                <input hidden="" name="drugPrice" value="${drug.price}"> <h6 class="card-subtitle mb-2 text-muted" >${drug.price}</h6> </input>
+                <input hidden="" name="drugId" type="text" value="${drug.id}">
+                <h5 class="card-title">${drug.id}</h5>
+                </input>
+                <input hidden="" name="drugName" value="${drug.name}">
+                <h5 class="card-title">${drug.name}</h5>
+                </input>
+                <input name="updateDrugName" type="text" placeholder="input new drug name">
+                <input hidden="" name="drugNeedRecipe" value="${drug.needRecipe}">
+                <h6 class="card-subtitle mb-2 text-muted">${drug.needRecipe}</h6>
+                </input>
+                <select name="updateDrugNeedRecipe">
+
+                    <option value="true">
+                        <button class="btn btn-primary">
+                            true
+                        </button>
+                    </option>
+                    <option value="false">
+                        <button class="btn btn-primary">
+                            false
+                        </button>
+                    </option>
+                </select>
+
+                <input hidden="" name="drugCount" value="${drug.count}">
+                <h6 class="card-subtitle mb-2 text-muted">${drug.count}</h6>
+                </input>
+                <input name="updateDrugCount" type="number" placeholder="write new drug count">
+                <input hidden="" name="drugPrice" value="${drug.price}">
+                <h6 class="card-subtitle mb-2 text-muted">${drug.price}</h6>
+                </input>
+                <input type="text" name="updateDrugPrice" placeholder="write new drug price">
                 <input hidden="" name="drugDescription" value="${drug.description}">
-                <p class="card-text" >${drug.description}</p> </input>
-                <input hidden="" name="drugProducer" value="${drug.producer.name}"> <a >${drug.producer.name}</a> </input>
-<%--                <c:choose>--%>
-<%--                    <c:when test="${order.drug.id eq drug.id}">--%>
-<%--                        <input type="number" name="countUserBuyDrugs" placeholder="count drugs" min="1" max="${drug.count-order.count}"> Count Drugs</input>--%>
-<%--                    </c:when>--%>
-<%--                    <c:otherwise>--%>
-                    <input type="number" name="countUserBuyDrugs" placeholder="count drugs" min="1" max="${drug.count}"> Count Drugs</input>
-<%--                    </c:otherwise>--%>
-<%--                </c:choose>--%>
-<%--                add info about user input invalid count drugs for buy --%>
+                <p class="card-text">${drug.description}</p>
+                </input>
+                <input hidden="" name="drugProducerId" value="${drug.producer.id}">
+                <input type="text" name="updateDrugDescription" placeholder="write new drug description">
+                <input hidden="" name="drugProducer" value="${drug.producer.name}">
+                <a>${drug.producer.name}</a>
+                </input>
+                <input type="text" name="updateDrugProducer" placeholder="write new drug producer">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
+                    <input type="number" name="countUserBuyDrugs" placeholder="count drugs" min="1"
+                           max="${drug.count}"> Count Drugs</input>
+                </c:if>
                 <c:choose>
                     <c:when test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
-                        <button  class="navbar-toggler">AddToBucket</button>
+                        <button class="navbar-toggler" formaction="/controller?command=addToBucket" formmethod="post">
+                            AddToBucket
+                        </button>
                         <c:if test="${not empty requestScope.error && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
                             <div class="alert alert-danger" role="alert">
-                                ${requestScope.error}
+                                    ${requestScope.error}
                             </div>
                         </c:if>
                     </c:when>
@@ -78,9 +99,15 @@
                         <a class="btn btn-primary" role="button">Please login as Client</a>
                     </c:otherwise>
                 </c:choose>
-                </input>
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
+                    <button class="navbar-toggler" formaction="/controller?command=updateDrug" formmethod="post">
+                        Update
+                    </button>
+                    <button class="navbar-toggler" formaction="/controller?command=deleteDrug" formmethod="post">
+                        Delete
+                    </button>
+                </c:if>
             </form>
-<%--            </c:forEach>--%>
         </c:forEach>
     </div>
 </div>

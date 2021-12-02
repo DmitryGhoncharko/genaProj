@@ -19,7 +19,7 @@ import java.util.Optional;
  * @author Dmitry Ghoncharko
  * @see Entity - Interface-marker
  */
-interface Dao<T extends Entity> {
+public interface Dao<T extends Entity> {
     Logger LOG = LogManager.getLogger(Dao.class);
 
 

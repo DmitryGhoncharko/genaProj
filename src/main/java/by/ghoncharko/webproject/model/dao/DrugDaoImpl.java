@@ -296,5 +296,23 @@ public class DrugDaoImpl implements DrugDao {
         return false;
     }
 
+    @Override
+    public boolean deleteByDrugId(Integer drugId) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_DELETE_DRUG);
+            preparedStatement.setInt(1, drugId);
+            int countRows = preparedStatement.executeUpdate();
+            if (countRows > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot delete drug", e);
+            throw new DaoException("cannot delete drug", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        return false;
+    }
 }
 

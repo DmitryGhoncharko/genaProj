@@ -88,9 +88,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAll() throws DaoException {
+    public List<Order> findAll() {
         OrderDao orderDao = new OrderDaoImpl(connectionPool.getConnection());
-        return orderDao.findAll();
+       try{
+           return orderDao.findAll();
+       }catch (DaoException e){
+
+       }finally {
+
+       }
+       return Collections.emptyList();
     }
 
     //with status active

@@ -41,4 +41,6 @@ public interface DrugDao extends Dao<Drug> {
      * @throws DaoException when cannot update drug
      */
     boolean update(Integer count, Integer drugId) throws DaoException;
+
+    boolean deleteByDrugId(Integer drugId) throws DaoException;
 }

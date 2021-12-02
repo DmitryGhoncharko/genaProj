@@ -16,20 +16,22 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class ProducerDaoImpl implements Dao<Producer> {
+public class ProducerDaoImpl implements ProducerDao {
     private static final Logger LOG = LogManager.getLogger(ProducerDaoImpl.class);
 
     private static final String SQL_CREATE_PRODUCER = "INSERT INTO producer (producer_name) VALUES(?)";
     private static final String SQL_FIND_ALL_PRODUCERS = "SELECT id, producer_name FROM producer";
     private static final String SQL_FIND_PRODUCER_BY_ID = "SELECT id, producer_name FROM producer " +
             " WHERE id = ?";
+    private static final String SQL_FIND_PRODUCER_BY_NAME = "SELECT id, producer_name FROM producer " +
+            " WHERE producer_name = ?";
     private static final String SQL_UPDATE_PRODUCER = "UPDATE producer " +
             " SET producer_name = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_PRODUCER = "DELETE FROM producer WHERE id = ?";
     private final Connection connection;
 
-    private ProducerDaoImpl(Connection connection) {
+    public ProducerDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
@@ -78,6 +80,28 @@ public class ProducerDaoImpl implements Dao<Producer> {
             Dao.closeStatement(statement);
         }
         return producerList;
+    }
+
+    @Override
+    public Optional<Producer> findProducerByName(String producerName) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_FIND_PRODUCER_BY_NAME);
+            preparedStatement.setString(1, producerName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(new Producer.Builder().
+                        withId(resultSet.getInt(1)).
+                        withName(resultSet.getString(2)).
+                        build());
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot find producer by id", e);
+            throw new DaoException("cannot find producer by id", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        return Optional.empty();
     }
 
     @Override
