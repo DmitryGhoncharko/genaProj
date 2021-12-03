@@ -47,9 +47,9 @@ public class DrugServiceImpl implements DrugService {
             final Optional<Producer> producerFromDB = producerDao.findProducerByName(drugProducerName);
             if (producerFromDB.isPresent()) {
                 final Producer producer = producerFromDB.get();
-                updateDrugIfRecipeIsExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugDao, producer);
+                updateDrugIfProducerIsExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugDao, producer);
             } else {
-                updateDrugIfRecipeIsNotExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName, drugDao);
+                updateDrugIfProduserIsNotExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName, drugDao);
             }
             return true;
         } catch (DaoException e) {
@@ -62,7 +62,7 @@ public class DrugServiceImpl implements DrugService {
         return false;
     }
 
-    private void updateDrugIfRecipeIsNotExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName, DrugDao drugDao) throws DaoException {
+    private void updateDrugIfProduserIsNotExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName, DrugDao drugDao) throws DaoException {
         final Producer producerForCreate = new Producer.Builder().
                 withName(drugProducerName).build();
         final Drug drugForUpdate = createDrug(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, producerForCreate);
@@ -70,7 +70,7 @@ public class DrugServiceImpl implements DrugService {
     }
 
 
-    private void updateDrugIfRecipeIsExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, DrugDao drugDao, Producer producer) throws DaoException {
+    private void updateDrugIfProducerIsExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, DrugDao drugDao, Producer producer) throws DaoException {
         final Drug drugForUpdate = createDrug(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, producer);
         drugDao.create(drugForUpdate);
     }

@@ -158,25 +158,52 @@
     <div class="row">
 
         <div class="col-md-offset-3 col-md-6">
-            <form class="form-horizontal" action="/controller?command=registrationcmnd" method="post">
-                <span class="heading">Регистрация</span>
+            <form class="form-horizontal needs-validation" action="/controller?command=registrationcmnd" method="post" novalidate>
+                <span class="heading">Форма создания нового препарата</span>
                 <div class="form-group">
-                    <input type="text" name="drugName"  pattern=".{1,35}" class="form-control"  placeholder="First Name" required="required">
+                    <label>drug name</label>
+                    <input type="text" name="drugName"  pattern=".{1,45}" class="form-control"  placeholder="First Name" required>
+                    <div class="invalid-feedback">
+                        Please enter valid drug name
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="number" name="drugPrice"  pattern=".{1,35}" class="form-control"  placeholder="Last Name" required="required">
+                    <label>Drug Price</label>
+                    <input type="text" name="drugPrice"  pattern="[0-9]{1,14}[.][0-9]{1,2}" minlength="1" min="0" class="form-control"  placeholder="Last Name" required>
+                    <div class="invalid-feedback">
+                        Please enter valid drugPrice
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="text" pattern=".{6,35}" class="form-control" id="inputText" name="drugCount" placeholder="Login" required="required">
+                    <label>drugCount</label>
+                    <input type="number" min="0" minlength="1" maxlength="11" class="form-control" id="inputText" name="drugCount" placeholder="Login" required>
+                    <div class="invalid-feedback">
+                        Please enter valid drugCount
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="password" name="drugDescription"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control"  placeholder="Password" required="required">
+                    <label>Drug Desctiption</label>
+                    <input type="text" name="drugDescription" minlength="1" class="form-control"  placeholder="Password" required>
+                    <div class="invalid-feedback">
+                        Please enter valid drugDescription
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="password" name="drugProducerName"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control" placeholder="Password" required="required">
+                    <label>Drug ProducerName</label>
+                    <input type="text" name="drugProducerName"  minlength="1" maxlength="45" class="form-control" placeholder="Password" required>
+                    <div class="invalid-feedback">
+                        Please enter valid producerName
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="password" name="drugNeedRecipe"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control"  placeholder="Password" required="required">
+                    <select required name="drugNeedRecipe">
+                        <option value="false">
+                            false
+                        </option>
+                        <option value="true">
+                            true
+                        </option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <c:if test="${not empty requestScope.errorLoginPassMessage}">
@@ -187,4 +214,21 @@
             </form>
         </div>
     </div>
+    <script>
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
 </div>

@@ -4,7 +4,7 @@ public class ValidateAddBankCard {
     private static final Double MAX_PERMITTED_VALUE = 99999999999999.99d;
     public boolean validateAddBankCard(Double balance, Integer userId){
         if(balance!=null && userId != null){
-            return balance > 0 && balance <= MAX_PERMITTED_VALUE;
+            return balance >= 0 && balance <= MAX_PERMITTED_VALUE;
         }
         return false;
     }

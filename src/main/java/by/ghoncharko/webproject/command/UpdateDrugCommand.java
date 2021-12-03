@@ -43,4 +43,10 @@ public class UpdateDrugCommand implements Command {
         //todo add error and forward to preparates page
         return requestFactory.createForwardResponse(PagePath.INDEX_PATH);
     }
+    public static UpdateDrugCommand getInstance(){
+        return Holder.INSTANCE;
+    }
+    private static class Holder{
+        private static final UpdateDrugCommand INSTANCE = new UpdateDrugCommand();
+    }
 }

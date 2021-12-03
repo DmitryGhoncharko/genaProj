@@ -28,6 +28,7 @@ public class CreateDrugCommand implements Command {
             final boolean isCreated = drugService.create(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName);
             final boolean userRoleAsPharmacy = user.getRole().equals(RolesHolder.PHARMACY);
             if (isCreated && userRoleAsPharmacy) {
+                drugService.create(drugName,drugNeedRecipe,drugCount,drugPrice,drugDescription,drugProducerName);
                 requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
             }
             //error cannot create drug

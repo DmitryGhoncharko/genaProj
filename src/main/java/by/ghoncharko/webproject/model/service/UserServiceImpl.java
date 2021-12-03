@@ -22,9 +22,11 @@ public class UserServiceImpl implements UserService {
     private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
     private static final String SALT = BCrypt.gensalt();
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
-    private UserServiceImpl(){
+
+    private UserServiceImpl() {
 
     }
+
     @Override
     public List<User> findAll() {
         final Connection connection = connectionPool.getConnection();
@@ -54,7 +56,7 @@ public class UserServiceImpl implements UserService {
                     }
                 }
             } catch (DaoException e) {
-                e.printStackTrace();
+                LOG.error("DaoExcepion", e);
             } finally {
                 Service.connectionClose(connection);
             }
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public Optional<User> createClient(String login, String password, String firstName, String lastName) {
         Connection connection = connectionPool.getConnection();
         boolean isValide = ValidateRegistration.getInstance().validateRegistration(login, password, firstName, lastName);
-        if(isValide){
+        if (isValide) {
             try {
                 String hashedPassword = BCrypt.hashpw(password, SALT);
                 User user = new User.Builder().
@@ -88,7 +90,7 @@ public class UserServiceImpl implements UserService {
         return Optional.empty();
     }
 
-     static UserServiceImpl getInstance() {
+    static UserServiceImpl getInstance() {
         return Holder.INSTANCE;
     }
 

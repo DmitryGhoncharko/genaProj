@@ -45,41 +45,55 @@
                 <input hidden="" name="drugName" value="${drug.name}">
                 <h5 class="card-title">${drug.name}</h5>
                 </input>
-                <input name="updateDrugName" type="text" placeholder="input new drug name">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                    <label>new drug name</label>
+                    <input name="updateDrugName" type="text" placeholder="input new drug name" minlength="1"
+                           maxlength="45">
+                </c:if>
                 <input hidden="" name="drugNeedRecipe" value="${drug.needRecipe}">
                 <h6 class="card-subtitle mb-2 text-muted">${drug.needRecipe}</h6>
                 </input>
-                <select name="updateDrugNeedRecipe">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                    <select name="updateDrugNeedRecipe">
 
-                    <option value="true">
-                        <button class="btn btn-primary">
-                            true
-                        </button>
-                    </option>
-                    <option value="false">
-                        <button class="btn btn-primary">
-                            false
-                        </button>
-                    </option>
-                </select>
-
+                        <option value="true">
+                            <button class="btn btn-primary">
+                                true
+                            </button>
+                        </option>
+                        <option value="false">
+                            <button class="btn btn-primary">
+                                false
+                            </button>
+                        </option>
+                    </select>
+                </c:if>
                 <input hidden="" name="drugCount" value="${drug.count}">
                 <h6 class="card-subtitle mb-2 text-muted">${drug.count}</h6>
                 </input>
-                <input name="updateDrugCount" type="number" placeholder="write new drug count">
+                <label>new drug count</label>
+                <input name="updateDrugCount" type="number" placeholder="write new drug count" min="1" minlength="1"
+                       maxlength="11">
                 <input hidden="" name="drugPrice" value="${drug.price}">
                 <h6 class="card-subtitle mb-2 text-muted">${drug.price}</h6>
                 </input>
-                <input type="text" name="updateDrugPrice" placeholder="write new drug price">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                    <label>new drug price</label>
+                    <input type="text" name="updateDrugPrice" placeholder="write new drug price">
+                </c:if>
                 <input hidden="" name="drugDescription" value="${drug.description}">
                 <p class="card-text">${drug.description}</p>
                 </input>
                 <input hidden="" name="drugProducerId" value="${drug.producer.id}">
-                <input type="text" name="updateDrugDescription" placeholder="write new drug description">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                    <input type="text" name="updateDrugDescription" placeholder="write new drug description">
+                </c:if>
                 <input hidden="" name="drugProducer" value="${drug.producer.name}">
                 <a>${drug.producer.name}</a>
                 </input>
-                <input type="text" name="updateDrugProducer" placeholder="write new drug producer">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                    <input type="text" name="updateDrugProducer" placeholder="write new drug producer">
+                </c:if>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
                     <input type="number" name="countUserBuyDrugs" placeholder="count drugs" min="1"
                            max="${drug.count}"> Count Drugs</input>
@@ -100,7 +114,8 @@
                     </c:otherwise>
                 </c:choose>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
-                    <button class="navbar-toggler" formaction="/controller?command=updateDrug" formmethod="post">
+                    <button class="navbar-toggler" formaction="/controller?command=updateDrug" type="submit"
+                            formmethod="post">
                         Update
                     </button>
                     <button class="navbar-toggler" formaction="/controller?command=deleteDrug" formmethod="post">
@@ -112,4 +127,21 @@
     </div>
 </div>
 </body>
+<script>
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 </html>

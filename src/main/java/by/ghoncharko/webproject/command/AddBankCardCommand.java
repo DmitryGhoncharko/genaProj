@@ -31,7 +31,7 @@ public class AddBankCardCommand implements Command {
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
             }
             //cannot add bank card
-            request.addAttributeToJsp("eror", "");
+            request.addAttributeToJsp("error", "");
             return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
         }
         //need authorize as client

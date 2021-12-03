@@ -32,4 +32,10 @@ public class DeleteDrugCommand implements Command {
         //error need authorize
         return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
     }
+    public static DeleteDrugCommand getInstance(){
+        return Holder.INSTANCE;
+    }
+    private static class Holder{
+        private static final DeleteDrugCommand INSTANCE = new DeleteDrugCommand();
+    }
 }

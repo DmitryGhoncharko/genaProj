@@ -41,10 +41,31 @@
             </form>
         </c:forEach>
     </div>
-    <form action="/controller?command=addCard" method="post" novalidate>
-        <input placeholder="balance" name="balance">
-        <button>add card</button>
+    <form action="/controller?command=addCard" method="post" novalidate class="needs-validation">
+        <label>Balance</label>
+        <input class="form-control" placeholder="balance" name="balance" type="text" required pattern="[0-9]{1,14}[.][0-9]{1,2}" minlength="1" min="0">
+        <div class="invalid-feedback">
+            Please enter valid balance
+        </div>
+        <button class="btn btn-primary" type="submit">add card</button>
     </form>
 </div>
 </body>
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 </html>

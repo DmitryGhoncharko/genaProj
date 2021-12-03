@@ -12,4 +12,10 @@ public class ShowCreatePreparatePage implements Command {
     public CommandResponse execute(CommandRequest request) {
         return requestFactory.createForwardResponse(PagePath.CREATE_DRUG_PAGE_PATH);
     }
+    public static ShowCreatePreparatePage getInstance(){
+        return Holder.INSTANCE;
+    }
+    private static  class Holder{
+        private static final ShowCreatePreparatePage INSTANCE = new ShowCreatePreparatePage();
+    }
 }

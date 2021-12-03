@@ -19,6 +19,7 @@ import by.ghoncharko.webproject.model.dao.RecipeDaoImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.util.Collections;
@@ -28,8 +29,10 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
     private static final Logger LOG = LogManager.getLogger(OrderServiceImpl.class);
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
-    private OrderServiceImpl(){
+
+    private OrderServiceImpl() {
     }
+
     @Override
     public boolean deleteFromOrderByOrderId(Integer orderId) {
         final Connection connection = connectionPool.getConnection();
@@ -74,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<BankCard> bankCard = bankCardDao.findAllBankCardsByCardId(cardId);
         if (bankCard.isPresent()) {
             Double balance = bankCard.get().getBalance();
-            double balanceAfterPay = balance - finalPrice;
+            double balanceAfterPay = BigDecimal.valueOf(balance).subtract(BigDecimal.valueOf(finalPrice)).doubleValue();
             if (balanceAfterPay >= 0) {
                 bankCardDao.update(new BankCard.Builder().
                         withId(bankCard.get().getId()).
@@ -178,7 +181,7 @@ public class OrderServiceImpl implements OrderService {
         return false;
     }
 
-     static OrderServiceImpl getInstance() {
+    static OrderServiceImpl getInstance() {
         return Holder.INSTANCE;
     }
 

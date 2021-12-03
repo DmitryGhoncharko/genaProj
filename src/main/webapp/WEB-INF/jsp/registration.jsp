@@ -154,23 +154,46 @@
     }
 </style>
 
+<html>
+<head>
+    <title>
+
+    </title>
+</head>
+<body>
 <div class="container">
     <div class="row">
 
         <div class="col-md-offset-3 col-md-6">
-            <form class="form-horizontal" action="/controller?command=registrationcmnd" method="post">
+            <form class="form-horizontal needs-validation" action="/controller?command=registrationcmnd" method="post">
                 <span class="heading">Регистрация</span>
                 <div class="form-group">
-                    <input type="text" name="Fname"  pattern=".{1,35}" class="form-control"  placeholder="First Name" required="required">
+                    <label>First name</label>
+                    <input type="text" name="Fname"  pattern=".{1,35}" class="form-control"  placeholder="First Name" required>
+                    <div class="invalid-feedback">
+                        Invalid First Name
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="Lname"  pattern=".{1,35}" class="form-control"  placeholder="Last Name" required="required">
+                    <label>Last name</label>
+                    <input type="text" name="Lname"  pattern=".{1,35}" class="form-control"  placeholder="Last Name" required>
+                    <div class="invalid-feedback">
+                        Invalid last name
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="text" pattern=".{6,35}" class="form-control" id="inputText" name="login" placeholder="Login" required="required">
+                    <label>Login</label>
+                    <input type="text" pattern=".{6,35}" class="form-control" id="inputText" name="login" placeholder="Login" required>
+                    <div class="invalid-feedback">
+                        invalid login
+                    </div>
                 </div>
                 <div class="form-group">
+                    <label>Password</label>
                     <input type="password" name="password"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control" id="inputPassword" placeholder="Password" required="required">
+                    <div class="invalid-feedback">
+                        Invalid password
+                    </div>
                 </div>
                 <div class="form-group">
                     <c:if test="${not empty requestScope.errorLoginPassMessage}">
@@ -182,4 +205,23 @@
         </div>
     </div>
 </div>
+</body>
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+</html>
 
