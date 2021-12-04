@@ -4,6 +4,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValidateRegistration {
+    private ValidateRegistration(){
+    }
+
     public boolean validateRegistration(String login, String password, String firstName, String lastName) {
         if (login != null && password != null && firstName != null && lastName != null) {
             Pattern pattern = Pattern.compile(".{6,35}");

@@ -26,7 +26,7 @@ public class CommandRegistry {
     private static final CommandRegistry DELETE_BANK_CARD_COMMAND = new CommandRegistry(DeleteBankCardCommand.getInstance(), "deleteCard");
     private static final CommandRegistry CREATE_RECIPE_REQUEST_COMMAND = new CommandRegistry(CreateRecipeRequestCommand.getInstance(), "recipecmnd");
     private static final CommandRegistry DELETE_DRUG_COMMAND = new CommandRegistry(DeleteDrugCommand.getInstance(), "deleteDrug");
-    private static final CommandRegistry CREATE_DRUG_COMMAND = new CommandRegistry(CreateDrugCommand.getInstance(), "createDrug");
+    private static final CommandRegistry CREATE_DRUG_COMMAND = new CommandRegistry(CreateDrugCommand.getInstance(), "createDrugcmnd");
     private static final CommandRegistry CREATE_DRUG_PAGE = new CommandRegistry(ShowCreatePreparatePage.getInstance(), "createDrug");
     private static final CommandRegistry UPDATE_DRUG_COMMAND = new CommandRegistry(UpdateDrugCommand.getInstance(), "updateDrug");
     private static final List<CommandRegistry> COMMAND_REGISTRY_LIST = Arrays.asList(MAIN_PAGE, LOGIN_PAGE, LOGIN_COMMAND, REGISTRATION_PAGE, REGISTRATION_COMMAND, LOGOUT_COMMAND, ERROR_PAGE, PREPARATES_PAGE, ADD_TO_BUCKET_COMMAND,

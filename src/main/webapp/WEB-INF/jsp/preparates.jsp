@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="by.ghoncharko.webproject.entity.RolesHolder" %>
+<%@ page import="by.ghoncharko.webproject.entity.RolesHolder"%>
 <html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -35,7 +35,7 @@
     <div class="row">
         <c:forEach var="drug" items="${requestScope.drugs}">
 
-            <form>
+            <form class="needs-validation" novalidate>
                 <div class="col-auto mb-3"></div>
                 <div class="card" style="width: 18rem;"></div>
                 <div class="card-body "></div>
@@ -45,7 +45,7 @@
                 <input hidden="" name="drugName" value="${drug.name}">
                 <h5 class="card-title">${drug.name}</h5>
                 </input>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
                     <label>new drug name</label>
                     <input name="updateDrugName" type="text" placeholder="input new drug name" minlength="1"
                            maxlength="45">
@@ -53,7 +53,7 @@
                 <input hidden="" name="drugNeedRecipe" value="${drug.needRecipe}">
                 <h6 class="card-subtitle mb-2 text-muted">${drug.needRecipe}</h6>
                 </input>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
                     <select name="updateDrugNeedRecipe">
 
                         <option value="true">
@@ -71,13 +71,15 @@
                 <input hidden="" name="drugCount" value="${drug.count}">
                 <h6 class="card-subtitle mb-2 text-muted">${drug.count}</h6>
                 </input>
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
                 <label>new drug count</label>
                 <input name="updateDrugCount" type="number" placeholder="write new drug count" min="1" minlength="1"
                        maxlength="11">
+                </c:if>
                 <input hidden="" name="drugPrice" value="${drug.price}">
                 <h6 class="card-subtitle mb-2 text-muted">${drug.price}</h6>
                 </input>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
                     <label>new drug price</label>
                     <input type="text" name="updateDrugPrice" placeholder="write new drug price">
                 </c:if>
@@ -85,13 +87,13 @@
                 <p class="card-text">${drug.description}</p>
                 </input>
                 <input hidden="" name="drugProducerId" value="${drug.producer.id}">
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
                     <input type="text" name="updateDrugDescription" placeholder="write new drug description">
                 </c:if>
                 <input hidden="" name="drugProducer" value="${drug.producer.name}">
                 <a>${drug.producer.name}</a>
                 </input>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHoler.PHARMACY}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
                     <input type="text" name="updateDrugProducer" placeholder="write new drug producer">
                 </c:if>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">

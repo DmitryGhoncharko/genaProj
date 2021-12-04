@@ -31,12 +31,10 @@ public class AddBankCardCommand implements Command {
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
             }
             //cannot add bank card
-            request.addAttributeToJsp("error", "");
+
             return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
         }
-        //need authorize as client
-        request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, "");
-        return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
+        return requestFactory.createForwardResponse(PagePath.MAIN_PAGE_PATH);
     }
 
     public static AddBankCardCommand getInstance() {

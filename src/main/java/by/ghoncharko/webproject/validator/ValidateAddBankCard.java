@@ -1,6 +1,8 @@
 package by.ghoncharko.webproject.validator;
 
 public class ValidateAddBankCard {
+    private ValidateAddBankCard(){
+    }
     private static final Double MAX_PERMITTED_VALUE = 99999999999999.99d;
     public boolean validateAddBankCard(Double balance, Integer userId){
         if(balance!=null && userId != null){

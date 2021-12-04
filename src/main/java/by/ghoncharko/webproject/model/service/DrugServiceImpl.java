@@ -10,6 +10,7 @@ import by.ghoncharko.webproject.model.dao.DrugDao;
 import by.ghoncharko.webproject.model.dao.DrugDaoImpl;
 import by.ghoncharko.webproject.model.dao.ProducerDao;
 import by.ghoncharko.webproject.model.dao.ProducerDaoImpl;
+import by.ghoncharko.webproject.validator.ValidateCreateOrUpdatePreparate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,38 +42,42 @@ public class DrugServiceImpl implements DrugService {
     public boolean update(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) {
         final Connection connection = connectionPool.getConnection();
         Service.autoCommitFalse(connection);
-        final DrugDao drugDao = new DrugDaoImpl(connection);
-        final ProducerDao producerDao = new ProducerDaoImpl(connection);
-        try {
-            final Optional<Producer> producerFromDB = producerDao.findProducerByName(drugProducerName);
-            if (producerFromDB.isPresent()) {
-                final Producer producer = producerFromDB.get();
-                updateDrugIfProducerIsExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugDao, producer);
-            } else {
-                updateDrugIfProduserIsNotExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName, drugDao);
+        final boolean isValidData = ValidateCreateOrUpdatePreparate.getInstance().validate(drugName, drugPrice, drugCount, drugDescription, drugProducerName, drugNeedRecipe);
+        if(isValidData){
+            final DrugDao drugDao = new DrugDaoImpl(connection);
+            final ProducerDao producerDao = new ProducerDaoImpl(connection);
+            try {
+                final Optional<Producer> producerFromDB = producerDao.findProducerByName(drugProducerName);
+                if (producerFromDB.isPresent()) {
+                    final Producer producer = producerFromDB.get();
+                    updateDrugIfProducerIsExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugDao, producer);
+                } else {
+                    updateDrugIfProduserIsNotExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName, drugDao, producerDao);
+                }
+                return true;
+            } catch (DaoException e) {
+                LOG.error("DaoException", e);
+                Service.rollbackConnection(connection);
+            } finally {
+                Service.connectionClose(connection);
             }
-            return true;
-        } catch (DaoException e) {
-            LOG.error("DaoException", e);
-            Service.rollbackConnection(connection);
-        } finally {
-            Service.connectionClose(connection);
         }
         Service.rollbackConnection(connection);
         return false;
     }
 
-    private void updateDrugIfProduserIsNotExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName, DrugDao drugDao) throws DaoException {
+    private void updateDrugIfProduserIsNotExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName, DrugDao drugDao, ProducerDao producerDao) throws DaoException {
         final Producer producerForCreate = new Producer.Builder().
                 withName(drugProducerName).build();
-        final Drug drugForUpdate = createDrug(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, producerForCreate);
-        drugDao.create(drugForUpdate);
+        final  Producer producer =  producerDao.create(producerForCreate);
+        final Drug drugForUpdate = createDrug(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, producer);
+        drugDao.update(drugForUpdate);
     }
 
 
     private void updateDrugIfProducerIsExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, DrugDao drugDao, Producer producer) throws DaoException {
         final Drug drugForUpdate = createDrug(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, producer);
-        drugDao.create(drugForUpdate);
+        drugDao.update(drugForUpdate);
     }
 
     private Drug createDrug(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, Producer producerForCreate) {
@@ -122,22 +127,25 @@ public class DrugServiceImpl implements DrugService {
         Service.autoCommitFalse(connection);
         final DrugDao drugDao = new DrugDaoImpl(connection);
         final ProducerDao producerDao = new ProducerDaoImpl(connection);
-        try {
-            Optional<Producer> producer = producerDao.findProducerByName(drugProducerName);
-            if (producer.isPresent()) {
-                final Drug drug = createDrugWithoutId(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, producer.get());
-                drugDao.create(drug);
-            } else {
-                final Producer createdProducer = producerDao.create(new Producer.Builder().withName(drugProducerName).build());
-                final Drug drug = createDrugWithoutId(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, createdProducer);
-                drugDao.create(drug);
+        final  boolean isValidData = ValidateCreateOrUpdatePreparate.getInstance().validate(drugName,drugPrice,drugCount,drugDescription,drugProducerName,drugNeedRecipe);
+        if(isValidData){
+            try {
+                Optional<Producer> producer = producerDao.findProducerByName(drugProducerName);
+                if (producer.isPresent()) {
+                    final Drug drug = createDrugWithoutId(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, producer.get());
+                    drugDao.create(drug);
+                } else {
+                    final Producer createdProducer = producerDao.create(new Producer.Builder().withName(drugProducerName).build());
+                    final Drug drug = createDrugWithoutId(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, createdProducer);
+                    drugDao.create(drug);
+                }
+                return true;
+            } catch (DaoException e) {
+                Service.rollbackConnection(connection);
+                LOG.error("DaoException", e);
+            } finally {
+                Service.connectionClose(connection);
             }
-            return true;
-        } catch (DaoException e) {
-            Service.rollbackConnection(connection);
-            LOG.error("DaoException", e);
-        } finally {
-            Service.connectionClose(connection);
         }
         Service.rollbackConnection(connection);
         return false;

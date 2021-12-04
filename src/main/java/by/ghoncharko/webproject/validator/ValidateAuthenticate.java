@@ -4,7 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValidateAuthenticate {
-
+    private ValidateAuthenticate(){
+    }
     public boolean validate(String login, String password) {
         if (login != null && password != null) {
             Pattern pattern = Pattern.compile(".{6,35}");
