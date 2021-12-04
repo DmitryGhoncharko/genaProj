@@ -23,7 +23,7 @@ public interface BankCardDao extends Dao<BankCard> {
 
     List<BankCard> findAllBankCardsByUserId(Integer userId) throws DaoException;
 
-    Optional<BankCard> findAllBankCardsByCardId(Integer cardId) throws DaoException;
+    Optional<BankCard> findBankCardByCardId(Integer cardId) throws DaoException;
 
     boolean deleteByCardId(Integer cardId) throws DaoException;
 

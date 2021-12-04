@@ -7,7 +7,7 @@ import by.ghoncharko.webproject.exception.DaoException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
 import by.ghoncharko.webproject.model.dao.UserDao;
 import by.ghoncharko.webproject.model.dao.UserDaoImpl;
-import by.ghoncharko.webproject.validator.ValidateAuthenticate;
+import by.ghoncharko.webproject.validator.ValidateLogin;
 import by.ghoncharko.webproject.validator.ValidateRegistration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> authenticate(String login, String password) {
         final Connection connection = connectionPool.getConnection();
-        boolean loginAndPasswordValide = ValidateAuthenticate.getInstance().validate(login, password);
+        boolean loginAndPasswordValide = ValidateLogin.getInstance().validate(login, password);
         if (loginAndPasswordValide) {
             try {
                 final UserDao userDao = new UserDaoImpl(connection);

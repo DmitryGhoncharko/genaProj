@@ -3,7 +3,6 @@ package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.Recipe;
-import by.ghoncharko.webproject.entity.RolesHolder;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.model.service.RecipeService;
 
@@ -20,19 +19,14 @@ public class ShowRecipesPageCommand implements Command {
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-        final RecipeService recipeService = RecipeService.getInstance();
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_ATTRIBUTE_NAME);
         if (userFromSession.isPresent()) {
+            final RecipeService recipeService = RecipeService.getInstance();
             final User user = (User) userFromSession.get();
-            final boolean userRoleAsClient = user.getRole().equals(RolesHolder.CLIENT);
-            if (userRoleAsClient) {
-                final int userId = user.getId();
-                final List<Recipe> recipeList = recipeService.findRecipesByUserId(userId);
-                request.addAttributeToJsp(RECIPES_ATTRIBUTE_NAME, recipeList);
-                return requestFactory.createForwardResponse(PagePath.RECIPES_PAGE_PATH);
-            }
-            //login ass client
-            return requestFactory.createForwardResponse(PagePath.INDEX_PATH);
+            final int userId = user.getId();
+            final List<Recipe> recipeList = recipeService.findRecipesByUserId(userId);
+            request.addAttributeToJsp(RECIPES_ATTRIBUTE_NAME, recipeList);
+            return requestFactory.createForwardResponse(PagePath.RECIPES_PAGE_PATH);
         }
         return requestFactory.createForwardResponse(PagePath.INDEX_PATH);
     }

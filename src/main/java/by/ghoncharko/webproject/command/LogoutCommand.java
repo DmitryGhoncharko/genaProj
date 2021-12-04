@@ -12,8 +12,7 @@ public class LogoutCommand implements Command {
     @Override
     public CommandResponse execute(CommandRequest request) {
         if (noLoggedInUserPresent(request)) {
-            //todo: error - no user found cannot logout
-            return null;
+            return requestFactory.createForwardResponse(PagePath.MAIN_PAGE_PATH);
         }
         request.clearSession();
         return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);

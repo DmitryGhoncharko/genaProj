@@ -1,8 +1,6 @@
 package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
-import by.ghoncharko.webproject.entity.RolesHolder;
-import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.model.service.DrugService;
 
 import java.util.Optional;
@@ -25,8 +23,6 @@ public class UpdateDrugCommand implements Command {
     public CommandResponse execute(CommandRequest request) {
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_SESSION_ATTRIBUTE_NAME);
         if (userFromSession.isPresent()) {
-            final User user = (User) userFromSession.get();
-            final boolean userRoleAsPharmacy = user.getRole().equals(RolesHolder.PHARMACY);
             final DrugService drugService = DrugService.getInstance();
             final int drugId = Integer.parseInt(request.getParameter(DRUG_ID_PARAM_NAME));
             final String updatedDrugName = request.getParameter(UPDATE_DRUG_NAME_PARAM_NAME);
@@ -36,7 +32,7 @@ public class UpdateDrugCommand implements Command {
             final String updateDrugDescription = request.getParameter(UPDATE_DRUG_DESCRIPTION_PARAM_NAME);
             final String updateDrugProducerName = request.getParameter(UPDATE_DRUG_PRODUCER_PARAM_NAME);
             final boolean isUpdated = drugService.update(drugId, updatedDrugName, updatedDrugIsNeedRecipe, updatedDrugCount, updateDrugPrice, updateDrugDescription, updateDrugProducerName);
-            if (isUpdated && userRoleAsPharmacy) {
+            if (isUpdated) {
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
             }
         }

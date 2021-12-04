@@ -1,13 +1,21 @@
 package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
-import by.ghoncharko.webproject.entity.RolesHolder;
-import by.ghoncharko.webproject.entity.User;
+
 import by.ghoncharko.webproject.model.service.DrugService;
 
 import java.util.Optional;
 
 public class CreateDrugCommand implements Command {
+    private static final String ERROR_ATTRIBUTE_NAME = "error";
+    private static final String ERROR_ATTRIBUTE_MESSAGE = "Cannot create drug";
+    private static final String DRUG_NAME_PARAM_NAME = "drugName";
+    private static final String DRUG_PRICE_PARAM_NAME = "drugPrice";
+    private static final String DRUG_COUNT_PARAM_NAME = "drugCount";
+    private static final String DRUG_DESCRIPTION_PARAM_NAME = "drugDescription";
+    private static final String DRUG_PRODUCER_NAME_PARAM_NAME = "drugProducerName";
+    private static final String DRUG_NEED_RECIPE_PARAM_NAME = "drugNeedRecipe";
+    private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
     private CreateDrugCommand() {
@@ -15,28 +23,23 @@ public class CreateDrugCommand implements Command {
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-        final Optional<Object> userFromSession = request.retrieveFromSession("user");
+        final Optional<Object> userFromSession = request.retrieveFromSession(USER_SESSION_ATTRIBUTE_NAME);
         if (userFromSession.isPresent()) {
-            final User user = (User) userFromSession.get();
             final DrugService drugService = DrugService.getInstance();
-            final String drugName = request.getParameter("drugName");
-            final double drugPrice = Double.parseDouble(request.getParameter("drugPrice"));
-            final int drugCount = Integer.parseInt(request.getParameter("drugCount"));
-            final String drugDescription = request.getParameter("drugDescription");
-            final String drugProducerName = request.getParameter("drugProducerName");
-            final boolean drugNeedRecipe = Boolean.parseBoolean(request.getParameter("drugNeedRecipe"));
-            final boolean isCreated = drugService.create(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName);
-            final boolean userRoleAsPharmacy = user.getRole().equals(RolesHolder.PHARMACY);
-            if (isCreated && userRoleAsPharmacy) {
-              return   requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+            final String drugName = request.getParameter(DRUG_NAME_PARAM_NAME);
+            final double drugPrice = Double.parseDouble(request.getParameter(DRUG_PRICE_PARAM_NAME));
+            final int drugCount = Integer.parseInt(request.getParameter(DRUG_COUNT_PARAM_NAME));
+            final String drugDescription = request.getParameter(DRUG_DESCRIPTION_PARAM_NAME);
+            final String drugProducerName = request.getParameter(DRUG_PRODUCER_NAME_PARAM_NAME);
+            final boolean drugNeedRecipe = Boolean.parseBoolean(request.getParameter(DRUG_NEED_RECIPE_PARAM_NAME));
+            final boolean drugIsCreated = drugService.create(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName);
+            if (drugIsCreated) {
+                return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
             }
-            //error cannot create drug
-            return requestFactory.createForwardResponse(PagePath.CREATE_DRUG_PAGE_PATH);
-
         }
-
-        //need authorize as pharmacy
+        request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);
         return requestFactory.createForwardResponse(PagePath.CREATE_DRUG_PAGE_PATH);
+
     }
 
     public static CreateDrugCommand getInstance() {

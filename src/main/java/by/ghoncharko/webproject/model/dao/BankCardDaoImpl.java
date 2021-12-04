@@ -132,7 +132,7 @@ public class BankCardDaoImpl implements BankCardDao {
         return bankCardList;
     }
     @Override
-    public Optional<BankCard> findAllBankCardsByCardId(Integer cardId) throws DaoException {
+    public Optional<BankCard> findBankCardByCardId(Integer cardId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_CARD_ID);

@@ -14,4 +14,6 @@ public final class RolesHolder {
             withId(3).withRoleName("doctor").build();
     public static final Role ADMIN = new Role.Builder().
             withId(4).withRoleName("admin").build();
+    public static final Role UNAUTHORIZED = new Role.Builder().
+            withId(5).withRoleName("unauthorized").build();
 }

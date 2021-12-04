@@ -102,7 +102,7 @@
                 </c:if>
                 <c:choose>
                     <c:when test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
-                        <button class="navbar-toggler" formaction="/controller?command=addToBucket" formmethod="post">
+                        <button class="navbar-toggler" formaction="/controller?command=addToBucket" formmethod="post" type="submit">
                             AddToBucket
                         </button>
                         <c:if test="${not empty requestScope.error && not empty requestScope.drugId && requestScope.drugId eq drug.id}">

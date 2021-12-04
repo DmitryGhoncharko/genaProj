@@ -3,8 +3,8 @@ package by.ghoncharko.webproject.validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ValidateAuthenticate {
-    private ValidateAuthenticate(){
+public class ValidateLogin {
+    private ValidateLogin(){
     }
     public boolean validate(String login, String password) {
         if (login != null && password != null) {
@@ -20,11 +20,11 @@ public class ValidateAuthenticate {
     }
 
 
-    public static ValidateAuthenticate getInstance() {
+    public static ValidateLogin getInstance() {
         return Holder.INSTANCE;
     }
 
     private static class Holder {
-        private static final ValidateAuthenticate INSTANCE = new ValidateAuthenticate();
+        private static final ValidateLogin INSTANCE = new ValidateLogin();
     }
 }

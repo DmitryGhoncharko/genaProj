@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
 
     private boolean validateAndPay(Integer userId, Integer drugId, Integer count, Double finalPrice, Connection connection, Integer orderId, Integer cardId) throws DaoException {
         BankCardDao bankCardDao = new BankCardDaoImpl(connection);
-        Optional<BankCard> bankCard = bankCardDao.findAllBankCardsByCardId(cardId);
+        Optional<BankCard> bankCard = bankCardDao.findBankCardByCardId(cardId);
         if (bankCard.isPresent()) {
             Double balance = bankCard.get().getBalance();
             double balanceAfterPay = BigDecimal.valueOf(balance).subtract(BigDecimal.valueOf(finalPrice)).doubleValue();

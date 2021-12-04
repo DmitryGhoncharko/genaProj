@@ -60,7 +60,7 @@ public class BankCardServiceImpl implements BankCardService {
         final Connection connection = connectionPool.getConnection();
         try {
             final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
-            return bankCardDao.findAllBankCardsByCardId(cardId);
+            return bankCardDao.findBankCardByCardId(cardId);
         } catch (DaoException e) {
             LOG.error("DaoException", e);
 

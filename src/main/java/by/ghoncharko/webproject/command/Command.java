@@ -8,4 +8,5 @@ public interface Command {
         return CommandRegistry.of(name);
     }
 
+
 }

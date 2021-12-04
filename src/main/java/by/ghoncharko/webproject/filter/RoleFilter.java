@@ -3,6 +3,7 @@ package by.ghoncharko.webproject.filter;
 
 import by.ghoncharko.webproject.command.CommandRegistry;
 import by.ghoncharko.webproject.entity.Role;
+import by.ghoncharko.webproject.entity.RolesHolder;
 import by.ghoncharko.webproject.entity.User;
 
 import javax.servlet.Filter;
@@ -26,15 +27,16 @@ import java.util.Optional;
 public class RoleFilter implements Filter {
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
     private static final String REDIRECT_ON_CONTROLLER_COMMAND = "controller?command=error";
+    private static final String COMMAND_PARAM_NAME = "command";
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest req = (HttpServletRequest) request;
-        final String commandName = req.getParameter("command");
+        final String commandName = req.getParameter(COMMAND_PARAM_NAME);
         if (currentUserHasPermissionForCommand(commandName, req)) {
             chain.doFilter(request, response);
         } else {
-            ((HttpServletResponse) response).sendRedirect(REDIRECT_ON_CONTROLLER_COMMAND); //todo create error page
+            ((HttpServletResponse) response).sendRedirect(REDIRECT_ON_CONTROLLER_COMMAND);
         }
     }
 
@@ -59,7 +61,7 @@ public class RoleFilter implements Filter {
 
     private boolean checkUserUnauthorizedAndAccesNotRestricted(Optional<Role> currentUserRole, List<Role> allowedRoles) {
 
-        return !currentUserRole.isPresent() && allowedRoles.size() == 0;
+        return !currentUserRole.isPresent() && allowedRoles.size() == 0 || !currentUserRole.isPresent() && allowedRoles.contains(RolesHolder.UNAUTHORIZED);
     }
 
     private boolean checkUserAuthorizedAndAccesNotRestricted(Optional<Role> currentUserRole, List<Role> allowedRoles) {
