@@ -64,7 +64,11 @@ public class RecipeDaoImpl implements RecipeDao {
     private static final String SQL_UPDATE_RECIPE = "UPDATE recipe" +
             " SET user_id = ?, drug_id = ?, date_start = ?, date_end = ?" +
             " WHERE id = ?";
-    private static final String SQL_DELETE_ENTITY = "DELETE FROM recipe WHERE id = ?";
+    private static final String SQL_UPDATE_RECIPE_BY_USER_ID_AND_DRUG_ID = "UPDATE recipe" +
+            " SET user_id = ?, drug_id = ?, date_start = ?, date_end = ?" +
+            " WHERE user_id = ? AND drug_id = ?";
+    private static final String SQL_DELETE_RECIPE = "DELETE FROM recipe WHERE id = ?";
+    private static final String SQL_DELETE_RECIPE_BY_USER_ID_AND_DRUG_ID = "DELETE FROM recipe WHERE user_id = ? AND drug_id = ?";
     private final Connection connection;
     public RecipeDaoImpl(Connection connection) {
         this.connection = connection;
@@ -98,6 +102,29 @@ public class RecipeDaoImpl implements RecipeDao {
         }
         LOG.error("cannot create recipe entity");
         throw new DaoException();
+    }
+
+    @Override
+    public boolean createRecipeByUserIdAndDrugIdWithDateEnd(Integer userId, Integer drugId, Date dateStart, Date dateEnd) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, drugId);
+            preparedStatement.setDate(3, dateStart);
+            preparedStatement.setDate(4, dateEnd);
+            int countRows = preparedStatement.executeUpdate();
+            if (countRows > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot create recipe entity", e);
+            throw new DaoException("cannot create recipe entity", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        LOG.error("cannot create recipe entity");
+        return false;
     }
 
     @Override
@@ -307,11 +334,56 @@ public class RecipeDaoImpl implements RecipeDao {
     }
 
     @Override
+    public boolean updateDateStartAndDateEndByUserIdAndDrugId(Integer userId, Integer drugId, Date dateStart, Date dateEnd) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_UPDATE_RECIPE_BY_USER_ID_AND_DRUG_ID);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, drugId);
+            preparedStatement.setDate(3, dateStart);
+            preparedStatement.setDate(4, dateEnd);
+            preparedStatement.setInt(5,userId);
+            preparedStatement.setInt(6,drugId);
+            int countRows = preparedStatement.executeUpdate();
+            if (countRows > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot update recipe", e);
+            throw new DaoException("cannot update recipe", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        LOG.error("cannot update recipe");
+       return false;
+    }
+
+    @Override
     public boolean delete(Recipe entity) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement(SQL_DELETE_ENTITY);
+            preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE);
             preparedStatement.setInt(1, entity.getId());
+            int countRows = preparedStatement.executeUpdate();
+            if (countRows > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            LOG.error("canot delete recipe", e);
+            throw new DaoException("canot delete recipe", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteByUserIdAndDrugId(Integer userId, Integer drugId) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE_BY_USER_ID_AND_DRUG_ID);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2,drugId);
             int countRows = preparedStatement.executeUpdate();
             if (countRows > 0) {
                 return true;

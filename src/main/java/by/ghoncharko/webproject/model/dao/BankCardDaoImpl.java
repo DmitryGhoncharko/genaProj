@@ -30,6 +30,7 @@ public class BankCardDaoImpl implements BankCardDao {
     private static final String SQL_FIND_BANK_CARD_BY_ID = "SELECT id, user_id, balance FROM card WHERE id = ?";
     private static final String SQL_UPDATE_BANK_CARD = "UPDATE card SET  balance = ? WHERE id = ?";
     private static final String SQL_DELETE_BANK_CARD = "DELETE FROM card  WHERE id=?";
+    private static final String SQL_DELETE_BANK_CARD_BY_CARD_ID_AND_USER_ID = "DELETE FROM card  WHERE id=? AND user_id=?";
     private final Connection connection;
 
     public BankCardDaoImpl(Connection connection) {
@@ -245,11 +246,12 @@ public class BankCardDaoImpl implements BankCardDao {
         return false;
     }
     @Override
-    public boolean deleteByCardId(Integer cardId) throws DaoException {
+    public boolean deleteByCardIdAndUserId(Integer cardId, Integer userId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_CARD);
+            preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_CARD_BY_CARD_ID_AND_USER_ID);
             preparedStatement.setInt(1, cardId);
+            preparedStatement.setInt(2,userId);
             int countRows = preparedStatement.executeUpdate();
             if (countRows > 0) {
                 return true;

@@ -10,7 +10,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
+<header>
 <div class="container-fluide">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">
@@ -51,6 +51,16 @@
                         <a class="nav-link" href="/controller?command=createDrug">Create new drug</a>
                     </li>
                 </c:if>
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.DOCTOR}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/controller?command=recipeRequest">Show recipe requests</a>
+                    </li>
+                </c:if>
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.DOCTOR}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/controller?command=usersAsClients">Create recipe for clent</a>
+                    </li>
+                </c:if>
             </ul>
         </div>
         <c:choose>
@@ -64,4 +74,4 @@
         <a class="nav-link" href="/controller?command=registration">Registration</a>
     </nav>
 </div>
-
+</header>

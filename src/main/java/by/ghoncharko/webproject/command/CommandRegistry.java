@@ -30,9 +30,16 @@ public class CommandRegistry {
     private static final CommandRegistry CREATE_DRUG_COMMAND = new CommandRegistry(CreateDrugCommand.getInstance(), "createDrugcmnd",RolesHolder.PHARMACY);
     private static final CommandRegistry CREATE_DRUG_PAGE = new CommandRegistry(ShowCreatePreparatePage.getInstance(), "createDrug",RolesHolder.PHARMACY);
     private static final CommandRegistry UPDATE_DRUG_COMMAND = new CommandRegistry(UpdateDrugCommand.getInstance(), "updateDrug",RolesHolder.PHARMACY);
+    private static final CommandRegistry RECIPE_REQUEST_PAGE = new CommandRegistry(ShowRecipeRequestPage.getInstance(),"recipeRequest",RolesHolder.DOCTOR);
+    private static final CommandRegistry ACCEPT_RECIPE_REQUEST_COMMAND = new CommandRegistry(AcceptRecipeRequestCommand.getInstance(),"acceptRecipeRequest",RolesHolder.DOCTOR);
+    private static final CommandRegistry DECLINE_RECIPE_REQUEST_COMMAND = new CommandRegistry(DeclineRecipeRequestCommand.getInstance(),"declineRecipeRequest", RolesHolder.DOCTOR);
+    private static final CommandRegistry USERS_AS_CLIENT_PAGE = new CommandRegistry(ShowUsersAsClientPage.getInstance(),"usersAsClients", RolesHolder.DOCTOR);
+    private static final CommandRegistry PREPARATES_NEED_RECIPE_PAGE = new CommandRegistry(ShowPreparatesWhichNeedRecipePage.getInstance(),"showPrepWithNeedRecipe", RolesHolder.DOCTOR);
+    private static final CommandRegistry CREATE_RECIPE_TO_USER_COMMAND = new CommandRegistry(CreateRecipeToUserCommand.getInstance(),"createRecipeForUser",RolesHolder.DOCTOR);
     private static final List<CommandRegistry> COMMAND_REGISTRY_LIST = Arrays.asList(MAIN_PAGE, LOGIN_PAGE, LOGIN_COMMAND, REGISTRATION_PAGE, REGISTRATION_COMMAND, LOGOUT_COMMAND, ERROR_PAGE, PREPARATES_PAGE, ADD_TO_BUCKET_COMMAND,
             RECIPES_PAGE, ORDER_PAGE, PAY_COMMAND, DELETE_FROM_ORDER_COMMAND, BANK_CARDS_PAGE, ADD_BANK_CARD_COMMAND, DELETE_BANK_CARD_COMMAND, CREATE_RECIPE_REQUEST_COMMAND,
-            DELETE_DRUG_COMMAND, CREATE_DRUG_COMMAND, CREATE_DRUG_PAGE, UPDATE_DRUG_COMMAND);
+            DELETE_DRUG_COMMAND, CREATE_DRUG_COMMAND, CREATE_DRUG_PAGE, UPDATE_DRUG_COMMAND, RECIPE_REQUEST_PAGE, ACCEPT_RECIPE_REQUEST_COMMAND,DECLINE_RECIPE_REQUEST_COMMAND,
+            USERS_AS_CLIENT_PAGE, PREPARATES_NEED_RECIPE_PAGE, CREATE_RECIPE_TO_USER_COMMAND);
     private final Command command;
     private final String commandName;
     private final List<Role> allowedRoles;

@@ -54,9 +54,8 @@ public class BankCardServiceImpl implements BankCardService {
         }
         return Collections.emptyList();
     }
-
     @Override
-    public Optional<BankCard> getBankCardsByCardId(Integer cardId) {
+    public Optional<BankCard> getBankCardByCardId(Integer cardId) {
         final Connection connection = connectionPool.getConnection();
         try {
             final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
@@ -71,11 +70,11 @@ public class BankCardServiceImpl implements BankCardService {
     }
 
     @Override
-    public boolean deleteByCardId(Integer cardId) {
+    public boolean deleteCardByCardIdAndUserId(Integer cardId, Integer userId) {
         final Connection connection = connectionPool.getConnection();
         try {
             final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
-            return bankCardDao.deleteByCardId(cardId);
+            return bankCardDao.deleteByCardIdAndUserId(cardId,userId);
         } catch (DaoException e) {
             LOG.error("DaoException", e);
         } finally {

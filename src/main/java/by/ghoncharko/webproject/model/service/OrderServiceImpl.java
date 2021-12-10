@@ -52,14 +52,19 @@ public class OrderServiceImpl implements OrderService {
         Connection connection = connectionPool.getConnection();
         Service.autoCommitFalse(connection);
         try {
+            DrugDao drugDao = new DrugDaoImpl(connection);
+            Optional<Drug> drug = drugDao.findEntityById(drugId);
+            int drugCountOnDB = drug.get().getCount();
             if (isNeedRecipe) {
                 RecipeDao recipeDao = new RecipeDaoImpl(connection);
                 Optional<Recipe> recipe = recipeDao.findEntityByUserIdAndDrugId(userId, drugId);
                 if (recipe.isPresent()) {
-                    return validateAndPay(userId, drugId, count, finalPrice, connection, orderId, cardId);
+                    if (drugCountOnDB >= count)
+                        return validateAndPay(userId, drugId, count, finalPrice, connection, orderId, cardId);
                 }
             } else {
-                return validateAndPay(userId, drugId, count, finalPrice, connection, orderId, cardId);
+                if (drugCountOnDB >= count)
+                    return validateAndPay(userId, drugId, count, finalPrice, connection, orderId, cardId);
             }
             Service.rollbackConnection(connection);
             return false;

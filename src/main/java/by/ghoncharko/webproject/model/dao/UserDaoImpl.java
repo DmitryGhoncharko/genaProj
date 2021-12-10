@@ -26,6 +26,11 @@ public class UserDaoImpl implements UserDao {
             " user.id,login,password,role_id,first_name,last_name, role.id,role.role_name " +
             " FROM user " +
             " INNER JOIN role ON user.role_id = role.id";
+    private static final String SQL_FIND_ALL_USERS_AS_CLIENT = "SELECT" +
+            " user.id,login,password,first_name,last_name, role.id,role.role_name " +
+            " FROM user " +
+            " INNER JOIN role ON user.role_id = role.id" +
+            " WHERE user.role_id = 1";
     private static final String SQL_FIND_USER_BY_ID = "SELECT" +
             " user.id,login,password,role_id,first_name,last_name, role.id,role.role_name" +
             " FROM user" +
@@ -97,6 +102,36 @@ public class UserDaoImpl implements UserDao {
                                 build()).
                         withFirstName(resultSet.getString(6)).
                         withLastName(resultSet.getString(7)).
+                        build();
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot find all users", e);
+            throw new DaoException("cannot find all users", e);
+        } finally {
+            Dao.closeStatement(statement);
+        }
+        return userList;
+    }
+
+    @Override
+    public List<User> findAllClients() throws DaoException {
+        List<User> userList = new ArrayList<>();
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS_AS_CLIENT);
+            while (resultSet.next()) {
+                User user = new User.Builder().
+                        withId(resultSet.getInt(1)).
+                        withLogin(resultSet.getString(2)).
+                        withPassword(resultSet.getString(3)).
+                        withFirstName(resultSet.getString(4)).
+                        withLastName(resultSet.getString(5)).
+                        withRole(new Role.Builder().
+                                withId(resultSet.getInt(6)).
+                                withRoleName(resultSet.getString(7)).
+                                build()).
                         build();
                 userList.add(user);
             }

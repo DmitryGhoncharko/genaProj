@@ -25,6 +25,11 @@ public class DrugDaoImpl implements DrugDao {
             " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
             " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id";
+    private static final String SQL_FIND_ALL_DRUGS_WHERE_NEED_RECIPE = "SELECT" +
+            " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
+            " FROM drug" +
+            " INNER JOIN producer ON producer_id=producer.id" +
+            " WHERE need_receip=true";
     private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO = "SELECT" +
             " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
             " FROM drug" +
@@ -120,6 +125,38 @@ public class DrugDaoImpl implements DrugDao {
         }
         return drugList;
     }
+
+    @Override
+    public List<Drug> findAllWhereNeedRecipe() throws DaoException {
+        List<Drug> drugList = new ArrayList<>();
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_DRUGS_WHERE_NEED_RECIPE);
+            while (resultSet.next()) {
+                Drug drug = new Drug.Builder().
+                        withId(resultSet.getInt(1)).
+                        withName(resultSet.getString(2)).
+                        withPrice(resultSet.getDouble(3)).
+                        withCount(resultSet.getInt(4)).
+                        withDescription(resultSet.getString(5)).
+                        withProducer(new Producer.Builder().
+                                withId(resultSet.getInt(6)).
+                                withName(resultSet.getString(7)).
+                                build()).
+                        withNeedReceip(resultSet.getBoolean(8)).
+                        build();
+                drugList.add(drug);
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot find all drugs", e);
+            throw new DaoException("cannot find all drugs", e);
+        } finally {
+            Dao.closeStatement(statement);
+        }
+        return drugList;
+    }
+
     @Override
     public List<Drug> findAllWhereCountMoreThanZero() throws DaoException {
         List<Drug> drugList = new ArrayList<>();

@@ -21,9 +21,11 @@ public class DeleteBankCardCommand implements Command {
     public CommandResponse execute(CommandRequest request) {
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_FROM_SESSION_ATTRIBUTE_NAME);
         if (userFromSession.isPresent()) {
+            final User user = (User)userFromSession.get();
+            final Integer userId = user.getId();
             final Integer cardId = Integer.valueOf(request.getParameter(CARD_ID_PARAM_NAME));
             final BankCardService bankCardService = BankCardService.getInstance();
-            final boolean bankCardIsDeleted = bankCardService.deleteByCardId(cardId);
+            final boolean bankCardIsDeleted = bankCardService.deleteCardByCardIdAndUserId(cardId,userId);
             if (bankCardIsDeleted) {
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
             }

@@ -24,46 +24,106 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<style>
+    .flex {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    body {
+        margin: 0;
+        padding: 0
+    }
+    .h100 {
+
+        flex-grow: 3
+    }
+
+
+</style>
 <head>
     <title>Title</title>
 </head>
 <body>
-<header>
-    <jsp:include page="header.jsp"></jsp:include>
-</header>
-<div class="container mt-4">
+<div class="container-fluid flex">
     <div class="row">
-        <c:forEach var="recipe" items="${requestScope.recipes}">
-            <form action="/controller?command=recipecmnd" method="post">
-                <div class="col-auto mb-3"></div>
-                <div class="card" style="width: 18rem;"></div>
-                <div class="card-body "></div>
+        <div class="col-md-12">
+            <jsp:include page="header.jsp"></jsp:include>
+        </div>
+    </div>
 
-                <input hidden="" name="recipeId" type="text" value="${recipe.id}"> <h5 class="card-title">${recipe.id}</h5> </input>
-                <input hidden="" name="userId" value="${recipe.user.id}">
-                <input hidden="" name="drugId" value="${recipe.drug.id}">
-                <input hidden="" name="isNeedRecipe" value="${recipe.drug.needRecipe}">
-                <input hidden="" name="drugName" value="${recipe.drug.name}"> <h6 class="card-subtitle mb-2 text-muted" >${recipe.drug.name}</h6> </input>
-                <input hidden="" name="recipeDateStart" value="${recipe.dateStart}"> <h6 class="card-subtitle mb-2 text-muted" >${recipe.dateStart}</h6> </input>
-                <input hidden="" name="recipeDateEnd" value="${recipe.dateEnd}"> <h6 class="card-subtitle mb-2 text-muted" >${recipe.dateEnd}</h6> </input>
-                <c:choose>
-                    <c:when test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
-                        <button  class="navbar-toggler">Продлить рецепт</button>
-                        <c:if test="${not empty requestScope.error && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
-                            <div class="alert alert-danger" role="alert">
-                                    ${requestScope.error}
+    <div class="row h100">
+        <div class="col-md-12">
+            <c:forEach var="drug" items="${requestScope.drugs}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
+                            <input hidden="" name="drugId" value="<c:out value="${drug.id}" />">
+                            <input hidden="" name="isNeedRecipe" value="${drug.needRecipe}">
+                            <input hidden="" name="drugName"  value="${drug.name}">
+                            <input hidden="" name="drugCount" value="${drug.count}">
+                            <input hidden="" name="drugPrice" value="${drug.price}">
+                            <input hidden="" name="drugProducerName" value="${drug.producer.name}">
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${drug.name}</h5>
+                                    <p class="card-text">${drug.producer.name}</p>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">${drug.count}</li>
+                                    <li class="list-group-item">${drug.needRecipe}</li>
+                                    <li class="list-group-item">${drug.price}</li>
+                                    <li class="list-group-item">${requestScope.userFirstName}</li>
+                                    <li class="list-group-item">${requestScope.userLastName}</li>
+                                </ul>
+                                <div class="card-body">
+                                    <input type="date" class="needs-validation" name="dateEnd" min="${requestScope.currentDate}" placeholder="date end recipe" required>
+                                    <button class="btn btn-primary" type="submit" formaction="/controller?command=createRecipeForUser" formmethod="post">Create recipe</button>
+                                    <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                                        <div class="alert alert-danger" role="alert">
+                                                ${requestScope.errorDelete}
+                                        </div>
+                                    </c:if>
+                                </div>
                             </div>
-                        </c:if>
-                    </c:when>
-                    <c:otherwise>
-                        <a class="btn btn-primary" role="button">Please login as Client</a>
-                    </c:otherwise>
-                </c:choose>
-                </input>
-            </form>
-        </c:forEach>
+
+
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">Description</p>
+                        <a style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%">${drug.description}</a>
+                    </div>
+
+                </div>
+            </c:forEach>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <jsp:include page="footer.jsp"></jsp:include>
+        </div>
     </div>
 </div>
 </body>
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 </html>
 

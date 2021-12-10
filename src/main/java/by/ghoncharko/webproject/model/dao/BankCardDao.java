@@ -25,7 +25,7 @@ public interface BankCardDao extends Dao<BankCard> {
 
     Optional<BankCard> findBankCardByCardId(Integer cardId) throws DaoException;
 
-    boolean deleteByCardId(Integer cardId) throws DaoException;
+    boolean deleteByCardIdAndUserId(Integer cardId, Integer userId) throws DaoException;
 
     boolean addBankCard(Double balance, Integer userId) throws DaoException;
 }

@@ -42,6 +42,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAllClients() {
+        final Connection connection = connectionPool.getConnection();
+        final UserDao userDao = new UserDaoImpl(connection);
+       try{
+           return userDao.findAllClients();
+       }catch (DaoException e){
+           LOG.error("DaoException",e);
+       }finally {
+           Service.connectionClose(connection);
+       }
+       return Collections.emptyList();
+    }
+
+    @Override
     public Optional<User> authenticate(String login, String password) {
         final Connection connection = connectionPool.getConnection();
         boolean loginAndPasswordValide = ValidateLogin.getInstance().validate(login, password);

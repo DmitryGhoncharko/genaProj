@@ -42,5 +42,6 @@ public interface DrugDao extends Dao<Drug> {
      */
     boolean update(Integer count, Integer drugId) throws DaoException;
 
+    List<Drug> findAllWhereNeedRecipe() throws DaoException;
     boolean deleteByDrugId(Integer drugId) throws DaoException;
 }

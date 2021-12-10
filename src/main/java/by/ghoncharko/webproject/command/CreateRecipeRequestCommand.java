@@ -13,7 +13,7 @@ public class CreateRecipeRequestCommand implements Command {
     private static final String RECIPE_DATE_START_PARAM_NAME = "recipeDateStart";
     private static final String RECIPE_DATE_END_PARAM_NAME = "recipeDateEnd";
     private static final String USER_ATTRIBUTE_SESSION_NAME = "user";
-    private static final String DRUG_NEED_RECIPE_PARAM_NAME = "needRecipe";
+    private static final String DRUG_NEED_RECIPE_PARAM_NAME = "isNeedRecipe";
     private static final String ERROR_ATTRIBUTE_NAME = "error";
     private static final String ERROR_MESSAGE = "Cannot create recipe request";
     private final RequestFactory requestFactory = RequestFactory.getInstance();

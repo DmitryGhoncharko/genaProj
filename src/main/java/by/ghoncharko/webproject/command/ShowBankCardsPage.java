@@ -12,8 +12,6 @@ import java.util.Optional;
 public class ShowBankCardsPage implements Command {
     private static final String USER_ATTRIBUTE_NAME = "user";
     private static final String BANK_CARDS_ATTRIBUTE_NAME = "bankCards";
-    private static final String ERROR_ATTRIBUTE_NAME = "error";
-    private static final String ERROR_ATTRIBUTE_MESSAGE = "dont have permission to this";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
     private ShowBankCardsPage() {
@@ -30,8 +28,7 @@ public class ShowBankCardsPage implements Command {
             request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
             return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
         }
-        request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);
-        return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
+        return requestFactory.createForwardResponse(PagePath.MAIN_PAGE_PATH);
     }
 
     public static ShowBankCardsPage getInstance() {

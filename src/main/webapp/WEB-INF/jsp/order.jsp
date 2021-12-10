@@ -23,57 +23,120 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<style>
+    .flex {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    body {
+        margin: 0;
+        padding: 0
+    }
+    .h100 {
+
+        flex-grow: 3
+    }
+
+
+</style>
 <head>
     <title>Title</title>
 </head>
 <body>
-<header>
-    <jsp:include page="header.jsp"></jsp:include>
-</header>
-<div class="container mt-4">
+<div class="container-fluid flex">
     <div class="row">
-        <c:forEach var="order" items="${requestScope.orders}">
-            <form>
-                <div class="col-auto mb-3"></div>
-                <div class="card" style="width: 18rem;"></div>
-                <div class="card-body "></div>
-                <input hidden="" name="orderId" value="${order.id}"><h5
-                    class="card-title">${order.drug.name}</h5></input>
-                <input hidden="" name="isNeedRecipe" value="${order.drug.needRecipe}">
-                <input hidden="" name="drugId" value="${order.drug.id}">
-                <input hidden="" name="drugName" type="text" value="${order.drug.name}"> <h5
-                    class="card-title">${order.drug.name}</h5> </input>
-                <input hidden="" name="orderCount" value="${order.count}"> <h5
-                    class="card-title">${order.count}</h5> </input>
-                <input hidden="" name="orderFinalPrice" value="${order.finalPrice}"> <h6
-                    class="card-subtitle mb-2 text-muted"
-            >${order.finalPrice}</h6> </input>
-                <button class="navbar-toggler" formaction="/controller?command=pay" formmethod="post">Pay</button>
+        <div class="col-md-12">
+            <jsp:include page="header.jsp"></jsp:include>
+        </div>
+    </div>
 
-                    <select name="cardId" >
-                                <c:forEach var="bankCard" items="${requestScope.bankCards}">
-                                   <option value="${bankCard.id}">
-                                       <button class="btn btn-primary">
-                                               card id ${bankCard.id}
-                                               <br/>
-                                               balance ${bankCard.balance}
-                                       </button>
-                                   </option>
-                                </c:forEach>
-                               </select>
+    <div class="row h100">
+        <div class="col-md-12">
+            <c:if test="${requestScope.orders.size() == 0}">
+                <h5 style="margin-left:43%; margin-top:10%">Your order is empty</h5>
+                <img style="margin-left: 30%" src="${pageContext.request.contextPath}/static/orderEmpty.png">
+            </c:if>
+            <c:forEach var="order" items="${requestScope.orders}">
+                <div class="row">
+            <div class="col-md-6">
+                    <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
+                        <input hidden="" name="orderId" value="${order.id}">
+                        <input hidden="" name="isNeedRecipe" value="${order.drug.needRecipe}">
+                        <input hidden="" name="drugId" value="${order.drug.id}">
+                        <input hidden="" name="drugName" type="text" value="${order.drug.name}">
+                        <input hidden="" name="orderCount" value="${order.count}">
+                        <input hidden="" name="orderFinalPrice" value="${order.finalPrice}">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">${order.drug.name}</h5>
+                                <p class="card-text">${order.drug.producer.name}</p>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">${order.count}</li>
+                                <li class="list-group-item">${order.drug.needRecipe}</li>
+                                <li class="list-group-item">${order.finalPrice}</li>
+                                <li class="list-group-item">
+                                <select class="custom-select needs-validation" name="cardId" required>
+                                    <c:forEach var="bankCard" items="${requestScope.bankCards}">
+                                        <option value="${bankCard.id}">
+                                            <button class="btn btn-primary">
+                                                card id ${bankCard.id}
+                                                <br/>
+                                                balance ${bankCard.balance}
+                                            </button>
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                                </li>
+                            </ul>
+                            <div class="card-body">
+                                <button class="btn btn-primary" type="submit" formaction="/controller?command=pay" formmethod="post">Pay</button>
+                                <button class="btn btn-primary" formaction="/controller?command=deleteFromOrder" formmethod="post"> Delete</button>
+                                <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                                    <div class="alert alert-danger" role="alert">
+                                            ${requestScope.errorDelete}
+                                    </div>
+                                </c:if>
+                            </div>
+                        </div>
+                    </form>
 
-                <button class="navbar-toggler" formaction="/controller?command=deleteFromOrder" formmethod="post">
-                    Delete
-                </button>
-                <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
-                    <div class="alert alert-danger" role="alert">
-                            ${requestScope.errorDelete}
-                    </div>
-                </c:if>
-            </form>
+            </div>
+            <div class="col-md-6">
+                <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">Description</p>
+                <a style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%">${order.drug.description}</a>
+            </div>
+
+                </div>
         </c:forEach>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <jsp:include page="footer.jsp"></jsp:include>
+        </div>
     </div>
 </div>
 </body>
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 </html>
 

@@ -32,14 +32,66 @@
     <title>${pageTitle}</title>
 </head>
 <body>
-<header>
-    <jsp:include page="header.jsp"></jsp:include>
-</header>
-<div class="container-fluide bg-dark">
-    <figure class="figure">
-        <img src="<c:url value="${pageContext.request.contextPath}/static/main.png"/>"
-             class="figure-img img-fluid rounded">
-    </figure>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+<jsp:include page="header.jsp"></jsp:include>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="carousel slide" id="carousel-406496">
+                <ol class="carousel-indicators">
+                    <li data-slide-to="0" data-target="#carousel-406496" class="active">
+                    </li>
+                    <li data-slide-to="1" data-target="#carousel-406496">
+                    </li>
+                    <li data-slide-to="2" data-target="#carousel-406496">
+                    </li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" alt="Carousel Bootstrap First" src="${pageContext.request.contextPath}/static/main1.png"/>
+                        <div class="carousel-caption">
+                            <h4>
+                                First Thumbnail label
+                            </h4>
+                            <p>
+                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" alt="Carousel Bootstrap Second" src="${pageContext.request.contextPath}/static/main2.png"/>
+                        <div class="carousel-caption">
+                            <h4>
+                                Second Thumbnail label
+                            </h4>
+                            <p>
+                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" alt="Carousel Bootstrap Third" src="${pageContext.request.contextPath}/static/main3.png"/>
+                        <div class="carousel-caption">
+                            <h4>
+                                Third Thumbnail label
+                            </h4>
+                            <p>
+                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                            </p>
+                        </div>
+                    </div>
+                </div> <a class="carousel-control-prev" href="#carousel-406496" data-slide="prev"><span class="carousel-control-prev-icon"></span> <span class="sr-only">Previous</span></a> <a class="carousel-control-next" href="#carousel-406496" data-slide="next"><span class="carousel-control-next-icon"></span> <span class="sr-only">Next</span></a>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <jsp:include page="footer.jsp"></jsp:include>
+                </div>
+        </div>
+    </div>
+</div>
 </div>
 </body>
 </html>

@@ -185,46 +185,53 @@
 <div class="container">
     <div class="row">
 
-        <div class="col-md-offset-3 col-md-6">
-            <form class="form-horizontal needs-validation"  action="/controller?command=createDrugcmnd" method="post" novalidate>
+        <div class="col-md-offset-3 col-md-16">
+            <form class="form-horizontal needs-validation" action="/controller?command=createDrugcmnd" method="post"
+                  novalidate>
                 <span class="heading">Форма создания нового препарата</span>
                 <div class="form-group">
-                    <label>drug name</label>
-                    <input type="text" name="drugName"  pattern=".{1,45}" class="form-control"  placeholder="First Name" required>
+                    <label>Название препарата</label>
+                    <input type="text" name="drugName" pattern=".{1,45}" class="form-control"
+                           placeholder="Название препарата" required>
                     <div class="invalid-feedback">
-                        Please enter valid drug name
+                        Название препарата не может превышать 45 символов
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Drug Price</label>
-                    <input type="text" name="drugPrice"  pattern="[0-9]{1,14}[.][0-9]{1,2}" minlength="1" min="0" class="form-control"  placeholder="Last Name" required>
+                    <label>Цена пепарата</label>
+                    <input type="text" name="drugPrice" pattern="[0-9]{1,14}[.][0-9]{1,2}" minlength="1" min="0"
+                           class="form-control" placeholder="Цена" required>
                     <div class="invalid-feedback">
-                        Please enter valid drugPrice
+                        Цена не может быть длинее 16 символов и всегда должна заканчиваться цена препарата.00
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>drugCount</label>
-                    <input type="number" min="0" minlength="1" maxlength="9" class="form-control" id="inputText" name="drugCount" placeholder="Login" required>
+                    <label>Колличество</label>
+                    <input type="number" min="0" minlength="1" maxlength="9" class="form-control" id="inputText"
+                           name="drugCount" placeholder="Колличество" required>
                     <div class="invalid-feedback">
-                        Please enter valid drugCount
+                        Колличество не может превышать 9ти цифр
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Drug Desctiption</label>
-                    <input type="text" name="drugDescription" minlength="1" class="form-control"  placeholder="Password" required>
+                    <label>Описание</label>
+                    <input type="text" name="drugDescription" minlength="1" class="form-control" placeholder="Описание"
+                           required>
                     <div class="invalid-feedback">
-                        Please enter valid drugDescription
+                        Описание должно присутствовать
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Drug ProducerName</label>
-                    <input type="text" name="drugProducerName"  minlength="1" maxlength="45" class="form-control" placeholder="Password" required>
+                    <input type="text" name="drugProducerName" minlength="1" maxlength="45" class="form-control"
+                           placeholder="Производитель" required>
                     <div class="invalid-feedback">
-                        Please enter valid producerName
+                        Имя производителя не должно быть длиннее 45 символов
                     </div>
                 </div>
                 <div class="form-group">
-                    <select required name="drugNeedRecipe">
+                    <label>Нужен ли рецепт</label>
+                    <select class="custom-select" required name="drugNeedRecipe">
                         <option value="false">
                             false
                         </option>
@@ -237,18 +244,19 @@
                     <c:if test="${not empty requestScope.errorLoginPassMessage}">
                         <b>${requestScope.errorLoginPassMessage}</b>
                     </c:if>
-                    <button type="submit" class="btn btn-default">Create drug</button>
+                    <a href="/controller?command=/">Отмена</a>
+                    <button type="submit" class="btn btn-default">Создать перпарат</button>
                 </div>
             </form>
         </div>
     </div>
     <script>
-        (function() {
+        (function () {
             'use strict';
-            window.addEventListener('load', function() {
+            window.addEventListener('load', function () {
                 var forms = document.getElementsByClassName('needs-validation');
-                var validation = Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
                         if (form.checkValidity() === false) {
                             event.preventDefault();
                             event.stopPropagation();

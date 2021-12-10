@@ -11,9 +11,9 @@ public interface BankCardService extends Service<BankCard> {
 
     List<BankCard> getBankCardsByUserId(Integer userId);
 
-    Optional<BankCard> getBankCardsByCardId(Integer cardId);
+    Optional<BankCard> getBankCardByCardId(Integer cardId);
 
-    boolean deleteByCardId(Integer cardId);
+    boolean deleteCardByCardIdAndUserId(Integer cardId, Integer userId);
 
     boolean addBankCard(Double balance, Integer userId);
 

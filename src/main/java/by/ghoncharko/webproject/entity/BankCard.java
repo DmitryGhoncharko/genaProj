@@ -16,6 +16,17 @@ public class BankCard implements Entity {
 
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 
     public Integer getId() {
         return id;

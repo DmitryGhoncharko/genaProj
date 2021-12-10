@@ -1,16 +1,8 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Acer
-  Date: 30.11.2021
-  Time: 11:12
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
+<footer class="text-center text-lg-start bg-light text-muted">
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+        © 2021 Copyright:
+        <a class="text-reset fw-bold" href="/controller?command=/">Pharmacy</a>
+    </div>
+</footer>
 
-</body>
-</html>

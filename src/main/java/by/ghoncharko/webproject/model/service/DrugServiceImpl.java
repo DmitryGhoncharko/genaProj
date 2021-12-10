@@ -39,6 +39,20 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
+    public List<Drug> findAllWhereNeedRecipe() {
+        final Connection connection = connectionPool.getConnection();
+        final  DrugDao drugDao = new DrugDaoImpl(connection);
+        try{
+            return drugDao.findAllWhereNeedRecipe();
+        }catch (DaoException e){
+
+        }finally {
+            Service.connectionClose(connection);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
     public boolean update(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) {
         final Connection connection = connectionPool.getConnection();
         Service.autoCommitFalse(connection);

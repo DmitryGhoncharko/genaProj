@@ -33,7 +33,7 @@ public class PayCommand implements Command {
             final User user = (User) userFromSession.get();
             final Integer bankCardId = Integer.valueOf(request.getParameter(CARD_ID_PARAM_NAME));
             final BankCardService bankCardService = BankCardService.getInstance();
-            final Optional<BankCard> bankCard = bankCardService.getBankCardsByCardId(bankCardId);
+            final Optional<BankCard> bankCard = bankCardService.getBankCardByCardId(bankCardId);
             if (bankCard.isPresent()) {
                 final Integer orderId = Integer.valueOf(request.getParameter(ORDER_ID_PARAM_NAME));
                 final Integer userId = user.getId();
