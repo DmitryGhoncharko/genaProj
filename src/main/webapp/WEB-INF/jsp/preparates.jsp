@@ -123,7 +123,7 @@
                     <div class="col-md-6">
                         <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
                             <input hidden="" name="drugId" value="${drug.id}">
-                            <input hidden="" name="isNeedRecipe" value="${drug.needRecipe}">
+                            <input hidden="" name="drugNeedRecipe" value="${drug.needRecipe}">
                             <input hidden="" name="drugName"  value="${drug.name}">
                             <input hidden="" name="drugCount" value="${drug.count}">
                             <input hidden="" name="drugPrice" value="${drug.price}">

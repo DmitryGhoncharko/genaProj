@@ -182,7 +182,7 @@ public class OrderServiceImpl implements OrderService {
         } finally {
             Service.connectionClose(connection);
         }
-        Service.rollbackConnection(connection);
+
         return false;
     }
 

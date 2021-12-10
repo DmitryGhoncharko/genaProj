@@ -4,6 +4,7 @@ package by.ghoncharko.webproject.model.service;
 import by.ghoncharko.webproject.entity.RolesHolder;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.DaoException;
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
 import by.ghoncharko.webproject.model.dao.UserDao;
 import by.ghoncharko.webproject.model.dao.UserDaoImpl;
@@ -45,32 +46,33 @@ public class UserServiceImpl implements UserService {
     public List<User> findAllClients() {
         final Connection connection = connectionPool.getConnection();
         final UserDao userDao = new UserDaoImpl(connection);
-       try{
-           return userDao.findAllClients();
-       }catch (DaoException e){
-           LOG.error("DaoException",e);
-       }finally {
-           Service.connectionClose(connection);
-       }
-       return Collections.emptyList();
+        try {
+            return userDao.findAllClients();
+        } catch (DaoException e) {
+            LOG.error("DaoException", e);
+        } finally {
+            Service.connectionClose(connection);
+        }
+        return Collections.emptyList();
     }
 
     @Override
-    public Optional<User> authenticate(String login, String password) {
+    public Optional<User> authenticate(String login, String password) throws ServiceException {
         final Connection connection = connectionPool.getConnection();
-        boolean loginAndPasswordValide = ValidateLogin.getInstance().validate(login, password);
+        final boolean loginAndPasswordValide = ValidateLogin.getInstance().validate(login, password);
         if (loginAndPasswordValide) {
             try {
                 final UserDao userDao = new UserDaoImpl(connection);
-                Optional<User> user = userDao.findUserByLogin(login);
+                final Optional<User> user = userDao.findUserByLogin(login);
                 if (user.isPresent()) {
-                    String userPasswordFromDB = user.get().getPassword();
+                    final String userPasswordFromDB = user.get().getPassword();
                     if (BCrypt.checkpw(password, userPasswordFromDB)) {
                         return user;
                     }
                 }
             } catch (DaoException e) {
-                LOG.error("DaoExcepion", e);
+                LOG.error("Cannot authenticate user", e);
+                throw new ServiceException("Cannot authenticate user", e);
             } finally {
                 Service.connectionClose(connection);
             }
@@ -79,24 +81,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> createClient(String login, String password, String firstName, String lastName) {
-        Connection connection = connectionPool.getConnection();
-        boolean isValide = ValidateRegistration.getInstance().validateRegistration(login, password, firstName, lastName);
-        if (isValide) {
+    public Optional<User> createClient(String login, String password, String firstName, String lastName) throws ServiceException {
+        final Connection connection = connectionPool.getConnection();
+        final boolean isValideData = ValidateRegistration.getInstance().validateRegistration(login, password, firstName, lastName);
+        if (isValideData) {
             try {
-                String hashedPassword = BCrypt.hashpw(password, SALT);
-                User user = new User.Builder().
+                final String hashedPassword = BCrypt.hashpw(password, SALT);
+                final User user = new User.Builder().
                         withLogin(login).
                         withPassword(hashedPassword).
                         withFirstName(firstName).
                         withLastName(lastName).
                         withRole(RolesHolder.CLIENT).build();
-                UserDao userDao = new UserDaoImpl(connection);
-                User userWithId = userDao.create(user);
+                final UserDao userDao = new UserDaoImpl(connection);
+                final User userWithId = userDao.create(user);
                 return Optional.of(userWithId);
             } catch (DaoException e) {
-                LOG.error("DaoException", e);
-                return Optional.empty();
+                LOG.error("Cannot create user as client", e);
+                throw new ServiceException("Cannot create user as client", e);
             } finally {
                 Service.connectionClose(connection);
             }

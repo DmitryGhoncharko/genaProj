@@ -214,8 +214,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <c:if test="${not empty requestScope.errorLoginPassMessage}">
-                        <b>${requestScope.errorLoginPassMessage}</b>
+                    <c:if test="${not empty requestScope.registrationError}">
+                        <b>${requestScope.registrationError}</b>
                     </c:if>
                     <button type="submit" class="btn btn-default">Зарегистрироваться</button>
                 </div>
