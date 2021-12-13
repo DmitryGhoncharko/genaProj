@@ -27,6 +27,7 @@ public class BankCardDaoImpl implements BankCardDao {
     private static final String SQL_FIND_ALL_BANK_CARDS_BY_USER_ID = "SELECT id, user_id, balance FROM card WHERE user_id = ?";
     private static final String SQL_FIND_BANK_CARD_BY_CARD_ID = "SELECT id, user_id, balance FROM card WHERE id = ?";
     private static final String SQL_FIND_BANK_CARD_BY_USER_ID = "SELECT id, user_id, balance FROM card WHERE user_id = ?";
+    private static final String SQL_FIND_BANK_CARD_BY_USER_ID_AND_CARD_ID = "SELECT id, user_id, balance FROM card WHERE user_id = ? AND id=?";
     private static final String SQL_FIND_BANK_CARD_BY_ID = "SELECT id, user_id, balance FROM card WHERE id = ?";
     private static final String SQL_UPDATE_BANK_CARD = "UPDATE card SET  balance = ? WHERE id = ?";
     private static final String SQL_DELETE_BANK_CARD = "DELETE FROM card  WHERE id=?";
@@ -76,18 +77,18 @@ public class BankCardDaoImpl implements BankCardDao {
                 return true;
             }
         } catch (SQLException e) {
-            LOG.error("SQLException in method create bankCard", e);
-            throw new DaoException("SQLException in method create bankCard", e);
+            LOG.error("SQLException in method add bankCard", e);
+            throw new DaoException("SQLException in method add bankCard", e);
         } finally {
             Dao.closeStatement(preparedStatement);
         }
-        LOG.error("DaoException in method create bankCard when we try create entity");
-        throw new DaoException("DaoException in method create bankCard");
+        LOG.error("DaoException in method create bankCard when we try add bank card");
+        throw new DaoException("DaoException in method add bankCard");
     }
 
     @Override
     public List<BankCard> findAll() throws DaoException {
-        List<BankCard> bankCardList = new ArrayList<>();
+        final List<BankCard> bankCardList = new ArrayList<>();
         Statement statement = null;
         try {
             statement = connection.createStatement();
@@ -108,13 +109,14 @@ public class BankCardDaoImpl implements BankCardDao {
         }
         return bankCardList;
     }
+
     @Override
     public List<BankCard> findAllBankCardsByUserId(Integer userId) throws DaoException {
-        List<BankCard> bankCardList = new ArrayList<>();
+        final List<BankCard> bankCardList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_FIND_ALL_BANK_CARDS_BY_USER_ID);
-            preparedStatement.setInt(1,userId);
+            preparedStatement.setInt(1, userId);
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 BankCard bankCard = new BankCard.Builder().
@@ -132,12 +134,38 @@ public class BankCardDaoImpl implements BankCardDao {
         }
         return bankCardList;
     }
+
+    @Override
+    public Optional<BankCard> findAllBankCardsByUserIdAndCardId(Integer userId, Integer cardId) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_USER_ID_AND_CARD_ID);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, cardId);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                final BankCard bankCard = new BankCard.Builder().
+                        withId(resultSet.getInt(1)).
+                        withUserId(resultSet.getInt(2)).
+                        withBalance(resultSet.getDouble(3)).
+                        build();
+                return Optional.of(bankCard);
+            }
+        } catch (SQLException e) {
+            LOG.error("SQLException when we try findAll entities in BankCard", e);
+            throw new DaoException("SQLException when we try findAll entities in BankCard", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        return Optional.empty();
+    }
+
     @Override
     public Optional<BankCard> findBankCardByCardId(Integer cardId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_CARD_ID);
-            preparedStatement.setInt(1,cardId);
+            preparedStatement.setInt(1, cardId);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 BankCard bankCard = new BankCard.Builder().
@@ -155,13 +183,14 @@ public class BankCardDaoImpl implements BankCardDao {
         }
         return Optional.empty();
     }
+
     @Override
     public Optional<BankCard> findEntityById(Integer id) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_ID);
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(new BankCard.Builder().
                         withId(resultSet.getInt(1)).
@@ -245,13 +274,13 @@ public class BankCardDaoImpl implements BankCardDao {
         LOG.error("cannot delete bank card");
         return false;
     }
-    @Override
+
     public boolean deleteByCardIdAndUserId(Integer cardId, Integer userId) throws DaoException {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_CARD_BY_CARD_ID_AND_USER_ID);
             preparedStatement.setInt(1, cardId);
-            preparedStatement.setInt(2,userId);
+            preparedStatement.setInt(2, userId);
             int countRows = preparedStatement.executeUpdate();
             if (countRows > 0) {
                 return true;

@@ -32,23 +32,23 @@
 </header>
 <div class="container mt-4">
     <div class="row">
-        <c:forEach var="recipeRequest" items="${requestScope.recipeRequests}">
+        <c:forEach var="recipe" items="${requestScope.recipeRequests}">
             <form>
                 <div class="col-auto mb-3"></div>
                 <div class="card" style="width: 18rem;"></div>
                 <div class="card-body "></div>
-                <input hidden="" name="recipeRequestId" value="${recipeRequest.id}"><h5
+                <input hidden="" name="recipeRequestId" value="${recipe.id}"><h5
                     class="card-title"></h5></input>
 
-                <input hidden="" name="userId" value="${recipeRequest.user.id}">
-                <input hidden="" name="drugId" value="${recipeRequest.drug.id}">
-                <input hidden="" name="drugName" type="text" value="${recipeRequest.drug.name}"> <h5
-                    class="card-title">${recipeRequest.drug.name}</h5> </input>
-                <input hidden="" name="dateStart" value="${recipeRequest.dateStart}"> <h5
-                    class="card-title">${recipeRequest.dateStart}</h5> </input>
-                <input class="needs-validation" hidden="" name="dateEnd" value="${recipeRequest.dateEnd}"> <h6
+                <input hidden="" name="userId" value="${recipe.user.id}">
+                <input hidden="" name="drugId" value="${recipe.drug.id}">
+                <input hidden="" name="drugName" type="text" value="${recipe.drug.name}"> <h5
+                    class="card-title">${recipe.drug.name}</h5> </input>
+                <input hidden="" name="dateStart" value="${recipe.dateStart}"> <h5
+                    class="card-title">${recipe.dateStart}</h5> </input>
+                <input class="needs-validation" hidden="" name="dateEnd" value="${recipe.dateEnd}"> <h6
                     class="card-subtitle mb-2 text-muted"
-            >${recipeRequest.dateEnd}</h6> </input>
+            >${recipe.dateEnd}</h6> </input>
                 <input name="updatedDateEnd" type="date" >
                 <button class="navbar-toggler" formaction="/controller?command=acceptRecipeRequest" formmethod="post" type="submit">Продлить рецепт</button>
                 <button class="navbar-toggler" formaction="/controller?command=declineRecipeRequest" formmethod="post">

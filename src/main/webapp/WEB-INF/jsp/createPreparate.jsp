@@ -223,6 +223,7 @@
                 </div>
                 <div class="form-group">
                     <label>Drug ProducerName</label>
+                    <input hidden="" name="producerId" value="${drug.producer.id}">
                     <input type="text" name="drugProducerName" minlength="1" maxlength="45" class="form-control"
                            placeholder="Производитель" required>
                     <div class="invalid-feedback">

@@ -2,8 +2,10 @@ package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.OrderService;
 
+import javax.sql.rowset.serial.SerialException;
 import java.util.Optional;
 
 public class AddToOrderCommand implements Command {
@@ -27,19 +29,20 @@ public class AddToOrderCommand implements Command {
         if (userFromSession.isPresent()) {
             final User user = (User) userFromSession.get();
             final int drugCount = Integer.parseInt(request.getParameter(COUNT_USER_BUY_DRUGS_PARAM_NAME));
-            final double drugPrice = Double.parseDouble(request.getParameter(DRUG_PRICE_PARAM_NAME));
-            final boolean isNeedRecipe = Boolean.parseBoolean(request.getParameter(DRUG_NEED_RECIPE_PARAM_NAME));
             final int userId = user.getId();
             final OrderService orderService = OrderService.getInstance();
-            final boolean addedToOrder = orderService.createOrderWithStatusActive(userId, drugId, drugCount, drugPrice, isNeedRecipe);
-            if (addedToOrder) {
-                return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+            try{
+                final boolean addedToOrder = orderService.createOrderWithStatusActive(userId, drugId, drugCount);
+                if (addedToOrder) {
+                    return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+                }
+            }catch (ServiceException e){
+                return requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
             }
         }
         request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);
         request.addAttributeToJsp(DRUG_ID_ATTRIBUTE_NAME, drugId);
         return requestFactory.createForwardResponse("/controller?command=preparates");
-
     }
 
     public static AddToOrderCommand getInstance() {

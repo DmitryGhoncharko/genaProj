@@ -65,6 +65,7 @@
                             <input hidden="" name="drugCount" value="${drug.count}">
                             <input hidden="" name="drugPrice" value="${drug.price}">
                             <input hidden="" name="drugProducerName" value="${drug.producer.name}">
+                            <input hidden="" name="userId" value="${requestScope.userId}">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
                                     <h5 class="card-title">${drug.name}</h5>

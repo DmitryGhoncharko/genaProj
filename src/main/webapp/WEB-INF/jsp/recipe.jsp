@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="by.ghoncharko.webproject.entity.RolesHolder" %>
 <html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -55,31 +54,24 @@
 
     <div class="row h100">
         <div class="col-md-12">
-            <c:forEach var="drug" items="${requestScope.drugs}">
+            <c:forEach var="recipe" items="${requestScope.recipes}">
                 <div class="row">
                     <div class="col-md-6">
                         <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
-                            <input hidden="" name="drugId" value="<c:out value="${drug.id}" />">
-                            <input hidden="" name="isNeedRecipe" value="${drug.needRecipe}">
-                            <input hidden="" name="drugName"  value="${drug.name}">
-                            <input hidden="" name="drugCount" value="${drug.count}">
-                            <input hidden="" name="drugPrice" value="${drug.price}">
-                            <input hidden="" name="drugProducerName" value="${drug.producer.name}">
+                            <input hidden="" name="drugId" value="${recipe.drug.id}">
+                            <input hidden="" name="userId" value="${recipe.user.id}">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
-                                    <h5 class="card-title">${drug.name}</h5>
-                                    <p class="card-text">${drug.producer.name}</p>
+                                    <h5 class="card-title">${recipe.drug.name}</h5>
+                                    <p class="card-text">${recipe.drug.producer.name}</p>
                                 </div>
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">${drug.count}</li>
-                                    <li class="list-group-item">${drug.needRecipe}</li>
-                                    <li class="list-group-item">${drug.price}</li>
-                                    <li class="list-group-item">${requestScope.userFirstName}</li>
-                                    <li class="list-group-item">${requestScope.userLastName}</li>
+                                    <li class="list-group-item">${recipe.dateStart}</li>
+                                    <li class="list-group-item">${recipe.dateEnd}</li>
                                 </ul>
                                 <div class="card-body">
-                                    <input type="date" class="needs-validation" name="dateEnd" min="${requestScope.currentDate}" placeholder="date end recipe" required>
-                                    <button class="btn btn-primary" type="submit" formaction="/controller?command=createRecipeForUser" formmethod="post">Create recipe</button>
+                                    <button class="btn btn-primary" type="submit" formaction="/controller?command=createRecipeRequest" formmethod="post">Продлить рецепт</button>
+                                    <button class="btn btn-primary" type="submit" formaction="/controller?command=deleteRecipecmnd" formmethod="post">Удалить рецепт</button>
                                     <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
                                         <div class="alert alert-danger" role="alert">
                                                 ${requestScope.errorDelete}
@@ -87,15 +79,8 @@
                                     </c:if>
                                 </div>
                             </div>
-
-
                         </form>
                     </div>
-                    <div class="col-md-6">
-                        <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">Description</p>
-                        <a style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%">${drug.description}</a>
-                    </div>
-
                 </div>
             </c:forEach>
         </div>

@@ -3,13 +3,14 @@ package by.ghoncharko.webproject.model.service;
 
 import by.ghoncharko.webproject.entity.Entity;
 import by.ghoncharko.webproject.exception.DaoException;
+import by.ghoncharko.webproject.exception.ServiceException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 public interface Service<T extends Entity> {
-    List<T> findAll();
+    List<T> findAll() throws ServiceException;
 
     static void connectionClose(Connection connection) {
         try {

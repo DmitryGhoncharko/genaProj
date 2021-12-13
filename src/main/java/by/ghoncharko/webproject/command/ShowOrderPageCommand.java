@@ -4,6 +4,7 @@ import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.Order;
 import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.BankCardService;
 import by.ghoncharko.webproject.model.service.OrderService;
 
@@ -28,11 +29,15 @@ public class ShowOrderPageCommand implements Command {
             final int userId = user.getId();
             final OrderService orderService = OrderService.getInstance();
             final BankCardService bankCardService = BankCardService.getInstance();
-            final List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
-            final List<Order> orderList = orderService.findAllWithStatusActive(userId);
-            request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
-            request.addAttributeToJsp(ORDERS_ATTRIBUTE_NAME, orderList);
-            return requestFactory.createForwardResponse(PagePath.ORDER_PAGE_PATH);
+            try{
+                final List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
+                final List<Order> orderList = orderService.findAllWithStatusActiveByUserId(userId);
+                request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
+                request.addAttributeToJsp(ORDERS_ATTRIBUTE_NAME, orderList);
+                return requestFactory.createForwardResponse(PagePath.ORDER_PAGE_PATH);
+            }catch (ServiceException e){
+                requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
+            }
 
         }
         return requestFactory.createForwardResponse(PagePath.INDEX_PATH);

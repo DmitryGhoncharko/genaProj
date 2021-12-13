@@ -3,9 +3,11 @@ package by.ghoncharko.webproject.command;
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.BankCardService;
 
 
+import java.rmi.server.ServerCloneException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +26,13 @@ public class ShowBankCardsPage implements Command {
             final User user = (User) userFromSession.get();
             final int userId = user.getId();
             final BankCardService bankCardService = BankCardService.getInstance();
-            final List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
-            request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
-            return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
+            try{
+                final List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
+                request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
+                return requestFactory.createForwardResponse(PagePath.BANK_CARDS_PAGE_PATH);
+            }catch (ServiceException e){
+                return requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
+            }
         }
         return requestFactory.createForwardResponse(PagePath.MAIN_PAGE_PATH);
     }

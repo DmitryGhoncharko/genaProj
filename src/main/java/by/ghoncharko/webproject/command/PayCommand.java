@@ -4,6 +4,7 @@ package by.ghoncharko.webproject.command;
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.BankCardService;
 
 import by.ghoncharko.webproject.model.service.OrderService;
@@ -32,22 +33,19 @@ public class PayCommand implements Command {
         if (userFromSession.isPresent()) {
             final User user = (User) userFromSession.get();
             final Integer bankCardId = Integer.valueOf(request.getParameter(CARD_ID_PARAM_NAME));
-            final BankCardService bankCardService = BankCardService.getInstance();
-            final Optional<BankCard> bankCard = bankCardService.getBankCardByCardId(bankCardId);
-            if (bankCard.isPresent()) {
-                final Integer orderId = Integer.valueOf(request.getParameter(ORDER_ID_PARAM_NAME));
-                final Integer userId = user.getId();
-                final Integer drugId = Integer.valueOf(request.getParameter(DRUG_ID_PARAM_NAME));
-                final Integer orderCount = Integer.valueOf(request.getParameter(ORDER_COUNT_PARAM_NAME));
-                final Double finalPrice = Double.valueOf(request.getParameter(ORDER_FINAL_PRICE_PARAM_NAME));
-                final OrderService orderService = OrderService.getInstance();
-                final boolean isNeedRecipe = Boolean.parseBoolean(request.getParameter(IS_NEED_RECIPE_PARAM_NAME));
-                final boolean isPayed = orderService.pay(userId, drugId, isNeedRecipe, orderCount, finalPrice, orderId, bankCardId);
+            final Integer orderId = Integer.valueOf(request.getParameter(ORDER_ID_PARAM_NAME));
+            final Integer userId = user.getId();
+            final Integer drugId = Integer.valueOf(request.getParameter(DRUG_ID_PARAM_NAME));
+            final Integer orderCount = Integer.valueOf(request.getParameter(ORDER_COUNT_PARAM_NAME));
+            final OrderService orderService = OrderService.getInstance();
+            try {
+                final boolean isPayed = orderService.pay(userId, drugId, orderCount, orderId, bankCardId);
                 if (isPayed) {
                     return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
                 }
+            } catch (ServiceException e) {
+                requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
             }
-
         }
         request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);
         return requestFactory.createForwardResponse("/controller?command=order");

@@ -3,6 +3,7 @@ package by.ghoncharko.webproject.command;
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.RolesHolder;
 import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.DrugService;
 
 
@@ -20,20 +21,17 @@ public class DeleteDrugCommand implements Command {
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-        final Optional<Object> userFromSession = request.retrieveFromSession(USER_FROM_SESSION_ATTRIBUTE_NAME);
-        if (userFromSession.isPresent()) {
-            final User user = (User) userFromSession.get();
-            final boolean userRoleAsPharmacy = user.getRole().equals(RolesHolder.PHARMACY);
-            if (userRoleAsPharmacy) {
-                final int drugId = Integer.parseInt(request.getParameter(DRUG_ID_PARAM_NAME));
-                final DrugService drugService = DrugService.getInstance();
-                final boolean drugIsDeleted = drugService.deleteByDrugId(drugId);
-                if (drugIsDeleted) {
-                    return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
-                }
-            }
-        }
 
+        final int drugId = Integer.parseInt(request.getParameter(DRUG_ID_PARAM_NAME));
+        final DrugService drugService = DrugService.getInstance();
+        try {
+            final boolean drugIsDeleted = drugService.deleteByDrugId(drugId);
+            if (drugIsDeleted) {
+                return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+            }
+        } catch (ServiceException e) {
+            return requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
+        }
         request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_MESSAGE);
         return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
     }

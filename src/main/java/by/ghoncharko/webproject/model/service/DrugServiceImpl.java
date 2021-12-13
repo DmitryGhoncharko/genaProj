@@ -4,6 +4,7 @@ package by.ghoncharko.webproject.model.service;
 import by.ghoncharko.webproject.entity.Drug;
 import by.ghoncharko.webproject.entity.Producer;
 import by.ghoncharko.webproject.exception.DaoException;
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
 
 import by.ghoncharko.webproject.model.dao.DrugDao;
@@ -22,76 +23,78 @@ import java.util.Optional;
 public class DrugServiceImpl implements DrugService {
     private static final Logger LOG = LogManager.getLogger(DrugServiceImpl.class);
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
-    private DrugServiceImpl(){
+
+    private DrugServiceImpl() {
     }
+
     @Override
-    public List<Drug> findAll() {
+    public List<Drug> findAll() throws ServiceException {
         final Connection connection = connectionPool.getConnection();
+        final DrugDao drugDao = new DrugDaoImpl(connection);
         try {
-            final DrugDao drugDao = new DrugDaoImpl(connection);
             return drugDao.findAll();
         } catch (DaoException e) {
-            LOG.error("dao exception in method findAll drugService", e);
-            return Collections.emptyList();
+            LOG.error("Dao exception in method findAll drugService", e);
+            throw new ServiceException("Cannot find all drugs", e);
         } finally {
             Service.connectionClose(connection);
         }
     }
 
     @Override
-    public List<Drug> findAllWhereNeedRecipe() {
+    public List<Drug> findAllWhereNeedRecipe() throws ServiceException {
         final Connection connection = connectionPool.getConnection();
-        final  DrugDao drugDao = new DrugDaoImpl(connection);
-        try{
+        final DrugDao drugDao = new DrugDaoImpl(connection);
+        try {
             return drugDao.findAllWhereNeedRecipe();
-        }catch (DaoException e){
-
-        }finally {
+        } catch (DaoException e) {
+            LOG.error("Cannot find all where need recipe", e);
+            throw new ServiceException("Cannot find all where need recipe", e);
+        } finally {
             Service.connectionClose(connection);
         }
-        return Collections.emptyList();
     }
 
     @Override
-    public boolean update(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) {
-        final Connection connection = connectionPool.getConnection();
-        Service.autoCommitFalse(connection);
+    public boolean update(Integer drugId,String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) throws ServiceException {
         final boolean isValidData = ValidateCreateOrUpdatePreparate.getInstance().validate(drugName, drugPrice, drugCount, drugDescription, drugProducerName, drugNeedRecipe);
-        if(isValidData){
+        if (isValidData) {
+            final Connection connection = connectionPool.getConnection();
+            Service.autoCommitFalse(connection);
             final DrugDao drugDao = new DrugDaoImpl(connection);
             final ProducerDao producerDao = new ProducerDaoImpl(connection);
             try {
                 final Optional<Producer> producerFromDB = producerDao.findProducerByName(drugProducerName);
                 if (producerFromDB.isPresent()) {
                     final Producer producer = producerFromDB.get();
-                    updateDrugIfProducerIsExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugDao, producer);
-                } else {
-                    updateDrugIfProduserIsNotExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName, drugDao, producerDao);
+                    return updateDrugIfProducerIsExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugDao, producer);
                 }
-                return true;
+              return   updateDrugIfProduserIsNotExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName, drugDao, producerDao);
             } catch (DaoException e) {
-                LOG.error("DaoException", e);
+                LOG.error("Cannot update drug", e);
                 Service.rollbackConnection(connection);
+                throw new ServiceException("Cannot update drug", e);
             } finally {
                 Service.connectionClose(connection);
             }
         }
-        Service.rollbackConnection(connection);
         return false;
     }
 
-    private void updateDrugIfProduserIsNotExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName, DrugDao drugDao, ProducerDao producerDao) throws DaoException {
+    private boolean updateDrugIfProduserIsNotExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName, DrugDao drugDao, ProducerDao producerDao) throws DaoException {
         final Producer producerForCreate = new Producer.Builder().
                 withName(drugProducerName).build();
-        final  Producer producer =  producerDao.create(producerForCreate);
+        final Producer producer = producerDao.create(producerForCreate);
         final Drug drugForUpdate = createDrug(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, producer);
         drugDao.update(drugForUpdate);
+        return true;
     }
 
 
-    private void updateDrugIfProducerIsExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, DrugDao drugDao, Producer producer) throws DaoException {
+    private boolean updateDrugIfProducerIsExistInDatabase(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, DrugDao drugDao, Producer producer) throws DaoException {
         final Drug drugForUpdate = createDrug(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, producer);
         drugDao.update(drugForUpdate);
+        return true;
     }
 
     private Drug createDrug(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, Producer producerForCreate) {
@@ -107,42 +110,44 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
-    public List<Drug> findAllWhereCountMoreThanZeroByUserId(Integer userId) {
-        final Connection connection = connectionPool.getConnection();
-
-        try {
-            final DrugDao drugDao = new DrugDaoImpl(connection);
-            return drugDao.findAllWhereCountMoreThanZeroWithStatusActiveByUserId(userId);
-        } catch (DaoException e) {
-            LOG.error("dao exception in methot findAll drugService", e);
+    public List<Drug> findAllWhereCountMoreThanZeroByUserIdAndCalculateCount(Integer userId) throws ServiceException {
+        if (userId == null) {
             return Collections.emptyList();
+        }
+        final Connection connection = connectionPool.getConnection();
+        final DrugDao drugDao = new DrugDaoImpl(connection);
+        try {
+            return drugDao.findAllWhereCountMoreThanZeroWithStatusActiveByUserIdAndCalculateCount(userId);
+        } catch (DaoException e) {
+            LOG.error("Cannot find all drugs where count more than zero by user id", e);
+            throw new ServiceException("Cannot find all drugs where count more than zero by user id", e);
         } finally {
             Service.connectionClose(connection);
         }
     }
 
     @Override
-    public List<Drug> findAllWhereCountMoreThanZero() {
+    public List<Drug> findAllWhereCountMoreThanZero() throws ServiceException {
         final Connection connection = connectionPool.getConnection();
+        final DrugDao drugDao = new DrugDaoImpl(connection);
         try {
-            final DrugDao drugDao = new DrugDaoImpl(connection);
             return drugDao.findAllWhereCountMoreThanZero();
         } catch (DaoException e) {
-            LOG.error("dao exception in methot findAll drugService", e);
+            LOG.error("Cannot find all drugs where count more than zero", e);
+            throw new ServiceException("Cannot find all drugs where count more than zero", e);
         } finally {
             Service.connectionClose(connection);
         }
-        return Collections.emptyList();
     }
 
     @Override
-    public boolean create(String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) {
-        final Connection connection = connectionPool.getConnection();
-        Service.autoCommitFalse(connection);
-        final DrugDao drugDao = new DrugDaoImpl(connection);
-        final ProducerDao producerDao = new ProducerDaoImpl(connection);
-        final  boolean isValidData = ValidateCreateOrUpdatePreparate.getInstance().validate(drugName,drugPrice,drugCount,drugDescription,drugProducerName,drugNeedRecipe);
-        if(isValidData){
+    public boolean create(String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) throws ServiceException {
+        final boolean isValidData = ValidateCreateOrUpdatePreparate.getInstance().validate(drugName, drugPrice, drugCount, drugDescription, drugProducerName, drugNeedRecipe);
+        if (isValidData) {
+            final Connection connection = connectionPool.getConnection();
+            Service.autoCommitFalse(connection);
+            final ProducerDao producerDao = new ProducerDaoImpl(connection);
+            final DrugDao drugDao = new DrugDaoImpl(connection);
             try {
                 Optional<Producer> producer = producerDao.findProducerByName(drugProducerName);
                 if (producer.isPresent()) {
@@ -155,13 +160,13 @@ public class DrugServiceImpl implements DrugService {
                 }
                 return true;
             } catch (DaoException e) {
+                LOG.error("Cannot create drug", e);
                 Service.rollbackConnection(connection);
-                LOG.error("DaoException", e);
+                throw new ServiceException("Cannot create drug", e);
             } finally {
                 Service.connectionClose(connection);
             }
         }
-        Service.rollbackConnection(connection);
         return false;
     }
 
@@ -177,26 +182,28 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
-    public boolean deleteByDrugId(Integer drugId) {
+    public boolean deleteByDrugId(Integer drugId) throws ServiceException {
+        if(drugId==null){
+            return false;
+        }
         final Connection connection = connectionPool.getConnection();
+        final DrugDao drugDao = new DrugDaoImpl(connection);
         try {
-            final DrugDao drugDao = new DrugDaoImpl(connection);
             return drugDao.deleteByDrugId(drugId);
         } catch (DaoException e) {
-            LOG.error("DaoException", e);
+            LOG.error("Cannot delete drug by id", e);
+            throw new ServiceException("Cannot delete drug by id", e);
         } finally {
             Service.connectionClose(connection);
         }
-        return false;
     }
 
-     static DrugServiceImpl getInstance() {
+    static DrugServiceImpl getInstance() {
         return Holder.INSTANCE;
     }
 
     private static class Holder {
         private static final DrugServiceImpl INSTANCE = new DrugServiceImpl();
     }
-
 
 }

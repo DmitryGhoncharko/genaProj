@@ -27,17 +27,35 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<style>
+    .flex {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    body {
+        margin: 0;
+        padding: 0
+    }
+    .h100 {
+
+        flex-grow: 3
+    }
+
+
+</style>
 <head>
     <title>${pageTitle}</title>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container-fluid flex">
     <div class="row">
         <div class="col-md-12">
 <jsp:include page="header.jsp"></jsp:include>
         </div>
     </div>
-    <div class="row">
+    <div class="row h-100">
         <div class="col-md-12">
             <div class="carousel slide" id="carousel-406496">
                 <ol class="carousel-indicators">
@@ -50,7 +68,7 @@
                 </ol>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img class="d-block w-100" alt="Carousel Bootstrap First" src="${pageContext.request.contextPath}/static/main1.png"/>
+                        <img class="d-block w-100 h-100" alt="Carousel Bootstrap First" src="${pageContext.request.contextPath}/static/main1.png"/>
                         <div class="carousel-caption">
                             <h4>
                                 First Thumbnail label
@@ -61,7 +79,7 @@
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img class="d-block w-100" alt="Carousel Bootstrap Second" src="${pageContext.request.contextPath}/static/main2.png"/>
+                        <img class="d-block w-100 h-100" alt="Carousel Bootstrap Second" src="${pageContext.request.contextPath}/static/main2.png"/>
                         <div class="carousel-caption">
                             <h4>
                                 Second Thumbnail label
@@ -72,7 +90,7 @@
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img class="d-block w-100" alt="Carousel Bootstrap Third" src="${pageContext.request.contextPath}/static/main3.png"/>
+                        <img class="d-block w-100 h-100" alt="Carousel Bootstrap Third" src="${pageContext.request.contextPath}/static/main3.png"/>
                         <div class="carousel-caption">
                             <h4>
                                 Third Thumbnail label

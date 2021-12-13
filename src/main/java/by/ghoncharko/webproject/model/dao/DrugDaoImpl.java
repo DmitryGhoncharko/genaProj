@@ -35,7 +35,7 @@ public class DrugDaoImpl implements DrugDao {
             " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id" +
             " WHERE count > 0";
-    private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID = "SELECT DISTINCT" +
+    private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID_AND_CALCULATE_COUNT = "SELECT DISTINCT" +
             " drug.id, name, price, drug.count- IFNULL(d.count,0), description, producer.id, producer_name, need_receip" +
             " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id " +
@@ -188,11 +188,11 @@ public class DrugDaoImpl implements DrugDao {
         return drugList;
     }
     @Override
-    public List<Drug> findAllWhereCountMoreThanZeroWithStatusActiveByUserId(Integer userId) throws DaoException {
+    public List<Drug> findAllWhereCountMoreThanZeroWithStatusActiveByUserIdAndCalculateCount(Integer userId) throws DaoException {
         List<Drug> drugList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID);
+            preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID_AND_CALCULATE_COUNT);
             preparedStatement.setInt(1,userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {

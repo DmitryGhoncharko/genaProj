@@ -2,6 +2,7 @@ package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.BankCardService;
 
 
@@ -25,9 +26,13 @@ public class DeleteBankCardCommand implements Command {
             final Integer userId = user.getId();
             final Integer cardId = Integer.valueOf(request.getParameter(CARD_ID_PARAM_NAME));
             final BankCardService bankCardService = BankCardService.getInstance();
-            final boolean bankCardIsDeleted = bankCardService.deleteCardByCardIdAndUserId(cardId,userId);
-            if (bankCardIsDeleted) {
-                return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+            try{
+                final boolean bankCardIsDeleted = bankCardService.deleteCardByCardIdAndUserId(cardId,userId);
+                if (bankCardIsDeleted) {
+                    return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+                }
+            }catch (ServiceException e){
+                return requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
             }
 
         }

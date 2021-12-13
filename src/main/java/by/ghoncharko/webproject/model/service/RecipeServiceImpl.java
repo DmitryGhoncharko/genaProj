@@ -3,7 +3,6 @@ package by.ghoncharko.webproject.model.service;
 import by.ghoncharko.webproject.entity.Recipe;
 import by.ghoncharko.webproject.exception.DaoException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
-import by.ghoncharko.webproject.model.dao.Dao;
 import by.ghoncharko.webproject.model.dao.RecipeDao;
 import by.ghoncharko.webproject.model.dao.RecipeDaoImpl;
 import by.ghoncharko.webproject.validator.ValidateCreateRecipe;
@@ -27,6 +26,7 @@ public class RecipeServiceImpl implements RecipeService {
         final Connection connection = connectionPool.getConnection();
         final RecipeDao recipeDao = new RecipeDaoImpl(connection);
         try {
+
             return recipeDao.findRecipesByUserId(userId);
         } catch (DaoException e) {
 
@@ -37,7 +37,20 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    public boolean deleteRecipeByUserIdAndDrugId(Integer userId, Integer drugId) {
+        final Connection connection = connectionPool.getConnection();
+        final RecipeDao recipeDao = new RecipeDaoImpl(connection);
+        try{
+           return recipeDao.deleteByUserIdAndDrugId(userId, drugId);
+        }catch (DaoException e){
+
+        }
+        return false;
+    }
+
+    @Override
     public boolean createRecipeByUserIdAndDrugId(Integer userId, Integer drugId, Date dateEnd) {
+       //validate
         final boolean dataIsValid = ValidateCreateRecipe.getInstance().validate(userId, drugId, dateEnd);
         if (dataIsValid) {
             final Connection connection = connectionPool.getConnection();
@@ -45,7 +58,7 @@ public class RecipeServiceImpl implements RecipeService {
             final String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
             final Date dateStart = Date.valueOf(timeStamp);
             try {
-                Optional<Recipe> recipeFromDB = recipeDao.findEntityByUserIdAndDrugId(userId, drugId);
+               final Optional<Recipe> recipeFromDB = recipeDao.findEntityByUserIdAndDrugId(userId, drugId);
                 if(recipeFromDB.isPresent()){
                    return recipeDao.updateDateStartAndDateEndByUserIdAndDrugId(userId, drugId, dateStart,dateEnd);
                 }

@@ -10,7 +10,7 @@ public class AcceptRecipeRequestCommand implements Command {
     private static final String USER_ID_PARAM_NAME = "userId";
     private static final String DRUG_ID_PARAM_NAME = "drugId";
     private static final String UPDATED_DATE_END_PARAM_NAME = "updatedDateEnd";
-    private static final String ERROR_ATRIBUTE_NAME = "error";
+    private static final String ERROR_ATRRIBUTE_NAME = "error";
     private static final String ERROR_MESSAGE = "err";
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
@@ -28,7 +28,7 @@ public class AcceptRecipeRequestCommand implements Command {
         if (recipeRequestIsAccepted) {
             return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
         }
-        request.addAttributeToJsp(ERROR_ATRIBUTE_NAME, ERROR_MESSAGE);
+        request.addAttributeToJsp(ERROR_ATRRIBUTE_NAME, ERROR_MESSAGE);
         return requestFactory.createForwardResponse(PagePath.RECIPE_REQUEST_PAGE_PATH);
     }
 

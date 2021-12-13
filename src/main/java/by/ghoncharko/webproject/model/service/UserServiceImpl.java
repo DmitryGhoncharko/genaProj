@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,31 +28,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAll() throws ServiceException {
         final Connection connection = connectionPool.getConnection();
+        final UserDao userDao = new UserDaoImpl(connection);
         try {
-            UserDao userDao = new UserDaoImpl(connection);
             return userDao.findAll();
         } catch (DaoException e) {
-            LOG.error("DaoException", e);
-            return Collections.emptyList();
+            LOG.error("cannot find all users",e);
+            throw new ServiceException("cannot find all users",e);
         } finally {
             Service.connectionClose(connection);
         }
     }
 
     @Override
-    public List<User> findAllClients() {
+    public List<User> findAllClients() throws ServiceException {
         final Connection connection = connectionPool.getConnection();
         final UserDao userDao = new UserDaoImpl(connection);
         try {
             return userDao.findAllClients();
         } catch (DaoException e) {
             LOG.error("DaoException", e);
+            throw new ServiceException("Cannot find all clients",e);
         } finally {
             Service.connectionClose(connection);
         }
-        return Collections.emptyList();
+
     }
 
     @Override
@@ -83,8 +83,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> createClient(String login, String password, String firstName, String lastName) throws ServiceException {
         final Connection connection = connectionPool.getConnection();
-        final boolean isValideData = ValidateRegistration.getInstance().validateRegistration(login, password, firstName, lastName);
-        if (isValideData) {
+        final boolean isValidData = ValidateRegistration.getInstance().validateRegistration(login, password, firstName, lastName);
+        if (isValidData) {
             try {
                 final String hashedPassword = BCrypt.hashpw(password, SALT);
                 final User user = new User.Builder().

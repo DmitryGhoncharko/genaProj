@@ -2,6 +2,7 @@ package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
 
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.DrugService;
 
 import java.util.Optional;
@@ -32,9 +33,13 @@ public class CreateDrugCommand implements Command {
             final String drugDescription = request.getParameter(DRUG_DESCRIPTION_PARAM_NAME);
             final String drugProducerName = request.getParameter(DRUG_PRODUCER_NAME_PARAM_NAME);
             final boolean drugNeedRecipe = Boolean.parseBoolean(request.getParameter(DRUG_NEED_RECIPE_PARAM_NAME));
-            final boolean drugIsCreated = drugService.create(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName);
-            if (drugIsCreated) {
-                return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+            try{
+                final boolean drugIsCreated = drugService.create(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName);
+                if (drugIsCreated) {
+                    return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+                }
+            }catch (ServiceException e){
+                requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
             }
         }
         request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);

@@ -13,7 +13,7 @@ public interface UserService extends Service<User> {
 
     Optional<User> createClient(String login, String password, String firstName, String lastName) throws ServiceException;
 
-    List<User> findAllClients();
+    List<User> findAllClients() throws ServiceException;
     static UserService getInstance() {
         return UserServiceImpl.getInstance();
     }

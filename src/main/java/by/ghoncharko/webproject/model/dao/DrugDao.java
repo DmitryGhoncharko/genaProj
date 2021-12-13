@@ -25,7 +25,7 @@ public interface DrugDao extends Dao<Drug> {
      * @throws DaoException when cannot find drugs
      * @see Drug
      */
-    List<Drug> findAllWhereCountMoreThanZeroWithStatusActiveByUserId(Integer userId) throws DaoException;
+    List<Drug> findAllWhereCountMoreThanZeroWithStatusActiveByUserIdAndCalculateCount(Integer userId) throws DaoException;
 
     /**
      * @param drugId accept drug id

@@ -2,6 +2,7 @@ package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.BankCardService;
 
 
@@ -25,9 +26,13 @@ public class AddBankCardCommand implements Command {
             final BankCardService bankCardService = BankCardService.getInstance();
             final double balance = Double.parseDouble(request.getParameter(BALANCE_PARAM_NAME));
             final int userId = user.getId();
-            final boolean bankCardAdded = bankCardService.addBankCard(balance, userId);
-            if (bankCardAdded) {
-                return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+            try{
+                final boolean bankCardAdded = bankCardService.addBankCard(balance, userId);
+                if (bankCardAdded) {
+                    return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
+                }
+            }catch (ServiceException e){
+                return requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
             }
         }
         request.addAttributeToJsp(ERROR_ATTRIBUTE_NAME, ERROR_ATTRIBUTE_MESSAGE);

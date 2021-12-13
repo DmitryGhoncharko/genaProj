@@ -3,6 +3,7 @@ package by.ghoncharko.webproject.controller;
 
 import by.ghoncharko.webproject.command.CommandRequest;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
@@ -64,4 +65,8 @@ public class WrappingCommandRequest implements CommandRequest {
         request.getSession(true);
     }
 
+    @Override
+    public String getURL() {
+        return String.valueOf(request.getRequestURL());
+    }
 }

@@ -31,7 +31,7 @@ public class SimpleRequestFactory implements RequestFactory {
         return Holder.INSTANCE;
     }
 
-    public static class Holder {
+    private static class Holder {
         private static final SimpleRequestFactory INSTANCE = new SimpleRequestFactory();
     }
 }

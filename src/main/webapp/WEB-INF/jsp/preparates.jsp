@@ -123,11 +123,6 @@
                     <div class="col-md-6">
                         <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
                             <input hidden="" name="drugId" value="${drug.id}">
-                            <input hidden="" name="drugNeedRecipe" value="${drug.needRecipe}">
-                            <input hidden="" name="drugName"  value="${drug.name}">
-                            <input hidden="" name="drugCount" value="${drug.count}">
-                            <input hidden="" name="drugPrice" value="${drug.price}">
-                            <input hidden="" name="drugProducerName" value="${drug.producer.name}">
                                 <div class="card" style="width: 18rem;">
                                     <div class="card-body">
                                         <h5 class="card-title">${drug.name}</h5>

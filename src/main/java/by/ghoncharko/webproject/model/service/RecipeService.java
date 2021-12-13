@@ -13,4 +13,6 @@ public interface RecipeService extends Service<Recipe> {
     }
 
     boolean createRecipeByUserIdAndDrugId(Integer userId, Integer drugId,Date dateEnd);
+
+    boolean deleteRecipeByUserIdAndDrugId(Integer userId, Integer drugId);
 }

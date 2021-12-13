@@ -63,6 +63,12 @@
                 </c:if>
             </ul>
         </div>
+
+        <a class="btn btn-primary" href="/controller?command=changeLanguage&lang=en_US" type="radio" aria-autocomplete="off" aria-checked >en</a>
+
+
+        <a class="btn btn-primary" href="/controller?command=changeLanguage&lang=ru_RU" type="radio" aria-autocomplete="off" aria-checked style="margin-right: 10px">ru</a>
+
         <c:choose>
             <c:when test="${not empty sessionScope.user}">
                 <a class="btn btn-primary" href="/controller?command=logout" role="button">Logout</a>
