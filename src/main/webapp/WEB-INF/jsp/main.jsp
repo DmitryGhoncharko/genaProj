@@ -56,7 +56,7 @@
         </div>
     </div>
     <div class="row h-100">
-        <div class="col-md-12">
+        <div class="col-md-12 h-100">
             <div class="carousel slide" id="carousel-406496">
                 <ol class="carousel-indicators">
                     <li data-slide-to="0" data-target="#carousel-406496" class="active">

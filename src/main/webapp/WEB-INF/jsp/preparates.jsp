@@ -169,7 +169,17 @@
             </c:forEach>
         </div>
     </div>
-
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination" style="padding-left: 50%">
+                    <c:forEach var="pageNum" begin="1" end="${requestScope.maxPagesCount}">
+                        <li class="page-item <c:if test="${pageNum eq requestScope.currentPageNumber}">active</c:if>"><a class="page-link" href="/controller?command=preparates&page=${pageNum}">${pageNum}</a></li>
+                    </c:forEach>
+                </ul>
+            </nav>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <jsp:include page="footer.jsp"></jsp:include>

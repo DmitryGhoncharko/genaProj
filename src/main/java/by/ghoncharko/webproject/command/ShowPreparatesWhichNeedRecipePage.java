@@ -22,7 +22,8 @@ public class ShowPreparatesWhichNeedRecipePage implements Command {
         final String userLastName = request.getParameter("userLastName");
         final Date currentDate = new Date(new java.util.Date().getTime());
         try{
-            final List<Drug> drugList = drugService.findAllWhereNeedRecipe();
+            final Integer currentPageNumber = Integer.valueOf(request.getParameter("page"));
+            final List<Drug> drugList = drugService.findAllWhereNeedRecipeLimitOffsetPagination(currentPageNumber);
             request.addAttributeToJsp("currentDate",currentDate);
             request.addAttributeToJsp("userId",userId);
             request.addAttributeToJsp("userFirstName",userFirstName);

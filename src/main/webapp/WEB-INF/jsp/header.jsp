@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="jwds" uri="by.ghoncharko.webproject" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="by.ghoncharko.webproject.entity.RolesHolder"%>
 
@@ -29,7 +30,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/controller?command=preparates">Preparates</a>
+                    <a class="nav-link" href="/controller?command=preparates&page=1">Preparates</a>
                 </li>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
                     <li class="nav-item">
@@ -60,6 +61,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/controller?command=usersAsClients">Create recipe for clent</a>
                     </li>
+                </c:if>
+                <c:if test="${not empty sessionScope.user}">
+                <li class="nav-item">
+                    <a class="nav-link" style="color: dodgerblue">
+                    <jwds:welcomeUser text="Привет"/>
+                    </a>
+                </li
                 </c:if>
             </ul>
         </div>

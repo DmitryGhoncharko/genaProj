@@ -17,16 +17,22 @@ public interface DrugDao extends Dao<Drug> {
      * @throws DaoException when cannot found drugs
      * @see Drug
      */
-    List<Drug> findAllWhereCountMoreThanZero() throws DaoException;
+    List<Drug> findAllWhereCountMoreThanZeroLimitOffsetPagination(Integer limit, Integer offset) throws DaoException;
 
+    int findCountAllWhereCountMoreThanZero() throws DaoException;
     /**
      * @param userId accept userId
      * @return List<Drug>
      * @throws DaoException when cannot find drugs
      * @see Drug
      */
-    List<Drug> findAllWhereCountMoreThanZeroWithStatusActiveByUserIdAndCalculateCount(Integer userId) throws DaoException;
+    List<Drug> findAllWhereCountMoreThanZeroWithStatusActiveByUserIdAndCalculateCountLimitOffsetPagination(Integer userId,Integer limit, Integer offset) throws DaoException;
 
+    int findAllWhereCountMoreThanZeroWithStatusActiveByUserId(Integer userId) throws DaoException;
+
+    List<Drug> findAllLimitOffsetPagination(Integer limit, Integer offset) throws DaoException;
+
+    int findCountAllDrugs() throws DaoException;
     /**
      * @param drugId accept drug id
      * @return count drugs
@@ -41,7 +47,7 @@ public interface DrugDao extends Dao<Drug> {
      * @throws DaoException when cannot update drug
      */
     boolean update(Integer count, Integer drugId) throws DaoException;
-
-    List<Drug> findAllWhereNeedRecipe() throws DaoException;
+    List<Drug> findAllWhereNeedRecipeLimitOffsetPagination(Integer limit, Integer offset) throws DaoException;
+    int findCountAllDrugsWhereNeedRecipe() throws DaoException;
     boolean deleteByDrugId(Integer drugId) throws DaoException;
 }

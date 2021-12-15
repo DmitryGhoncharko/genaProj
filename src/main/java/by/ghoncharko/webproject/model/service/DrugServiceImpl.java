@@ -22,6 +22,7 @@ import java.util.Optional;
 
 public class DrugServiceImpl implements DrugService {
     private static final Logger LOG = LogManager.getLogger(DrugServiceImpl.class);
+    private static final int LIMIT = 5;
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     private DrugServiceImpl() {
@@ -29,10 +30,16 @@ public class DrugServiceImpl implements DrugService {
 
     @Override
     public List<Drug> findAll() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public List<Drug> findAllLimitOffsetPagination(Integer pageNumber) throws ServiceException {
         final Connection connection = connectionPool.getConnection();
         final DrugDao drugDao = new DrugDaoImpl(connection);
         try {
-            return drugDao.findAll();
+            final int offset = LIMIT * (pageNumber - 1);
+            return drugDao.findAllLimitOffsetPagination(LIMIT, offset);
         } catch (DaoException e) {
             LOG.error("Dao exception in method findAll drugService", e);
             throw new ServiceException("Cannot find all drugs", e);
@@ -40,13 +47,27 @@ public class DrugServiceImpl implements DrugService {
             Service.connectionClose(connection);
         }
     }
+    public int findMaxCountPagesForAllDrugs() throws ServiceException{
+        final Connection connection = connectionPool.getConnection();
+        final DrugDao drugDao = new DrugDaoImpl(connection);
+        try{
+            int countDrugs = drugDao.findCountAllDrugs();
+            return  countDrugs/LIMIT;
+        }catch (DaoException e){
+
+        }finally {
+            Service.connectionClose(connection);
+        }
+        return 0;
+    }
 
     @Override
-    public List<Drug> findAllWhereNeedRecipe() throws ServiceException {
+    public List<Drug> findAllWhereNeedRecipeLimitOffsetPagination(Integer pageNumber) throws ServiceException {
         final Connection connection = connectionPool.getConnection();
         final DrugDao drugDao = new DrugDaoImpl(connection);
         try {
-            return drugDao.findAllWhereNeedRecipe();
+            final int offset = LIMIT * (pageNumber - 1);
+            return drugDao.findAllWhereNeedRecipeLimitOffsetPagination(LIMIT,offset);
         } catch (DaoException e) {
             LOG.error("Cannot find all where need recipe", e);
             throw new ServiceException("Cannot find all where need recipe", e);
@@ -56,7 +77,22 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
-    public boolean update(Integer drugId,String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) throws ServiceException {
+    public int findMaxCountPagesForAllNeedRicipesDrugs() throws ServiceException {
+        final Connection connection = connectionPool.getConnection();
+        final DrugDao drugDao = new DrugDaoImpl(connection);
+        try{
+            int countDrugs = drugDao.findCountAllDrugsWhereNeedRecipe();
+            return countDrugs/LIMIT;
+        }catch (DaoException e){
+
+        }finally {
+            Service.connectionClose(connection);
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean update(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) throws ServiceException {
         final boolean isValidData = ValidateCreateOrUpdatePreparate.getInstance().validate(drugName, drugPrice, drugCount, drugDescription, drugProducerName, drugNeedRecipe);
         if (isValidData) {
             final Connection connection = connectionPool.getConnection();
@@ -69,7 +105,7 @@ public class DrugServiceImpl implements DrugService {
                     final Producer producer = producerFromDB.get();
                     return updateDrugIfProducerIsExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugDao, producer);
                 }
-              return   updateDrugIfProduserIsNotExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName, drugDao, producerDao);
+                return updateDrugIfProduserIsNotExistInDatabase(drugId, drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName, drugDao, producerDao);
             } catch (DaoException e) {
                 LOG.error("Cannot update drug", e);
                 Service.rollbackConnection(connection);
@@ -110,14 +146,15 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
-    public List<Drug> findAllWhereCountMoreThanZeroByUserIdAndCalculateCount(Integer userId) throws ServiceException {
+    public List<Drug> findAllWhereCountMoreThanZeroByUserIdAndCalculateCountLimitOffsetPagination(Integer userId, Integer pageNumber) throws ServiceException {
         if (userId == null) {
             return Collections.emptyList();
         }
         final Connection connection = connectionPool.getConnection();
         final DrugDao drugDao = new DrugDaoImpl(connection);
         try {
-            return drugDao.findAllWhereCountMoreThanZeroWithStatusActiveByUserIdAndCalculateCount(userId);
+            final int offset = LIMIT * (pageNumber - 1);
+            return drugDao.findAllWhereCountMoreThanZeroWithStatusActiveByUserIdAndCalculateCountLimitOffsetPagination(userId, LIMIT,offset);
         } catch (DaoException e) {
             LOG.error("Cannot find all drugs where count more than zero by user id", e);
             throw new ServiceException("Cannot find all drugs where count more than zero by user id", e);
@@ -127,17 +164,48 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
-    public List<Drug> findAllWhereCountMoreThanZero() throws ServiceException {
+    public int findMaxCountPagesForAllWhereCountMoreThanZeroWithStatusActiveByUserId(Integer userId) {
+        final Connection connection = connectionPool.getConnection();
+        final DrugDao drugDao = new DrugDaoImpl(connection);
+        try{
+            int countDrugs = drugDao.findAllWhereCountMoreThanZeroWithStatusActiveByUserId(userId);
+          return countDrugs/LIMIT;
+        }catch (DaoException e){
+
+        }finally {
+            Service.connectionClose(connection);
+        }
+        return 0;
+    }
+
+    @Override
+    public List<Drug> findAllWhereCountMoreThanZeroLimitOffsetPagination(Integer pageNumber) throws ServiceException {
         final Connection connection = connectionPool.getConnection();
         final DrugDao drugDao = new DrugDaoImpl(connection);
         try {
-            return drugDao.findAllWhereCountMoreThanZero();
+            final int offset = LIMIT * (pageNumber - 1);
+            return drugDao.findAllWhereCountMoreThanZeroLimitOffsetPagination(LIMIT,offset);
         } catch (DaoException e) {
             LOG.error("Cannot find all drugs where count more than zero", e);
             throw new ServiceException("Cannot find all drugs where count more than zero", e);
         } finally {
             Service.connectionClose(connection);
         }
+    }
+
+    @Override
+    public int findMaxCountPagesForAllWhereCountMoreThanZero() throws ServiceException {
+        final Connection connection = connectionPool.getConnection();
+        final DrugDao drugDao = new DrugDaoImpl(connection);
+        try{
+            int countDrugs = drugDao.findCountAllWhereCountMoreThanZero();
+            return countDrugs/LIMIT;
+        }catch (DaoException e){
+
+        }finally {
+            Service.connectionClose(connection);
+        }
+        throw new ServiceException();
     }
 
     @Override
@@ -183,7 +251,7 @@ public class DrugServiceImpl implements DrugService {
 
     @Override
     public boolean deleteByDrugId(Integer drugId) throws ServiceException {
-        if(drugId==null){
+        if (drugId == null) {
             return false;
         }
         final Connection connection = connectionPool.getConnection();

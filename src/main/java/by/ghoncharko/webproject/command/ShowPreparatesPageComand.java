@@ -32,17 +32,27 @@ public class ShowPreparatesPageComand implements Command {
                 boolean userRoleAsClient = user.getRole().equals(RolesHolder.CLIENT);
                 boolean userRoleAsPahrmacy = user.getRole().equals(RolesHolder.PHARMACY);
                 if (userRoleAsClient) {
-                    final List<Drug> drugList = drugService.findAllWhereCountMoreThanZeroByUserIdAndCalculateCount(user.getId());
+                    final int maxPagesCount = drugService.findMaxCountPagesForAllWhereCountMoreThanZeroWithStatusActiveByUserId(user.getId());
+                    final Integer pageNumber = Integer.valueOf(request.getParameter("page"));
+                    final List<Drug> drugList = drugService.findAllWhereCountMoreThanZeroByUserIdAndCalculateCountLimitOffsetPagination(user.getId(),pageNumber);
+                    request.addAttributeToJsp("maxPagesCount",maxPagesCount);
                     request.addAttributeToJsp(DRUGS_ATTRIBUTE_NAME, drugList);
                     return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
                 }
                 if (userRoleAsPahrmacy) {
-                    List<Drug> drugList = drugService.findAllWhereCountMoreThanZero();
+                    final int maxPagesCount = drugService.findMaxCountPagesForAllDrugs();
+                    final Integer pageNumber = Integer.valueOf(request.getParameter("page"));
+                    final List<Drug> drugList = drugService.findAllLimitOffsetPagination(pageNumber);
+                    request.addAttributeToJsp("maxPagesCount", maxPagesCount);
                     request.addAttributeToJsp("drugs", drugList);
                     return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
                 }
             }
-            List<Drug> drugList = drugService.findAllWhereCountMoreThanZero();
+            final Integer currentPageNumber = Integer.valueOf(request.getParameter("page"));
+            final int maxPagesCount = drugService.findMaxCountPagesForAllWhereCountMoreThanZero();
+           final List<Drug> drugList = drugService.findAllWhereCountMoreThanZeroLimitOffsetPagination(currentPageNumber);
+           request.addAttributeToJsp("currentPageNumber",currentPageNumber);
+           request.addAttributeToJsp("maxPagesCount",maxPagesCount);
             request.addAttributeToJsp("drugs", drugList);
             return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
         } catch (ServiceException e) {
