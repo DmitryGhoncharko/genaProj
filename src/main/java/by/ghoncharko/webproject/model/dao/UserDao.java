@@ -20,6 +20,9 @@ public interface UserDao extends Dao<User> {
      * @see User
      */
     Optional<User> findUserByLogin(String login) throws DaoException;
-
+    List<User> findAllUsersLimitOffsetPagination(Integer limit, Integer offset) throws DaoException;
     List<User> findAllClients() throws DaoException;
+    int findAllUsersCount() throws DaoException;
+    List<User> findAllClientsLimitOffsetPagination(Integer limit, Integer offset) throws DaoException;
+    int findAllClientsCount() throws DaoException;
 }

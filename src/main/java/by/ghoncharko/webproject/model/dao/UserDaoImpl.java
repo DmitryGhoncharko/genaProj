@@ -22,15 +22,21 @@ public class UserDaoImpl implements UserDao {
     private static final String SQL_CREATE_USER = "INSERT INTO user" +
             " (login, password, role_id, first_name, last_name)" +
             " VALUES (?,?,?,?,?)";
-    private static final String SQL_FIND_ALL_USERS = "SELECT" +
+    private static final String SQL_FIND_ALL_USERS_LIMIT_OFFSET_PAGINATION = "SELECT" +
             " user.id,login,password,role_id,first_name,last_name, role.id,role.role_name " +
             " FROM user " +
-            " INNER JOIN role ON user.role_id = role.id";
-    private static final String SQL_FIND_ALL_USERS_AS_CLIENT = "SELECT" +
+            " INNER JOIN role ON user.role_id = role.id" +
+            " LIMIT ? OFFSET ?";
+    private static final String SQL_FIND_ALL_USERS_COUNT = "SELECT" +
+            " COUNT(id) FROM user";
+    private static final String SQL_FIND_ALL_USERS_AS_CLIENT_LIMIT_OFFSET_PAGINATION = "SELECT" +
             " user.id,login,password,first_name,last_name, role.id,role.role_name " +
             " FROM user " +
             " INNER JOIN role ON user.role_id = role.id" +
-            " WHERE user.role_id = 1";
+            " WHERE user.role_id = 1" +
+            " LIMIT ? OFFSET ?";
+    private static final String SQL_FIND_ALL_USERS_AS_CLIENT_COUNT = "SELECT" +
+            " COUNT(id) FROM user";
     private static final String SQL_FIND_USER_BY_ID = "SELECT" +
             " user.id,login,password,role_id,first_name,last_name, role.id,role.role_name" +
             " FROM user" +
@@ -85,12 +91,61 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public List<User> findAllUsersLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
+        List<User> userList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_FIND_ALL_USERS_LIMIT_OFFSET_PAGINATION);
+            preparedStatement.setInt(1,limit);
+            preparedStatement.setInt(2,offset);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                User user = new User.Builder().
+                        withId(resultSet.getInt(1)).
+                        withLogin(resultSet.getString(2)).
+                        withPassword(resultSet.getString(3)).
+                        withRole(new Role.Builder().
+                                withId(resultSet.getInt(4)).
+                                withRoleName(resultSet.getString(5)).
+                                build()).
+                        withFirstName(resultSet.getString(6)).
+                        withLastName(resultSet.getString(7)).
+                        build();
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot find all users", e);
+            throw new DaoException("cannot find all users", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        return userList;
+    }
+
+    @Override
+    public int findAllUsersCount() throws DaoException {
+        Statement statement = null;
+        try{
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS_COUNT);
+            if(resultSet.next()){
+                return resultSet.getInt(1);
+            }
+        }catch (SQLException e){
+
+        }finally {
+            Dao.closeStatement(statement);
+        }
+        throw new DaoException();
+    }
+
+    @Override
     public List<User> findAll() throws DaoException {
         List<User> userList = new ArrayList<>();
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS);
+            ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS_LIMIT_OFFSET_PAGINATION);
             while (resultSet.next()) {
                 User user = new User.Builder().
                         withId(resultSet.getInt(1)).
@@ -120,7 +175,7 @@ public class UserDaoImpl implements UserDao {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS_AS_CLIENT);
+            ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS_AS_CLIENT_LIMIT_OFFSET_PAGINATION);
             while (resultSet.next()) {
                 User user = new User.Builder().
                         withId(resultSet.getInt(1)).
@@ -142,6 +197,55 @@ public class UserDaoImpl implements UserDao {
             Dao.closeStatement(statement);
         }
         return userList;
+    }
+
+    @Override
+    public List<User> findAllClientsLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
+        List<User> userList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_FIND_ALL_USERS_AS_CLIENT_LIMIT_OFFSET_PAGINATION);
+            preparedStatement.setInt(1,limit);
+            preparedStatement.setInt(2,offset);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                User user = new User.Builder().
+                        withId(resultSet.getInt(1)).
+                        withLogin(resultSet.getString(2)).
+                        withPassword(resultSet.getString(3)).
+                        withFirstName(resultSet.getString(4)).
+                        withLastName(resultSet.getString(5)).
+                        withRole(new Role.Builder().
+                                withId(resultSet.getInt(6)).
+                                withRoleName(resultSet.getString(7)).
+                                build()).
+                        build();
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot find all users", e);
+            throw new DaoException("cannot find all users", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        return userList;
+    }
+
+    @Override
+    public int findAllClientsCount() throws DaoException {
+        Statement statement = null;
+        try{
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS_AS_CLIENT_COUNT);
+            if(resultSet.next()){
+                return resultSet.getInt(1);
+            }
+        }catch (SQLException e){
+
+        }finally {
+            Dao.closeStatement(statement);
+        }
+        throw new DaoException();
     }
 
     @Override

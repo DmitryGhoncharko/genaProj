@@ -18,7 +18,10 @@ public class ShowUsersAsClientPage implements Command {
     public CommandResponse execute(CommandRequest request) {
         final UserService userService = UserService.getInstance();
        try{
-           List<User> userList = userService.findAllClients();
+           Integer currentPage = Integer.valueOf(request.getParameter("page"));
+           int maxPagesCount = userService.findMaxPagesForUsersAsClients();
+           List<User> userList = userService.findAllClientsLimitOffsetPagination(currentPage);
+           request.addAttributeToJsp("maxPagesCount",maxPagesCount);
            request.addAttributeToJsp("users",userList);
            return requestFactory.createForwardResponse(PagePath.USERS_PAGE_PATH);
        }catch (ServiceException e){

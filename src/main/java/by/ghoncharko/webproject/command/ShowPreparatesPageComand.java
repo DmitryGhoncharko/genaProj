@@ -33,16 +33,18 @@ public class ShowPreparatesPageComand implements Command {
                 boolean userRoleAsPahrmacy = user.getRole().equals(RolesHolder.PHARMACY);
                 if (userRoleAsClient) {
                     final int maxPagesCount = drugService.findMaxCountPagesForAllWhereCountMoreThanZeroWithStatusActiveByUserId(user.getId());
-                    final Integer pageNumber = Integer.valueOf(request.getParameter("page"));
-                    final List<Drug> drugList = drugService.findAllWhereCountMoreThanZeroByUserIdAndCalculateCountLimitOffsetPagination(user.getId(),pageNumber);
+                    final Integer currentPageNumber = Integer.valueOf(request.getParameter("page"));
+                    final List<Drug> drugList = drugService.findAllWhereCountMoreThanZeroByUserIdAndCalculateCountLimitOffsetPagination(user.getId(),currentPageNumber);
+                    request.addAttributeToJsp("currentPageNumber",currentPageNumber);
                     request.addAttributeToJsp("maxPagesCount",maxPagesCount);
                     request.addAttributeToJsp(DRUGS_ATTRIBUTE_NAME, drugList);
                     return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
                 }
                 if (userRoleAsPahrmacy) {
                     final int maxPagesCount = drugService.findMaxCountPagesForAllDrugs();
-                    final Integer pageNumber = Integer.valueOf(request.getParameter("page"));
-                    final List<Drug> drugList = drugService.findAllLimitOffsetPagination(pageNumber);
+                    final Integer currentPageNumber = Integer.valueOf(request.getParameter("page"));
+                    final List<Drug> drugList = drugService.findAllLimitOffsetPagination(currentPageNumber);
+                    request.addAttributeToJsp("currentPageNumber",currentPageNumber);
                     request.addAttributeToJsp("maxPagesCount", maxPagesCount);
                     request.addAttributeToJsp("drugs", drugList);
                     return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);

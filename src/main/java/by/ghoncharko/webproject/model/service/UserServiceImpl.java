@@ -21,6 +21,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
     private static final String SALT = BCrypt.gensalt();
+    private static final int LIMIT = 10;
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     private UserServiceImpl() {
@@ -42,11 +43,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllClients() throws ServiceException {
+    public List<User> findAllLimitOffsetPagination(Integer currentPage) throws ServiceException {
         final Connection connection = connectionPool.getConnection();
         final UserDao userDao = new UserDaoImpl(connection);
         try {
-            return userDao.findAllClients();
+            int offset = LIMIT*(currentPage-1);
+            return userDao.findAllUsersLimitOffsetPagination(LIMIT, offset);
+        } catch (DaoException e) {
+            LOG.error("cannot find all users",e);
+            throw new ServiceException("cannot find all users",e);
+        } finally {
+            Service.connectionClose(connection);
+        }
+    }
+
+    @Override
+    public int findMaxPagesCountForAllUsers() throws ServiceException {
+        final Connection connection = connectionPool.getConnection();
+        UserDao userDao = new UserDaoImpl(connection);
+        try{
+            int allUsersCount = userDao.findAllUsersCount();
+            return allUsersCount/LIMIT;
+        }catch (DaoException e){
+
+        }finally {
+            Service.connectionClose(connection);
+        }
+        throw new ServiceException();
+    }
+
+    @Override
+    public List<User> findAllClientsLimitOffsetPagination(Integer currentPageNumber) throws ServiceException {
+        final Connection connection = connectionPool.getConnection();
+        final UserDao userDao = new UserDaoImpl(connection);
+        try {
+            int offset = LIMIT*(currentPageNumber-1);
+            return userDao.findAllClientsLimitOffsetPagination(LIMIT,offset);
         } catch (DaoException e) {
             LOG.error("DaoException", e);
             throw new ServiceException("Cannot find all clients",e);
@@ -54,6 +86,21 @@ public class UserServiceImpl implements UserService {
             Service.connectionClose(connection);
         }
 
+    }
+
+    @Override
+    public int findMaxPagesForUsersAsClients() throws ServiceException {
+        final Connection connection = connectionPool.getConnection();
+        final UserDao userDao = new UserDaoImpl(connection);
+        try{
+         int allClientsCount =   userDao.findAllClientsCount();
+         return allClientsCount/LIMIT;
+        }catch (DaoException e){
+
+        }finally {
+            Service.connectionClose(connection);
+        }
+        throw new ServiceException();
     }
 
     @Override

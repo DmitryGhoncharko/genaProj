@@ -26,6 +26,11 @@ public class DrugDaoImpl implements DrugDao {
             " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id" +
             " LIMIT ? OFFSET ?";
+    private static final String SQL_FIND_ALL_DRUGS = "SELECT" +
+            " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
+            " FROM drug" +
+            " INNER JOIN producer ON producer_id=producer.id" +
+            " LIMIT ? OFFSET ?";
     private static final String SQL_FIND_COUNT_ALL_DRUGS = "SELECT" +
             " COUNT(drug.id)" +
             " FROM drug";
@@ -91,8 +96,8 @@ public class DrugDaoImpl implements DrugDao {
             preparedStatement.setInt(5, entity.getProducer().getId());
             preparedStatement.setBoolean(6, entity.isNeedRecipe());
 
-            int countRows = preparedStatement.executeUpdate();
-            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            final int countRows = preparedStatement.executeUpdate();
+            final ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (countRows > 0 & resultSet.next()) {
                 return new Drug.Builder().
                         withId(resultSet.getInt(1)).
@@ -116,12 +121,12 @@ public class DrugDaoImpl implements DrugDao {
 
     @Override
     public List<Drug> findAllLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
-        List<Drug> drugList = new ArrayList<>();
+        final List<Drug> drugList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_LIMIT_OFFSET_PAGINATION);
-            preparedStatement.setInt(1,limit);
-            preparedStatement.setInt(2,offset);
+            preparedStatement.setInt(1, limit);
+            preparedStatement.setInt(2, offset);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Drug drug = new Drug.Builder().
@@ -150,28 +155,55 @@ public class DrugDaoImpl implements DrugDao {
     @Override
     public int findCountAllDrugs() throws DaoException {
         Statement statement = null;
-        try{
+        try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(SQL_FIND_COUNT_ALL_DRUGS);
-            if(resultSet.next()){
+            final ResultSet resultSet = statement.executeQuery(SQL_FIND_COUNT_ALL_DRUGS);
+            if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
-        }catch (SQLException e){
-
-        }finally {
+        } catch (SQLException e) {
+            LOG.error("Cannot find count all drugs", e);
+            throw new DaoException("Cannot find count all drugs", e);
+        } finally {
             Dao.closeStatement(statement);
         }
-        throw new DaoException();
+        throw new DaoException("Cannot find count all drugs");
     }
 
     @Override
     public List<Drug> findAll() throws DaoException {
-        return null;
+        final List<Drug> drugList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Drug drug = new Drug.Builder().
+                        withId(resultSet.getInt(1)).
+                        withName(resultSet.getString(2)).
+                        withPrice(resultSet.getDouble(3)).
+                        withCount(resultSet.getInt(4)).
+                        withDescription(resultSet.getString(5)).
+                        withProducer(new Producer.Builder().
+                                withId(resultSet.getInt(6)).
+                                withName(resultSet.getString(7)).
+                                build()).
+                        withNeedReceip(resultSet.getBoolean(8)).
+                        build();
+                drugList.add(drug);
+            }
+        } catch (SQLException e) {
+            LOG.error("cannot find all drugs", e);
+            throw new DaoException("cannot find all drugs", e);
+        } finally {
+            Dao.closeStatement(preparedStatement);
+        }
+        return drugList;
     }
 
     @Override
     public List<Drug> findAllWhereNeedRecipeLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
-        List<Drug> drugList = new ArrayList<>();
+       final List<Drug> drugList = new ArrayList<>();
         Statement statement = null;
         try {
             statement = connection.createStatement();
@@ -203,19 +235,19 @@ public class DrugDaoImpl implements DrugDao {
     @Override
     public int findCountAllDrugsWhereNeedRecipe() throws DaoException {
         Statement statement = null;
-        try{
+        try {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(SQL_FIND_COUNT_ALL_DURGS_WHERE_NEED_RECIPE);
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
-        }catch (SQLException e){
-
-            throw new DaoException();
-        }finally {
+        } catch (SQLException e) {
+            LOG.error("Cannot find count all drugs where need recipe",e);
+            throw new DaoException("Cannot find count all drugs where need recipe",e);
+        } finally {
             Dao.closeStatement(statement);
         }
-        throw new DaoException();
+        throw new DaoException("Cannot find count all drugs where need recipe");
     }
 
     @Override
@@ -224,8 +256,8 @@ public class DrugDaoImpl implements DrugDao {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_LIMIT_OFFSET_PAGINATION);
-            preparedStatement.setInt(1,limit);
-            preparedStatement.setInt(2,offset);
+            preparedStatement.setInt(1, limit);
+            preparedStatement.setInt(2, offset);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Drug drug = new Drug.Builder().
@@ -254,19 +286,19 @@ public class DrugDaoImpl implements DrugDao {
     @Override
     public int findCountAllWhereCountMoreThanZero() throws DaoException {
         Statement statement = null;
-        try{
+        try {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(SQL_FIND_COUNT_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO);
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
-        }catch(SQLException e){
-
-            throw new DaoException();
-        }finally {
+        } catch (SQLException e) {
+            LOG.error("Cannot find count all drugs where count more than zero",e);
+            throw new DaoException("Cannot find count all drugs where count more than zero",e);
+        } finally {
             Dao.closeStatement(statement);
         }
-        throw new DaoException();
+        throw new DaoException("Cannot find count all drugs where count more than zero");
     }
 
     @Override
@@ -275,9 +307,9 @@ public class DrugDaoImpl implements DrugDao {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID_AND_CALCULATE_COUNT_LIMIT_OFFSET_PAGINATION);
-            preparedStatement.setInt(1,userId);
-            preparedStatement.setInt(2,limit);
-            preparedStatement.setInt(3,offset);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, limit);
+            preparedStatement.setInt(3, offset);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Drug drug = new Drug.Builder().
@@ -306,20 +338,20 @@ public class DrugDaoImpl implements DrugDao {
     @Override
     public int findAllWhereCountMoreThanZeroWithStatusActiveByUserId(Integer userId) throws DaoException {
         PreparedStatement preparedStatement = null;
-        try{
+        try {
             preparedStatement = connection.prepareStatement(SQL_FIND_COUNT_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID);
-            preparedStatement.setInt(1,userId);
+            preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
-        }catch (SQLException e){
-
-            throw new DaoException();
-        }finally {
+        } catch (SQLException e) {
+            LOG.error("Cannot find count all drugs where count more than zero with status active by user id",e);
+            throw new DaoException("Cannot find count all drugs where count more than zero with status active by user id",e);
+        } finally {
             Dao.closeStatement(preparedStatement);
         }
-        throw new DaoException();
+        throw new DaoException("Cannot find count all drugs where count more than zero with status active by user id");
     }
 
     @Override
@@ -351,6 +383,7 @@ public class DrugDaoImpl implements DrugDao {
         }
         return Optional.empty();
     }
+
     @Override
     public Integer getCountByDrugId(Integer drugId) throws DaoException {
         PreparedStatement preparedStatement = null;
@@ -396,6 +429,7 @@ public class DrugDaoImpl implements DrugDao {
         LOG.error("cannot update drug");
         throw new DaoException();
     }
+
     @Override
     public boolean update(Integer count, Integer drugId) throws DaoException {
         PreparedStatement preparedStatement = null;

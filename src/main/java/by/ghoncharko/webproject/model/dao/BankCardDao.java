@@ -20,10 +20,14 @@ public interface BankCardDao extends Dao<BankCard> {
      * @see BankCard
      */
     Optional<BankCard> findBankCardByUserId(Integer userId) throws DaoException;
+
     Optional<BankCard> findAllBankCardsByUserIdAndCardId(Integer userId, Integer cardId) throws DaoException;
+
     List<BankCard> findAllBankCardsByUserId(Integer userId) throws DaoException;
 
     Optional<BankCard> findBankCardByCardId(Integer cardId) throws DaoException;
+
     boolean deleteByCardIdAndUserId(Integer cardId, Integer userId) throws DaoException;
+
     boolean addBankCard(Double balance, Integer userId) throws DaoException;
 }
