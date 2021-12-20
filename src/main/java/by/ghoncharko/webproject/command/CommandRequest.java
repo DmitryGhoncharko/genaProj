@@ -20,5 +20,5 @@ public interface CommandRequest {
 
     void removeFromSession(String name);
 
-    String getURL();
+    String getURI();
 }

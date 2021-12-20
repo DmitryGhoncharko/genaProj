@@ -11,9 +11,8 @@ public class ChangeLanguageCommand implements Command {
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-       final String currentUrl = request.getURL();
-       request.addAttributeToJsp(LANGUAGE_ATTRIBUTE_NAME, RUSSIAN_LANGUAGE_ATTRIBUTE);
-       return requestFactory.createRedirectResponse(currentUrl);
+       final String currentURI = request.getParameter("crntURI");
+       return requestFactory.createRedirectResponse(currentURI);
     }
 
     public static ChangeLanguageCommand getInstance() {

@@ -66,7 +66,7 @@ public class WrappingCommandRequest implements CommandRequest {
     }
 
     @Override
-    public String getURL() {
-        return String.valueOf(request.getRequestURL());
+    public String getURI() {
+        return String.valueOf(request.getRequestURI());
     }
 }
