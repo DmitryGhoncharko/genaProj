@@ -3,7 +3,7 @@ package by.ghoncharko.webproject.model.service;
 
 import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.Drug;
-import by.ghoncharko.webproject.entity.Order;
+import by.ghoncharko.webproject.entity.UserOrder;
 import by.ghoncharko.webproject.entity.OrderStatusHolder;
 import by.ghoncharko.webproject.entity.Recipe;
 import by.ghoncharko.webproject.exception.DaoException;
@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
         final Connection connection = connectionPool.getConnection();
         final OrderDao orderDao = new OrderDaoImpl(connection);
         try {
-            final Optional<Order> orderFromDB = orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId, drugId);
+            final Optional<UserOrder> orderFromDB = orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId, drugId);
             if (orderFromDB.isPresent()) {
                 return orderDao.deleteByOrderId(orderId);
             }
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
         Service.autoCommitFalse(connection);
         try {
             final OrderDao orderDao = new OrderDaoImpl(connection);
-            final Optional<Order> orderFromDB = orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId, drugId);
+            final Optional<UserOrder> orderFromDB = orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId, drugId);
             if (orderFromDB.isPresent()) {
                 final int drugCountOnDB = orderFromDB.get().getDrug().getCount();
                 final double finalPrice = orderFromDB.get().getFinalPrice();
@@ -124,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAll() throws ServiceException {
+    public List<UserOrder> findAll() throws ServiceException {
         final Connection connection = connectionPool.getConnection();
         final OrderDao orderDao = new OrderDaoImpl(connection);
         try {
@@ -138,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAllWithStatusActiveByUserId(Integer userId) throws ServiceException {
+    public List<UserOrder> findAllWithStatusActiveByUserId(Integer userId) throws ServiceException {
         if (userId == null) {
             return Collections.emptyList();
         }
@@ -176,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
                 if (isNeedRecipe && drugCount >= count) {
                     final Optional<Recipe> recipe = recipeDao.findEntityByUserIdAndDrugId(userId, drugId);
                     if (recipe.isPresent() && recipe.get().getDateEnd().after(new Date(new java.util.Date().getDate()))) {
-                        final Optional<Order> order = orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId, drugId);
+                        final Optional<UserOrder> order = orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId, drugId);
                         if (order.isPresent()) {
                             if (orderDao.update(order.get(), count, finalPrice)) {
                                 return true;
@@ -193,7 +193,7 @@ public class OrderServiceImpl implements OrderService {
                     return false;
                 }
 
-                final Optional<Order> order = orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId, drugId);
+                final Optional<UserOrder> order = orderDao.findEntityByUserIdAndDrugIdWithStatusActive(userId, drugId);
                 if (order.isPresent() && drugCount >= count) {
                     if (orderDao.update(order.get(), count, finalPrice)) {
                         return true;

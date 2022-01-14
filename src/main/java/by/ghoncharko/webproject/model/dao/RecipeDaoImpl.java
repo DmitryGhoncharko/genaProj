@@ -27,7 +27,7 @@ public class RecipeDaoImpl implements RecipeDao {
     private static final String SQL_CREATE_RECIPE = "INSERT INTO recipe" +
             " (user_id, drug_id, date_start, date_end) VALUES (?,?,?,?)";
     private static final String SQL_FIND_ALL_RECIPES = "SELECT recipe.id,recipe.date_start,recipe.date_end, u.id, u.login, u.password," +
-            " u.first_name, u.last_name, r.id, r.role_name, d.id, d.name, d.price, d.count, d.description," +
+            " u.first_name, u.last_name, r.id, r.role_name, d.id, d.name, d.price, d.drug_count, d.description," +
             " d.need_receip, p.id, p.producer_name" +
             " FROM recipe" +
             " INNER JOIN  user u ON recipe.user_id = u.id" +
@@ -35,7 +35,7 @@ public class RecipeDaoImpl implements RecipeDao {
             " INNER JOIN drug d ON recipe.drug_id = d.id" +
             " INNER JOIN producer p ON d.producer_id = p.id";
     private static final String SQL_FIND_ALL_RECIPES_BY_USER_ID = "SELECT recipe.id,recipe.date_start,recipe.date_end, u.id, u.login, u.password," +
-            " u.first_name, u.last_name, r.id, r.role_name, d.id, d.name, d.price, d.count, d.description," +
+            " u.first_name, u.last_name, r.id, r.role_name, d.id, d.name, d.price, d.drug_count, d.description," +
             " d.need_receip, p.id, p.producer_name" +
             " FROM recipe" +
             " INNER JOIN  user u ON recipe.user_id = u.id" +
@@ -44,7 +44,7 @@ public class RecipeDaoImpl implements RecipeDao {
             " INNER JOIN producer p ON d.producer_id = p.id" +
             " WHERE recipe.user_id = ?";
     private static final String SQL_FIND_RECIPE_BY_ID = "SELECT recipe.id, recipe.date_start, recipe.date_end, u.id, u.login, u.password," +
-            " u.first_name, u.last_name, r.id, r.role_name, d.id, d.name, d.price, d.count, d.description," +
+            " u.first_name, u.last_name, r.id, r.role_name, d.id, d.name, d.price, d.drug_count, d.description," +
             " d.need_receip, p.id, p.producer_name" +
             " FROM recipe" +
             " INNER JOIN  user u ON recipe.user_id = u.id" +
@@ -53,7 +53,7 @@ public class RecipeDaoImpl implements RecipeDao {
             " INNER JOIN producer p ON d.producer_id = p.id" +
             " WHERE recipe.id = ?";
     private static final String SQL_FIND_RECIPE_BY_USER_ID_AND_DRUG_ID = "SELECT recipe.id, recipe.date_start, recipe.date_end, u.id, u.login, u.password," +
-            " u.first_name, u.last_name, r.id, r.role_name, d.id, d.name, d.price, d.count, d.description," +
+            " u.first_name, u.last_name, r.id, r.role_name, d.id, d.name, d.price, d.drug_count, d.description," +
             " d.need_receip, p.id, p.producer_name" +
             " FROM recipe" +
             " INNER JOIN  user u ON recipe.user_id = u.id" +

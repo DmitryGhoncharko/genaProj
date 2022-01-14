@@ -1,5 +1,6 @@
 package by.ghoncharko.webproject.entity;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -7,25 +8,15 @@ import java.util.Objects;
  *
  * @author Dmitry Ghoncharko
  */
-public class BankCard implements Entity {
-    private Integer id;
-    private Integer userId;
-    private double balance;
+public final class BankCard implements Entity {
+    private final Integer id;
+    private final Integer userId;
+    private final BigDecimal balance;
 
-    private BankCard() {
-
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
+    private BankCard(Builder builder) {
+        id = builder.id;
+        userId = builder.userId;
+        balance = builder.balance;
     }
 
     public Integer getId() {
@@ -36,23 +27,53 @@ public class BankCard implements Entity {
         return userId;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
+    }
+
+    public static class Builder {
+        private Integer id;
+        private Integer userId;
+        private BigDecimal balance;
+
+        public Builder withId(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withUserId(Integer userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder withBalance(BigDecimal balance) {
+            this.balance = balance;
+            return this;
+        }
+
+        public BankCard build() {
+            return new BankCard(this);
+        }
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         BankCard bankCard = (BankCard) o;
-        return Double.compare(bankCard.balance, balance) == 0 &&
-                Objects.equals(id, bankCard.id) &&
-                Objects.equals(userId, bankCard.userId);
+
+        if (!Objects.equals(id, bankCard.id)) return false;
+        if (!Objects.equals(userId, bankCard.userId)) return false;
+        return Objects.equals(balance, bankCard.balance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, balance);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
+        result = 31 * result + (balance != null ? balance.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -62,32 +83,5 @@ public class BankCard implements Entity {
                 ", userId=" + userId +
                 ", balance=" + balance +
                 '}';
-    }
-
-    public static class Builder {
-        private final BankCard newBankCard;
-
-        public Builder() {
-            newBankCard = new BankCard();
-        }
-
-        public Builder withId(Integer id) {
-            newBankCard.id = id;
-            return this;
-        }
-
-        public Builder withUserId(Integer userId) {
-            newBankCard.userId = userId;
-            return this;
-        }
-
-        public Builder withBalance(double balance) {
-            newBankCard.balance = balance;
-            return this;
-        }
-
-        public BankCard build() {
-            return newBankCard;
-        }
     }
 }

@@ -8,16 +8,21 @@ import java.util.Objects;
  *
  * @author Dmitry Ghoncharko
  */
-public class User implements Entity {
-    private Integer id;
-    private String login;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private Role role;
+public final class User implements Entity {
+    private final Integer id;
+    private final String login;
+    private final String password;
+    private final String firstName;
+    private final String lastName;
+    private final Role role;
 
-    private User() {
-
+    private User(Builder builder) {
+        id = builder.id;
+        login = builder.login;
+        password = builder.password;
+        firstName = builder.firstName;
+        lastName = builder.lastName;
+        role = builder.role;
     }
 
     public Integer getId() {
@@ -44,22 +49,73 @@ public class User implements Entity {
         return role;
     }
 
+    public static class Builder {
+        private Integer id;
+        private String login;
+        private String password;
+        private String firstName;
+        private String lastName;
+        private Role role;
+
+        public Builder withId(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withLogin(String login) {
+            this.login = login;
+            return this;
+        }
+
+        public Builder withPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder withFirstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder withLastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder withRole(Role role) {
+            this.role = role;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(login, user.login) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(role, user.role);
+
+        if (!Objects.equals(id, user.id)) return false;
+        if (!Objects.equals(login, user.login)) return false;
+        if (!Objects.equals(password, user.password)) return false;
+        if (!Objects.equals(firstName, user.firstName)) return false;
+        if (!Objects.equals(lastName, user.lastName)) return false;
+        return Objects.equals(role, user.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, login, password, firstName, lastName, role);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (login != null ? login.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -72,47 +128,5 @@ public class User implements Entity {
                 ", lastName='" + lastName + '\'' +
                 ", role=" + role +
                 '}';
-    }
-
-    public static class Builder {
-        private final User newUser;
-
-        public Builder() {
-            newUser = new User();
-        }
-
-        public Builder withId(Integer id) {
-            newUser.id = id;
-            return this;
-        }
-
-        public Builder withLogin(String login) {
-            newUser.login = login;
-            return this;
-        }
-
-        public Builder withPassword(String password) {
-            newUser.password = password;
-            return this;
-        }
-
-        public Builder withFirstName(String firstName) {
-            newUser.firstName = firstName;
-            return this;
-        }
-
-        public Builder withLastName(String lastName) {
-            newUser.lastName = lastName;
-            return this;
-        }
-
-        public Builder withRole(Role role) {
-            newUser.role = role;
-            return this;
-        }
-
-        public User build() {
-            return newUser;
-        }
     }
 }

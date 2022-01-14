@@ -12,7 +12,7 @@ public class ValidateAcceptRecipeRequest {
         }
         return false;
     }
-
+    
     public static ValidateAcceptRecipeRequest getInstance() {
         return Holder.INSTANCE;
     }

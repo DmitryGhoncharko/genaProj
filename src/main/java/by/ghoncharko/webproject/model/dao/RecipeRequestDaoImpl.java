@@ -27,7 +27,7 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao {
             " (user_id, drug_id, date_start, date_end) VALUES (?,?,?,?)";
     private static final String SQL_GET_ALL_RECIPE_REQUESTS = "SELECT" +
             " recipe_request.id,recipe_request.date_start,recipe_request.date_end, u.id,login,password,first_name," +
-            " last_name,role_id,role_name, d.id,d.name,d.price,d.count,d.description,d.need_receip,d.producer_id,p.producer_name" +
+            " last_name,role_id,role_name, d.id,d.name,d.price,d.drug_count,d.description,d.need_receip,d.producer_id,p.producer_name" +
             " FROM recipe_request " +
             " INNER JOIN user u ON recipe_request.user_id = u.id" +
             " INNER JOIN role r ON u.role_id = r.id" +
@@ -35,7 +35,7 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao {
             " INNER JOIN producer p ON d.producer_id = p.id";
     private static final String SQL_GET_RECIPE_REQUEST_BY_ID = "SELECT" +
             " recipe_request.id,recipe_request.date_start,recipe_request.date_end, u.id,login,password,first_name," +
-            " last_name,role_id,role_name, d.id,d.name,d.price,d.count,d.description,d.need_receip,d.producer_id,p.producer_name" +
+            " last_name,role_id,role_name, d.id,d.name,d.price,d.drug_count,d.description,d.need_receip,d.producer_id,p.producer_name" +
             " FROM recipe_request " +
             " INNER JOIN user u ON recipe_request.user_id = u.id" +
             " INNER JOIN role r ON u.role_id = r.id" +
@@ -44,7 +44,7 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao {
             " WHERE recipe_request.id = ?";
     private static final String SQL_GET_RECIPE_REQUEST_BY_USER_ID_AND_DRUG_ID = "SELECT" +
             " recipe_request.id,recipe_request.date_start,recipe_request.date_end, u.id,login,password,first_name," +
-            " last_name,role_id,role_name, d.id,d.name,d.price,d.count,d.description,d.need_receip,d.producer_id,p.producer_name" +
+            " last_name,role_id,role_name, d.id,d.name,d.price,d.drug_count,d.description,d.need_receip,d.producer_id,p.producer_name" +
             " FROM recipe_request " +
             " INNER JOIN user u ON recipe_request.user_id = u.id" +
             " INNER JOIN role r ON u.role_id = r.id" +

@@ -7,12 +7,13 @@ import java.util.Objects;
  *
  * @author Dmitry Ghoncharko
  */
-public class Role implements Entity {
-    private Integer id;
-    private String roleName;
+public final class Role implements Entity {
+    private final Integer id;
+    private final String roleName;
 
-    private Role() {
-
+    private Role(Builder builder) {
+        id = builder.id;
+        roleName = builder.roleName;
     }
 
     public Integer getId() {
@@ -23,18 +24,42 @@ public class Role implements Entity {
         return roleName;
     }
 
+    public static class Builder {
+        private Integer id;
+        private String roleName;
+
+
+        public Builder withId(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withRoleName(String roleName) {
+            this.roleName = roleName;
+            return this;
+        }
+
+        public Role build() {
+            return new Role(this);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Role role = (Role) o;
-        return Objects.equals(id, role.id) &&
-                Objects.equals(roleName, role.roleName);
+
+        if (!Objects.equals(id, role.id)) return false;
+        return Objects.equals(roleName, role.roleName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, roleName);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (roleName != null ? roleName.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -43,27 +68,5 @@ public class Role implements Entity {
                 "id=" + id +
                 ", roleName='" + roleName + '\'' +
                 '}';
-    }
-
-    public static class Builder {
-        private final Role newRole;
-
-        public Builder() {
-            newRole = new Role();
-        }
-
-        public Builder withId(Integer id) {
-            newRole.id = id;
-            return this;
-        }
-
-        public Builder withRoleName(String roleName) {
-            newRole.roleName = roleName;
-            return this;
-        }
-
-        public Role build() {
-            return newRole;
-        }
     }
 }

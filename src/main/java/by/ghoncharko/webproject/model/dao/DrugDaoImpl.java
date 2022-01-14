@@ -19,15 +19,15 @@ import java.util.Optional;
 public class DrugDaoImpl implements DrugDao {
     private static final Logger LOG = LogManager.getLogger(DrugDaoImpl.class);
     private static final String SQL_CREATE_DRUG = "INSERT INTO drug" +
-            " (name, price, count, description, producer_id, need_receip)" +
+            " (name, price, drug_count, description, producer_id, need_receip)" +
             " VALUES (?,?,?,?,?,?)";
     private static final String SQL_FIND_ALL_DRUGS_LIMIT_OFFSET_PAGINATION = "SELECT" +
-            " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
+            " drug.id, name, price, drug_count, description, producer.id, producer_name, need_receip" +
             " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id" +
             " LIMIT ? OFFSET ?";
     private static final String SQL_FIND_ALL_DRUGS = "SELECT" +
-            " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
+            " drug.id, name, price, drug_count, description, producer.id, producer_name, need_receip" +
             " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id" +
             " LIMIT ? OFFSET ?";
@@ -35,7 +35,7 @@ public class DrugDaoImpl implements DrugDao {
             " COUNT(drug.id)" +
             " FROM drug";
     private static final String SQL_FIND_ALL_DRUGS_WHERE_NEED_RECIPE_LIMIT_OFFSET_PAGINATION = "SELECT" +
-            " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
+            " drug.id, name, price, drug_count, description, producer.id, producer_name, need_receip" +
             " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id" +
             " WHERE need_receip=true" +
@@ -45,38 +45,38 @@ public class DrugDaoImpl implements DrugDao {
             " FROM drug" +
             " WHERE need_receip = true";
     private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_LIMIT_OFFSET_PAGINATION = "SELECT" +
-            " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
+            " drug.id, name, price, drug_count, description, producer.id, producer_name, need_receip" +
             " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id" +
-            " WHERE count > 0" +
+            " WHERE drug_count > 0" +
             " LIMIT ? OFFSET ?";
     private static final String SQL_FIND_COUNT_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO = "SELECT count(drug.id)" +
             " FROM drug" +
-            " WHERE count > 0";
+            " WHERE drug_count > 0";
     private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID_AND_CALCULATE_COUNT_LIMIT_OFFSET_PAGINATION = "SELECT DISTINCT" +
-            " drug.id, name, price, drug.count- IFNULL(d.count,0), description, producer.id, producer_name, need_receip" +
+            " drug.id, name, price, drug.drug_count- IFNULL(d.drug_count,0), description, producer.id, producer_name, need_receip" +
             " FROM drug" +
             " INNER JOIN producer ON producer_id=producer.id " +
-            " LEFT JOIN drug_order d on ? = d.user_id and drug.id = d.drug_id and d.status_id = 1" +
-            " WHERE drug.count>0" +
+            " LEFT JOIN drug_user_order d on ? = d.user_id and drug.id = d.drug_id and d.status_id = 1" +
+            " WHERE drug.drug_count>0" +
             " LIMIT ? OFFSET ?";
     private static final String SQL_FIND_COUNT_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_BY_USER_ID = "SELECT COUNT(drug.id)" +
             " FROM drug " +
             " INNER JOIN producer ON producer_id=producer.id " +
-            " LEFT JOIN drug_order d on ? = d.user_id and drug.id = d.drug_id and d.status_id = 1" +
-            " WHERE drug.count>0";
+            " LEFT JOIN drug_user_order d on ? = d.user_id and drug.id = d.drug_id and d.status_id = 1" +
+            " WHERE drug.drug_count>0";
     private static final String SQL_FIND_DRUG_BY_ID = "SELECT" +
-            " drug.id, name, price, count, description, producer.id, producer_name, need_receip" +
+            " drug.id, name, price, drug_count, description, producer.id, producer_name, need_receip" +
             " FROM drug " +
             " INNER JOIN producer ON producer_id=producer.id " +
             " WHERE drug.id = ?";
     private static final String SQL_UPDATE_DRUG = "UPDATE drug" +
-            " SET name = ?, price = ?, count = ?, description = ?, producer_id =?, need_receip = ?" +
+            " SET name = ?, price = ?, drug_count = ?, description = ?, producer_id =?, need_receip = ?" +
             " WHERE id = ?";
     private static final String SQL_UPDATE_DRUG_COUNT_BY_DRUG_ID = "UPDATE drug set" +
-            " count = ?" +
+            " drug_count = ?" +
             " WHERE id = ?";
-    private static final String SQL_GET_DRUG_COUNT_BY_DRUG_ID = "SELECT count from drug where id = ?";
+    private static final String SQL_GET_DRUG_COUNT_BY_DRUG_ID = "SELECT drug_count from drug where id = ?";
     private static final String SQL_DELETE_DRUG = "DELETE FROM drug WHERE id=?";
     private final Connection connection;
 

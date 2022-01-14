@@ -20,9 +20,6 @@ public class EncodingFilter implements Filter {
         response.setCharacterEncoding("UTF-8");
         filterChain.doFilter(request, response);
     }
-
-
-
     public void destroy() {
         // nothing todo
     }

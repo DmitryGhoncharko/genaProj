@@ -2,7 +2,7 @@ package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.BankCard;
-import by.ghoncharko.webproject.entity.Order;
+import by.ghoncharko.webproject.entity.UserOrder;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.BankCardService;
@@ -31,7 +31,7 @@ public class ShowOrderPageCommand implements Command {
             final BankCardService bankCardService = BankCardService.getInstance();
             try{
                 final List<BankCard> bankCardList = bankCardService.getBankCardsByUserId(userId);
-                final List<Order> orderList = orderService.findAllWithStatusActiveByUserId(userId);
+                final List<UserOrder> orderList = orderService.findAllWithStatusActiveByUserId(userId);
                 request.addAttributeToJsp(BANK_CARDS_ATTRIBUTE_NAME, bankCardList);
                 request.addAttributeToJsp(ORDERS_ATTRIBUTE_NAME, orderList);
                 return requestFactory.createForwardResponse(PagePath.ORDER_PAGE_PATH);

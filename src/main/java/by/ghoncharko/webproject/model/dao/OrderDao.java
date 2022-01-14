@@ -1,6 +1,6 @@
 package by.ghoncharko.webproject.model.dao;
 
-import by.ghoncharko.webproject.entity.Order;
+import by.ghoncharko.webproject.entity.UserOrder;
 import by.ghoncharko.webproject.entity.OrderStatus;
 import by.ghoncharko.webproject.exception.DaoException;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author Dmitry Ghoncharko
  * @see OrderDaoImpl
  */
-public interface OrderDao extends Dao<Order> {
+public interface OrderDao extends Dao<UserOrder> {
     /**
      * @param userId     user id
      * @param drugId     drug id
@@ -29,18 +29,18 @@ public interface OrderDao extends Dao<Order> {
      * @param userId user id
      * @return List<Order>
      * @throws DaoException when cannot find orders by user id
-     * @see Order
+     * @see UserOrder
      */
-    List<Order> findAllByUserId(Integer userId) throws DaoException;
+    List<UserOrder> findAllByUserId(Integer userId) throws DaoException;
 
     /**
      * @param userId user id
      * @param drugId drug id
      * @return Optional<Order>
      * @throws DaoException when cannot find entity by user id and drug id with status ACTIVE
-     * @see Order
+     * @see UserOrder
      */
-    Optional<Order> findEntityByUserIdAndDrugIdWithStatusActive(Integer userId, Integer drugId) throws DaoException;
+    Optional<UserOrder> findEntityByUserIdAndDrugIdWithStatusActive(Integer userId, Integer drugId) throws DaoException;
 
     /**
      * @param userId  user id
@@ -59,7 +59,7 @@ public interface OrderDao extends Dao<Order> {
      * @return true if order updated and false if cannot update order
      * @throws DaoException when cannot update order
      */
-    boolean update(Order entity, Integer count, Double finalPrice) throws DaoException;
+    boolean update(UserOrder entity, Integer count, Double finalPrice) throws DaoException;
 
     /**
      * @param orderId order id

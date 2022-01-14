@@ -18,12 +18,12 @@ import java.util.Optional;
 
 public class OrderStatusDaoImpl implements Dao<OrderStatus> {
     private static final Logger LOG = LogManager.getLogger(OrderStatusDaoImpl.class);
-    private static final String SQL_CREATE_ORDER_STATUS = "INSERT INTO order_status" +
+    private static final String SQL_CREATE_ORDER_STATUS = "INSERT INTO user_order_status" +
             " (status_name) VALUES (?)";
-    private static final String SQL_FIND_ALL_ORDER_STATUS = "SELECT id , status_name FROM order_status";
-    private static final String SQL_FIND_ORDER_STATUS_BY_ID = "SELECT status_name FROM order_status WHERE id = ?";
-    private static final String SQL_UPDATE_ORDER_STATUS = "UPDATE order_status SET status_name = ? WHERE id = ?";
-    private static final String SQL_DELETE_ORDER_STATUS = "DELETE FROM order_status WHERE id = ?";
+    private static final String SQL_FIND_ALL_ORDER_STATUS = "SELECT id , status_name FROM user_order_status";
+    private static final String SQL_FIND_ORDER_STATUS_BY_ID = "SELECT status_name FROM user_order_status WHERE id = ?";
+    private static final String SQL_UPDATE_ORDER_STATUS = "UPDATE user_order_status SET status_name = ? WHERE id = ?";
+    private static final String SQL_DELETE_ORDER_STATUS = "DELETE FROM user_order_status WHERE id = ?";
     private final Connection connection;
 
     private OrderStatusDaoImpl(Connection connection) {

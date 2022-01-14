@@ -7,12 +7,13 @@ import java.util.Objects;
  *
  * @author Dmitry Ghoncharko
  */
-public class Producer implements Entity {
-    private Integer id;
-    private String name;
+public final class Producer implements Entity {
+    private final Integer id;
+    private final String name;
 
-    private Producer() {
-
+    private Producer(Builder builder) {
+        id = builder.id;
+        name = builder.name;
     }
 
     public Integer getId() {
@@ -23,19 +24,42 @@ public class Producer implements Entity {
         return name;
     }
 
+    public static class Builder {
+        private  Integer id;
+        private  String name;
+
+
+        public Builder withId(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withName(String name) {
+           this.name = name;
+            return this;
+        }
+
+        public Producer build() {
+            return new Producer(this);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Producer producer = (Producer) o;
-        return Objects.equals(id, producer.id) &&
-                Objects.equals(name, producer.name);
+
+        if (!Objects.equals(id, producer.id)) return false;
+        return Objects.equals(name, producer.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -44,27 +68,5 @@ public class Producer implements Entity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
-    }
-
-    public static class Builder {
-        private final Producer newProducer;
-
-        public Builder() {
-            newProducer = new Producer();
-        }
-
-        public Builder withId(Integer id) {
-            newProducer.id = id;
-            return this;
-        }
-
-        public Builder withName(String name) {
-            newProducer.name = name;
-            return this;
-        }
-
-        public Producer build() {
-            return newProducer;
-        }
     }
 }
