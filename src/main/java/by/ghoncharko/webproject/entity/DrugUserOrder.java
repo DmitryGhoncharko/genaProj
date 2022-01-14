@@ -2,15 +2,17 @@ package by.ghoncharko.webproject.entity;
 
 import java.util.Objects;
 
-public class DrugUserOrder implements Entity {
+public final class DrugUserOrder implements Entity {
     private final Integer id;
     private final UserOrder userOrder;
     private final Drug drug;
+    private final Integer drugCount;
 
     private DrugUserOrder(Builder builder) {
         id = builder.id;
         userOrder = builder.userOrder;
         drug = builder.drug;
+        drugCount = builder.drugCount;
     }
 
     public Integer getId() {
@@ -25,11 +27,15 @@ public class DrugUserOrder implements Entity {
         return drug;
     }
 
+    public Integer getDrugCount() {
+        return drugCount;
+    }
+
     public static class Builder {
         private Integer id;
         private UserOrder userOrder;
         private Drug drug;
-
+        private Integer drugCount;
         public Builder withId(Integer id) {
             this.id = id;
             return this;
@@ -44,7 +50,10 @@ public class DrugUserOrder implements Entity {
             this.drug = drug;
             return this;
         }
-
+        public Builder withDrugCount(Integer drugCount){
+            this.drugCount = drugCount;
+            return this;
+        }
         public DrugUserOrder build() {
             return new DrugUserOrder(this);
         }
@@ -59,7 +68,8 @@ public class DrugUserOrder implements Entity {
 
         if (!Objects.equals(id, that.id)) return false;
         if (!Objects.equals(userOrder, that.userOrder)) return false;
-        return Objects.equals(drug, that.drug);
+        if (!Objects.equals(drug, that.drug)) return false;
+        return Objects.equals(drugCount, that.drugCount);
     }
 
     @Override
@@ -67,6 +77,7 @@ public class DrugUserOrder implements Entity {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (userOrder != null ? userOrder.hashCode() : 0);
         result = 31 * result + (drug != null ? drug.hashCode() : 0);
+        result = 31 * result + (drugCount != null ? drugCount.hashCode() : 0);
         return result;
     }
 
@@ -76,6 +87,7 @@ public class DrugUserOrder implements Entity {
                 "id=" + id +
                 ", userOrder=" + userOrder +
                 ", drug=" + drug +
+                ", drugCount=" + drugCount +
                 '}';
     }
 }

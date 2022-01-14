@@ -2,11 +2,11 @@ package by.ghoncharko.webproject.entity;
 
 import java.util.Objects;
 
-public final class RecipeStatus {
+public final class RecipeStatus implements Entity {
     private final Integer id;
     private final String statusName;
 
-    public RecipeStatus(Builder builder) {
+    private RecipeStatus(Builder builder) {
         id = builder.id;
         statusName = builder.statusName;
     }

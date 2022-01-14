@@ -12,14 +12,12 @@ public final class UserOrder implements Entity {
     private final Integer id;
     private final UserOrderStatus userOrderStatus;
     private final User user;
-    private final Integer count;
     private final Date datePayed;
 
     private UserOrder(Builder builder) {
         id = builder.id;
         userOrderStatus = builder.userOrderStatus;
         user = builder.user;
-        count = builder.count;
         datePayed = builder.datePayed;
     }
 
@@ -35,10 +33,6 @@ public final class UserOrder implements Entity {
         return user;
     }
 
-    public Integer getCount() {
-        return count;
-    }
-
     public Date getDatePayed() {
         return datePayed;
     }
@@ -47,7 +41,6 @@ public final class UserOrder implements Entity {
         private Integer id;
         private UserOrderStatus userOrderStatus;
         private User user;
-        private Integer count;
         private Date datePayed;
 
         public Builder withId(Integer id) {
@@ -60,10 +53,6 @@ public final class UserOrder implements Entity {
             return this;
         }
 
-        public Builder withCount(Integer count) {
-            this.count = count;
-            return this;
-        }
 
         public Builder withDatePayed(Date datePayed) {
             this.datePayed = datePayed;
@@ -90,7 +79,6 @@ public final class UserOrder implements Entity {
         if (!Objects.equals(id, userOrder.id)) return false;
         if (!Objects.equals(userOrderStatus, userOrder.userOrderStatus)) return false;
         if (!Objects.equals(user, userOrder.user)) return false;
-        if (!Objects.equals(count, userOrder.count)) return false;
         return Objects.equals(datePayed, userOrder.datePayed);
     }
 
@@ -99,7 +87,6 @@ public final class UserOrder implements Entity {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (userOrderStatus != null ? userOrderStatus.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (count != null ? count.hashCode() : 0);
         result = 31 * result + (datePayed != null ? datePayed.hashCode() : 0);
         return result;
     }
@@ -110,7 +97,6 @@ public final class UserOrder implements Entity {
                 "id=" + id +
                 ", userOrderStatus=" + userOrderStatus +
                 ", user=" + user +
-                ", count=" + count +
                 ", datePayed=" + datePayed +
                 '}';
     }
