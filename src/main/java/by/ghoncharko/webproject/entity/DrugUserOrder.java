@@ -2,7 +2,7 @@ package by.ghoncharko.webproject.entity;
 
 import java.util.Objects;
 
-public final class DrugUserOrder implements Entity {
+public  class DrugUserOrder implements Entity {
     private final Integer id;
     private final UserOrder userOrder;
     private final Drug drug;

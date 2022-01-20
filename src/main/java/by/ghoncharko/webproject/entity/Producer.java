@@ -7,7 +7,7 @@ import java.util.Objects;
  *
  * @author Dmitry Ghoncharko
  */
-public final class Producer implements Entity {
+public  class Producer implements Entity {
     private final Integer id;
     private final String name;
 

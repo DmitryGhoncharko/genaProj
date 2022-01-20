@@ -8,16 +8,16 @@ import java.util.Objects;
  *
  * @author Dmitry Ghoncharko
  */
-public final class UserOrder implements Entity {
+public class UserOrder implements Entity {
     private final Integer id;
-    private final UserOrderStatus userOrderStatus;
     private final User user;
+    private final Boolean isPayed;
     private final Date datePayed;
 
     private UserOrder(Builder builder) {
         id = builder.id;
-        userOrderStatus = builder.userOrderStatus;
         user = builder.user;
+        isPayed = builder.isPayed;
         datePayed = builder.datePayed;
     }
 
@@ -25,22 +25,56 @@ public final class UserOrder implements Entity {
         return id;
     }
 
-    public UserOrderStatus getUserOrderStatus() {
-        return userOrderStatus;
-    }
 
     public User getUser() {
         return user;
+    }
+
+
+    public Boolean getPayed() {
+        return isPayed;
     }
 
     public Date getDatePayed() {
         return datePayed;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserOrder userOrder = (UserOrder) o;
+
+        if (!Objects.equals(id, userOrder.id)) return false;
+        if (!Objects.equals(user, userOrder.user)) return false;
+        if (!Objects.equals(isPayed, userOrder.isPayed)) return false;
+        return Objects.equals(datePayed, userOrder.datePayed);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = 31 * result + (isPayed != null ? isPayed.hashCode() : 0);
+        result = 31 * result + (datePayed != null ? datePayed.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "UserOrder{" +
+                "id=" + id +
+                ", user=" + user +
+                ", isPayed=" + isPayed +
+                ", datePayed=" + datePayed +
+                '}';
+    }
+
     public static class Builder {
         private Integer id;
-        private UserOrderStatus userOrderStatus;
         private User user;
+        private Boolean isPayed;
         private Date datePayed;
 
         public Builder withId(Integer id) {
@@ -54,50 +88,18 @@ public final class UserOrder implements Entity {
         }
 
 
-        public Builder withDatePayed(Date datePayed) {
-            this.datePayed = datePayed;
+        public Builder withIsPayed(Boolean isPayed) {
+            this.isPayed = isPayed;
             return this;
         }
 
-        public Builder withStatus(UserOrderStatus userOrderStatus) {
-            this.userOrderStatus = userOrderStatus;
+        public Builder withDatePayed(Date datePayed) {
+            this.datePayed = datePayed;
             return this;
         }
 
         public UserOrder build() {
             return new UserOrder(this);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UserOrder userOrder = (UserOrder) o;
-
-        if (!Objects.equals(id, userOrder.id)) return false;
-        if (!Objects.equals(userOrderStatus, userOrder.userOrderStatus)) return false;
-        if (!Objects.equals(user, userOrder.user)) return false;
-        return Objects.equals(datePayed, userOrder.datePayed);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (userOrderStatus != null ? userOrderStatus.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (datePayed != null ? datePayed.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "UserOrder{" +
-                "id=" + id +
-                ", userOrderStatus=" + userOrderStatus +
-                ", user=" + user +
-                ", datePayed=" + datePayed +
-                '}';
     }
 }

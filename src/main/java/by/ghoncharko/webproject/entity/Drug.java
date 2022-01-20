@@ -8,7 +8,7 @@ import java.util.Objects;
  *
  * @author Dmitry Ghoncharko
  */
-public final class Drug implements Entity {
+public  class Drug implements Entity {
     private final Integer id;
     private final String name;
     private final BigDecimal price;
