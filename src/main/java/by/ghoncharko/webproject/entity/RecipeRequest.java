@@ -1,16 +1,19 @@
 package by.ghoncharko.webproject.entity;
 
+import java.sql.Date;
 import java.util.Objects;
 
-public class RecipeRequest {
+public class RecipeRequest implements Entity {
     private final Integer id;
     private final Recipe recipe;
-    private final Boolean recipeExtended;
+    private final Boolean isExtended;
+    private final Date dateSolution;
 
-    private RecipeRequest(Builder builder) {
-        this.id = builder.id;
-        this.recipe = builder.recipe;
-        this.recipeExtended = builder.recipeExtended;
+    public RecipeRequest(Builder builder) {
+        id = builder.id;
+        recipe = builder.recipe;
+        isExtended = builder.isExtended;
+        dateSolution = builder.dateSolution;
     }
 
     public Integer getId() {
@@ -21,8 +24,12 @@ public class RecipeRequest {
         return recipe;
     }
 
-    public Boolean getRecipeExtended() {
-        return recipeExtended;
+    public Boolean getExtended() {
+        return isExtended;
+    }
+
+    public Date getDateSolution() {
+        return dateSolution;
     }
 
     @Override
@@ -34,14 +41,16 @@ public class RecipeRequest {
 
         if (!Objects.equals(id, that.id)) return false;
         if (!Objects.equals(recipe, that.recipe)) return false;
-        return Objects.equals(recipeExtended, that.recipeExtended);
+        if (!Objects.equals(isExtended, that.isExtended)) return false;
+        return Objects.equals(dateSolution, that.dateSolution);
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (recipe != null ? recipe.hashCode() : 0);
-        result = 31 * result + (recipeExtended != null ? recipeExtended.hashCode() : 0);
+        result = 31 * result + (isExtended != null ? isExtended.hashCode() : 0);
+        result = 31 * result + (dateSolution != null ? dateSolution.hashCode() : 0);
         return result;
     }
 
@@ -50,15 +59,16 @@ public class RecipeRequest {
         return "RecipeRequest{" +
                 "id=" + id +
                 ", recipe=" + recipe +
-                ", recipeExtended=" + recipeExtended +
+                ", isExtended=" + isExtended +
+                ", dateSolution=" + dateSolution +
                 '}';
     }
 
     public static class Builder {
         private Integer id;
         private Recipe recipe;
-        private Boolean recipeExtended;
-
+        private Boolean isExtended;
+        private Date dateSolution;
         public Builder withId(Integer id) {
             this.id = id;
             return this;
@@ -69,11 +79,15 @@ public class RecipeRequest {
             return this;
         }
 
-        public Builder withRecipeIsExtended(Boolean recipeExtended) {
-            this.recipeExtended = recipeExtended;
+        public Builder withIsExtended(Boolean isExtended) {
+            this.isExtended = isExtended;
             return this;
         }
 
+        public Builder withDateSolution(Date dateSolution) {
+            this.dateSolution = dateSolution;
+            return this;
+        }
         public RecipeRequest build() {
             return new RecipeRequest(this);
         }

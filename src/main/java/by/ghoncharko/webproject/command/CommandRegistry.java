@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CommandRegistry {
     private static final CommandRegistry MAIN_PAGE = new CommandRegistry(ShowMainPageCommand.getInstance(), "main_page");
-    private static final CommandRegistry LOGIN_PAGE = new CommandRegistry(ShowLoginPageCommand.getInstance(), "login", RolesHolder.UNAUTHORIZED);
+    private static final CommandRegistry LOGIN_PAGE = new CommandRegistry(ShowLoginPageCommand.getInstance(), "login", Role.UNAUTHORIZED);
     private static final CommandRegistry LOGIN_COMMAND = new CommandRegistry(LoginCommand.getInstance(), "logincmnd", RolesHolder.UNAUTHORIZED);
     private static final CommandRegistry LOGOUT_COMMAND = new CommandRegistry(LogoutCommand.getInstance(), "logout", RolesHolder.ADMIN,RolesHolder.CLIENT, RolesHolder.DOCTOR, RolesHolder.PHARMACY);
     private static final CommandRegistry REGISTRATION_PAGE = new CommandRegistry(ShowRegistrationPageCommand.getInstance(), "registration");

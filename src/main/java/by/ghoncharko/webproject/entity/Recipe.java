@@ -11,11 +11,10 @@ import java.util.Objects;
  */
 public class Recipe implements Entity {
     private final Integer id;
+    private final User user;
     private final Drug drug;
     private final Date dateStart;
     private final Date dateEnd;
-    private final User user;
-
     private Recipe(Builder builder) {
         id = builder.id;
         drug = builder.drug;
@@ -52,19 +51,19 @@ public class Recipe implements Entity {
         Recipe recipe = (Recipe) o;
 
         if (!Objects.equals(id, recipe.id)) return false;
+        if (!Objects.equals(user, recipe.user)) return false;
         if (!Objects.equals(drug, recipe.drug)) return false;
         if (!Objects.equals(dateStart, recipe.dateStart)) return false;
-        if (!Objects.equals(dateEnd, recipe.dateEnd)) return false;
-        return Objects.equals(user, recipe.user);
+        return Objects.equals(dateEnd, recipe.dateEnd);
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (drug != null ? drug.hashCode() : 0);
         result = 31 * result + (dateStart != null ? dateStart.hashCode() : 0);
         result = 31 * result + (dateEnd != null ? dateEnd.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
         return result;
     }
 
@@ -72,10 +71,10 @@ public class Recipe implements Entity {
     public String toString() {
         return "Recipe{" +
                 "id=" + id +
+                ", user=" + user +
                 ", drug=" + drug +
                 ", dateStart=" + dateStart +
                 ", dateEnd=" + dateEnd +
-                ", user=" + user +
                 '}';
     }
 
@@ -85,7 +84,6 @@ public class Recipe implements Entity {
         private Date dateStart;
         private Date dateEnd;
         private User user;
-
         public Builder withId(Integer id) {
             this.id = id;
             return this;

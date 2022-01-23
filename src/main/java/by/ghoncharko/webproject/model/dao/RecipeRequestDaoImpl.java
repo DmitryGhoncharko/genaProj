@@ -1,313 +1,191 @@
 package by.ghoncharko.webproject.model.dao;
 
-
-import by.ghoncharko.webproject.entity.Drug;
-import by.ghoncharko.webproject.entity.Producer;
-import by.ghoncharko.webproject.entity.RecipeRequest;
-import by.ghoncharko.webproject.entity.Role;
-import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.entity.*;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.math.BigDecimal;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
-public class RecipeRequestDaoImpl implements RecipeRequestDao {
+public class RecipeRequestDaoImpl implements RecipeRequestDao{
     private static final Logger LOG = LogManager.getLogger(RecipeRequestDaoImpl.class);
-    private static final String SQL_CREATE_RECIPE_REQUEST = "INSERT INTO recipe_request" +
-            " (user_id, drug_id, date_start, date_end) VALUES (?,?,?,?)";
-    private static final String SQL_GET_ALL_RECIPE_REQUESTS = "SELECT" +
-            " recipe_request.id,recipe_request.date_start,recipe_request.date_end, u.id,login,password,first_name," +
-            " last_name,role_id,role_name, d.id,d.name,d.price,d.drug_count,d.description,d.need_receip,d.producer_id,p.producer_name" +
-            " FROM recipe_request " +
-            " INNER JOIN user u ON recipe_request.user_id = u.id" +
-            " INNER JOIN role r ON u.role_id = r.id" +
-            " INNER JOIN drug d ON recipe_request.drug_id = d.id" +
-            " INNER JOIN producer p ON d.producer_id = p.id";
-    private static final String SQL_GET_RECIPE_REQUEST_BY_ID = "SELECT" +
-            " recipe_request.id,recipe_request.date_start,recipe_request.date_end, u.id,login,password,first_name," +
-            " last_name,role_id,role_name, d.id,d.name,d.price,d.drug_count,d.description,d.need_receip,d.producer_id,p.producer_name" +
-            " FROM recipe_request " +
-            " INNER JOIN user u ON recipe_request.user_id = u.id" +
-            " INNER JOIN role r ON u.role_id = r.id" +
-            " INNER JOIN drug d ON recipe_request.drug_id = d.id" +
-            " INNER JOIN producer p ON d.producer_id = p.id" +
+    private static final String SQL_CREATE_RECIPE_REQUEST = "INSERT INTO recipe_request(recipe_id, is_extended, date_solution) VALUES (?,?,?)";
+    private static final String SQL_FIND_ALL_RECIPE_REQUESTS = "SELECT" +
+            " recipe_request.id, r.id, u.id, u.login, u.password, r2.role_name, u.first_name, u.last_name , u.banned, d.id, d.name," +
+            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_receip, d.is_deleted, r.date_start, r.date_end, is_extended, date_solution" +
+            " FROM recipe_request" +
+            " INNER JOIN recipe r on recipe_request.recipe_id = r.id" +
+            " INNER JOIN user u on r.user_id = u.id" +
+            " INNER JOIN role r2 on u.role_id = r2.id" +
+            " INNER JOIN drug d on r.drug_id = d.id" +
+            " INNER JOIN producer p on d.producer_id = p.id";
+    private static final String SQL_FIND_RECIPE_REQUEST_BY_ID = "SELECT" +
+            " recipe_request.id, r.id, u.id, u.login, u.password, r2.role_name, u.first_name, u.last_name , u.banned, d.id, d.name," +
+            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_receip, d.is_deleted, r.date_start, r.date_end, is_extended, date_solution" +
+            " FROM recipe_request" +
+            " INNER JOIN recipe r on recipe_request.recipe_id = r.id" +
+            " INNER JOIN user u on r.user_id = u.id" +
+            " INNER JOIN role r2 on u.role_id = r2.id" +
+            " INNER JOIN drug d on r.drug_id = d.id" +
+            " INNER JOIN producer p on d.producer_id = p.id" +
             " WHERE recipe_request.id = ?";
-    private static final String SQL_GET_RECIPE_REQUEST_BY_USER_ID_AND_DRUG_ID = "SELECT" +
-            " recipe_request.id,recipe_request.date_start,recipe_request.date_end, u.id,login,password,first_name," +
-            " last_name,role_id,role_name, d.id,d.name,d.price,d.drug_count,d.description,d.need_receip,d.producer_id,p.producer_name" +
-            " FROM recipe_request " +
-            " INNER JOIN user u ON recipe_request.user_id = u.id" +
-            " INNER JOIN role r ON u.role_id = r.id" +
-            " INNER JOIN drug d ON recipe_request.drug_id = d.id" +
-            " INNER JOIN producer p ON d.producer_id = p.id" +
-            " WHERE recipe_request.user_id = ? AND drug_id = ?";
-    private static final String SQL_UPDATE_RECIPE_REQUEST = "UPDATE recipe_request" +
-            " SET user_id = ? , drug_id = ? , date_start = ?, date_end = ?" +
+    private static final String SQL_UPDATE_RECIPE_REQUEST_BY_ID = "UPDATE recipe_request SET recipe_id = ? , is_extended = ?, date_solution = ?" +
             " WHERE id = ?";
-    private static final String SQL_DELETE_RECIPE_REQUEST = "DELETE FROM recipe_request WHERE id = ?";
+    private static final String SQL_DELETE_RECIPE_REQUEST_BY_ID = "DELETE FROM recipe_request WHERE id = ?";
     private final Connection connection;
+
     public RecipeRequestDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
-
-
     @Override
     public RecipeRequest create(RecipeRequest entity) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE_REQUEST, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1, entity.getUser().getId());
-            preparedStatement.setInt(2, entity.getDrug().getId());
-            preparedStatement.setDate(3, entity.getDateStart());
-            preparedStatement.setDate(4, entity.getDateEnd());
-            int countRows = preparedStatement.executeUpdate();
-            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            if (countRows > 0 && resultSet.next()) {
-                return new RecipeRequest.Builder().
-                        withId(resultSet.getInt(1)).
-                        withUser(entity.getUser()).
-                        withDrug(entity.getDrug()).
-                        withDateStart(entity.getDateStart()).
-                        withDateEnd(entity.getDateEnd()).
-                        build();
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE_REQUEST)){
+            preparedStatement.setInt(1,entity.getRecipe().getId());
+            preparedStatement.setBoolean(2,entity.getExtended());
+            preparedStatement.setDate(3,entity.getDateSolution());
+            final int countUpdatedRows = preparedStatement.executeUpdate();
+            if(countUpdatedRows>0){
+                final ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                if(resultSet.next()){
+                    return new RecipeRequest.Builder().
+                            withId(resultSet.getInt(1)).
+                            withRecipe(entity.getRecipe()).
+                            withIsExtended(entity.getExtended()).
+                            withDateSolution(entity.getDateSolution()).
+                            build();
+                }
             }
-        } catch (SQLException e) {
-            LOG.error("cannot create recipe request",e);
-            throw new DaoException("cannot create recipe request",e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
+        }catch (SQLException e){
+            LOG.error("Cannot create recipeRequest",e);
+            throw new DaoException("Cannot create recipeRequest",e);
         }
-        LOG.error("cannot create recipe request");
-        throw new DaoException();
-    }
-
-    @Override
-    public boolean createRecipeRequestByUserIdAndDrugIdWithDateStartAndDateEnd(Integer userId, Integer drugId, Date dateStart, Date dateEnd) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE_REQUEST);
-            preparedStatement.setInt(1,userId);
-            preparedStatement.setInt(2,drugId);
-            preparedStatement.setDate(3,dateStart);
-            preparedStatement.setDate(4,dateEnd);
-            int countRows = preparedStatement.executeUpdate();
-            if (countRows > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            LOG.error("cannot create recipe request",e);
-            throw new DaoException("cannot create recipe request",e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
-        }
-        LOG.error("cannot create recipe request");
-        throw new DaoException();
-    }
-
-    @Override
-    public Optional<RecipeRequest> findRecipeRequestByUserIdAndDrugId(Integer userId, Integer drugId) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_GET_RECIPE_REQUEST_BY_USER_ID_AND_DRUG_ID);
-            preparedStatement.setInt(1, userId);
-            preparedStatement.setInt(2,drugId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                RecipeRequest recipeRequest = new RecipeRequest.Builder().
-                        withId(resultSet.getInt(1)).
-                        withDateStart(resultSet.getDate(2)).
-                        withDateEnd(resultSet.getDate(3)).
-                        withUser(new User.Builder().
-                                withId(resultSet.getInt(4)).
-                                withLogin(resultSet.getString(5)).
-                                withPassword(resultSet.getString(6)).
-                                withFirstName(resultSet.getString(7)).
-                                withLastName(resultSet.getString(8)).
-                                withRole(new Role.Builder().
-                                        withId(resultSet.getInt(9)).
-                                        withRoleName(resultSet.getString(10)).build()).build()
-                        ).
-                        withDrug(new Drug.Builder().
-                                withId(resultSet.getInt(11)).
-                                withName(resultSet.getString(12)).
-                                withPrice(resultSet.getDouble(13)).
-                                withCount(resultSet.getInt(14)).
-                                withDescription(resultSet.getString(15)).
-                                withNeedReceip(resultSet.getBoolean(16)).
-                                withProducer(new Producer.Builder().
-                                        withId(resultSet.getInt(17)).
-                                        withName(resultSet.getString(18)).build()).build()
-                        ).build();
-                return Optional.of(recipeRequest);
-            }
-        } catch (SQLException e) {
-            LOG.error("cannot find recipe request by id",e);
-            throw new DaoException("cannot find recipe request by id",e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
-        }
-        return Optional.empty();
+        LOG.error("Cannot create recipeRequest");
+        throw new DaoException("Cannot create recipeRequest");
     }
 
     @Override
     public List<RecipeRequest> findAll() throws DaoException {
-        List<RecipeRequest> recipeRequestList = new ArrayList<>();
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_GET_ALL_RECIPE_REQUESTS);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                RecipeRequest recipeRequest = new RecipeRequest.Builder().
-                        withId(resultSet.getInt(1)).
-                        withDateStart(resultSet.getDate(2)).
-                        withDateEnd(resultSet.getDate(3)).
-                        withUser(new User.Builder().
-                                withId(resultSet.getInt(4)).
-                                withLogin(resultSet.getString(5)).
-                                withPassword(resultSet.getString(6)).
-                                withFirstName(resultSet.getString(7)).
-                                withLastName(resultSet.getString(8)).
-                                withRole(new Role.Builder().
-                                        withId(resultSet.getInt(9)).
-                                        withRoleName(resultSet.getString(10)).build()).build()
-                        ).
-                        withDrug(new Drug.Builder().
-                                withId(resultSet.getInt(11)).
-                                withName(resultSet.getString(12)).
-                                withPrice(resultSet.getDouble(13)).
-                                withCount(resultSet.getInt(14)).
-                                withDescription(resultSet.getString(15)).
-                                withNeedReceip(resultSet.getBoolean(16)).
-                                withProducer(new Producer.Builder().
-                                        withId(resultSet.getInt(17)).
-                                        withName(resultSet.getString(18)).build()).build()
-                        ).build();
-                recipeRequestList.add(recipeRequest);
-
+        final List<RecipeRequest> recipeRequestList = new ArrayList<>();
+        try(final Statement statement = connection.createStatement()){
+            final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_RECIPE_REQUESTS);
+            while (resultSet.next()){
+               final RecipeRequest recipeRequest = new RecipeRequest.Builder().
+                       withId(resultSet.getInt(1)).
+                       withRecipe(new Recipe.Builder().
+                               withId(resultSet.getInt(2)).
+                               withUser(new User.Builder().
+                                       withId(resultSet.getInt(3)).
+                                       withLogin(resultSet.getString(4)).
+                                       withPassword(resultSet.getString(5)).
+                                       withRole(Role.valueOf(resultSet.getString(6))).
+                                       withFirstName(resultSet.getString(7)).
+                                       withLastName(resultSet.getString(8)).
+                                       withBannedStatus(resultSet.getBoolean(9)).
+                                       build()).
+                               withDrug(new Drug.Builder().
+                                       withId(resultSet.getInt(10)).
+                                       withName(resultSet.getString(11)).
+                                       withPrice(BigDecimal.valueOf(resultSet.getDouble(12))).
+                                       withCount(resultSet.getInt(13)).
+                                       withDescription(resultSet.getString(14)).
+                                       withProducer(new Producer.Builder().
+                                               withId(resultSet.getInt(15)).
+                                               withName(resultSet.getString(16)).
+                                               build()).
+                                       withNeedReceip(resultSet.getBoolean(17)).
+                                       withIsDeleted(resultSet.getBoolean(18)).
+                                       build()).
+                               withDateStart(resultSet.getDate(19)).
+                               withDateEnd(resultSet.getDate(20)).
+                               build()).
+                       withIsExtended(resultSet.getBoolean(21)).
+                       withDateSolution(resultSet.getDate(22)).
+                       build();
+               recipeRequestList.add(recipeRequest);
             }
-
-        } catch (SQLException e) {
-            LOG.error("cannot find all recipe request",e);
-            throw new DaoException("cannot find all recipe request",e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
+        }catch (SQLException e){
+            LOG.error("Cannot find all recipe requests", e);
+            throw new DaoException("Cannot find all recipe requests", e);
         }
         return recipeRequestList;
     }
 
     @Override
     public Optional<RecipeRequest> findEntityById(Integer id) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_GET_RECIPE_REQUEST_BY_ID);
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                RecipeRequest recipeRequest = new RecipeRequest.Builder().
-                        withId(resultSet.getInt(1)).
-                        withDateStart(resultSet.getDate(2)).
-                        withDateEnd(resultSet.getDate(3)).
-                        withUser(new User.Builder().
-                                withId(resultSet.getInt(4)).
-                                withLogin(resultSet.getString(5)).
-                                withPassword(resultSet.getString(6)).
-                                withFirstName(resultSet.getString(7)).
-                                withLastName(resultSet.getString(8)).
-                                withRole(new Role.Builder().
-                                        withId(resultSet.getInt(9)).
-                                        withRoleName(resultSet.getString(10)).build()).build()
-                        ).
-                        withDrug(new Drug.Builder().
-                                withId(resultSet.getInt(11)).
-                                withName(resultSet.getString(12)).
-                                withPrice(resultSet.getDouble(13)).
-                                withCount(resultSet.getInt(14)).
-                                withDescription(resultSet.getString(15)).
-                                withNeedReceip(resultSet.getBoolean(16)).
-                                withProducer(new Producer.Builder().
-                                        withId(resultSet.getInt(17)).
-                                        withName(resultSet.getString(18)).build()).build()
-                        ).build();
-                return Optional.of(recipeRequest);
-            }
-        } catch (SQLException e) {
-            LOG.error("cannot find recipe request by id",e);
-            throw new DaoException("cannot find recipe request by id",e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_RECIPE_REQUEST_BY_ID)){
+            preparedStatement.setInt(1,id);
+           final ResultSet resultSet = preparedStatement.executeQuery();
+            return Optional.of(new RecipeRequest.Builder().
+                    withId(resultSet.getInt(1)).
+                    withRecipe(new Recipe.Builder().
+                            withId(resultSet.getInt(2)).
+                            withUser(new User.Builder().
+                                    withId(resultSet.getInt(3)).
+                                    withLogin(resultSet.getString(4)).
+                                    withPassword(resultSet.getString(5)).
+                                    withRole(Role.valueOf(resultSet.getString(6))).
+                                    withFirstName(resultSet.getString(7)).
+                                    withLastName(resultSet.getString(8)).
+                                    withBannedStatus(resultSet.getBoolean(9)).
+                                    build()).
+                            withDrug(new Drug.Builder().
+                                    withId(resultSet.getInt(10)).
+                                    withName(resultSet.getString(11)).
+                                    withPrice(BigDecimal.valueOf(resultSet.getDouble(12))).
+                                    withCount(resultSet.getInt(13)).
+                                    withDescription(resultSet.getString(14)).
+                                    withProducer(new Producer.Builder().
+                                            withId(resultSet.getInt(15)).
+                                            withName(resultSet.getString(16)).
+                                            build()).
+                                    withNeedReceip(resultSet.getBoolean(17)).
+                                    withIsDeleted(resultSet.getBoolean(18)).
+                                    build()).
+                            withDateStart(resultSet.getDate(19)).
+                            withDateEnd(resultSet.getDate(20)).
+                            build()).
+                    withIsExtended(resultSet.getBoolean(21)).
+                    withDateSolution(resultSet.getDate(22)).
+                    build());
+        }catch (SQLException e){
+            LOG.error("Cannot find recipe request by id",e);
+            throw new DaoException("Cannot find recipe request by id",e);
         }
-        return Optional.empty();
     }
 
     @Override
     public RecipeRequest update(RecipeRequest entity) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_UPDATE_RECIPE_REQUEST);
-            preparedStatement.setInt(1, entity.getUser().getId());
-            preparedStatement.setInt(2, entity.getDrug().getId());
-            preparedStatement.setDate(3, entity.getDateStart());
-            preparedStatement.setDate(4, entity.getDateEnd());
-            preparedStatement.setInt(5, entity.getId());
-            int countRows = preparedStatement.executeUpdate();
-            if (countRows > 0) {
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_RECIPE_REQUEST_BY_ID)){
+            preparedStatement.setInt(1,entity.getRecipe().getId());
+            preparedStatement.setBoolean(2,entity.getExtended());
+            preparedStatement.setDate(3,entity.getDateSolution());
+            preparedStatement.setInt(4,entity.getId());
+            final int countUpdatedRows = preparedStatement.executeUpdate();
+            if(countUpdatedRows>0){
                 return entity;
             }
-        } catch (SQLException e) {
-            LOG.error("cannot update recipe request",e);
-            throw new DaoException("cannot update recipe request",e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
+        }catch (SQLException e){
+            LOG.error("Cannot update recipe request by id",e);
+            throw new DaoException("Cannot update recipe request by id",e);
         }
-        LOG.error("cannot update recipe request");
-        throw new DaoException();
+        LOG.error("Cannot update recipe request by id");
+        throw new DaoException("Cannot update recipe request by id");
     }
 
     @Override
     public boolean delete(RecipeRequest entity) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE_REQUEST);
-            preparedStatement.setInt(1, entity.getId());
-            int countRows = preparedStatement.executeUpdate();
-            if (countRows > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            LOG.error("cannot delete recipe request",e);
-            throw new DaoException("cannot update recipe request",e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE_REQUEST_BY_ID)){
+            preparedStatement.setInt(1,entity.getId());
+            final int countDeletedRows = preparedStatement.executeUpdate();
+            return countDeletedRows>0;
+        }catch (SQLException e){
+            LOG.error("Cannot delete recipeRequest by id",e);
+            throw new DaoException("Cannot delete recipeRequest by id",e);
         }
-        return false;
-    }
-    @Override
-    public boolean deleteById(Integer recipeRequestId) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE_REQUEST);
-            preparedStatement.setInt(1, recipeRequestId);
-            int countRows = preparedStatement.executeUpdate();
-            if (countRows > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            LOG.error("cannot delete recipe request",e);
-            throw new DaoException("cannot update recipe request",e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
-        }
-        return false;
     }
 }

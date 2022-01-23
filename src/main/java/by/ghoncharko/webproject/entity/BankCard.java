@@ -10,12 +10,12 @@ import java.util.Objects;
  */
 public class BankCard implements Entity {
     private final Integer id;
-    private final Integer userId;
+    private final User user;
     private final BigDecimal balance;
 
     private BankCard(Builder builder) {
         id = builder.id;
-        userId = builder.userId;
+        user = builder.user;
         balance = builder.balance;
     }
 
@@ -23,8 +23,8 @@ public class BankCard implements Entity {
         return id;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
     public BigDecimal getBalance() {
@@ -39,14 +39,14 @@ public class BankCard implements Entity {
         BankCard bankCard = (BankCard) o;
 
         if (!Objects.equals(id, bankCard.id)) return false;
-        if (!Objects.equals(userId, bankCard.userId)) return false;
+        if (!Objects.equals(user, bankCard.user)) return false;
         return Objects.equals(balance, bankCard.balance);
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (userId != null ? userId.hashCode() : 0);
+        result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (balance != null ? balance.hashCode() : 0);
         return result;
     }
@@ -55,14 +55,14 @@ public class BankCard implements Entity {
     public String toString() {
         return "BankCard{" +
                 "id=" + id +
-                ", userId=" + userId +
+                ", userId=" + user +
                 ", balance=" + balance +
                 '}';
     }
 
     public static class Builder {
         private Integer id;
-        private Integer userId;
+        private User user;
         private BigDecimal balance;
 
         public Builder withId(Integer id) {
@@ -70,8 +70,8 @@ public class BankCard implements Entity {
             return this;
         }
 
-        public Builder withUserId(Integer userId) {
-            this.userId = userId;
+        public Builder withUser(User user) {
+            this.user = user;
             return this;
         }
 

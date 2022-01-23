@@ -61,18 +61,4 @@ public interface Dao<T extends Entity> {
      * @see Entity - Interface-marker
      */
     boolean delete(T entity) throws DaoException;
-
-    /**
-     * @param statement accept Statement and close this
-     * @see Statement
-     */
-    static void closeStatement(Statement statement) {
-        if (statement != null) {
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                LOG.error("SQLException when we tried close connection" + e);
-            }
-        }
-    }
 }

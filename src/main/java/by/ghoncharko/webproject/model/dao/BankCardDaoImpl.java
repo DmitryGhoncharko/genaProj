@@ -2,10 +2,13 @@ package by.ghoncharko.webproject.model.dao;
 
 
 import by.ghoncharko.webproject.entity.BankCard;
+import by.ghoncharko.webproject.entity.Role;
+import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,18 +23,21 @@ import java.util.Optional;
  *
  * @author Dmitry Ghoncharko
  */
-public class BankCardDaoImpl implements BankCardDao {
+public class BankCardDaoImpl implements Dao<BankCard> {
     private static final Logger LOG = LogManager.getLogger(BankCardDaoImpl.class);
-    private static final String SQL_CREATE_BANK_CARD = "INSERT INTO card (user_id, balance) VALUES (?,?)";
-    private static final String SQL_FIND_ALL_BANK_CARDS = "SELECT id, user_id, balance FROM card";
-    private static final String SQL_FIND_ALL_BANK_CARDS_BY_USER_ID = "SELECT id, user_id, balance FROM card WHERE user_id = ?";
-    private static final String SQL_FIND_BANK_CARD_BY_CARD_ID = "SELECT id, user_id, balance FROM card WHERE id = ?";
-    private static final String SQL_FIND_BANK_CARD_BY_USER_ID = "SELECT id, user_id, balance FROM card WHERE user_id = ?";
-    private static final String SQL_FIND_BANK_CARD_BY_USER_ID_AND_CARD_ID = "SELECT id, user_id, balance FROM card WHERE user_id = ? AND id=?";
-    private static final String SQL_FIND_BANK_CARD_BY_ID = "SELECT id, user_id, balance FROM card WHERE id = ?";
-    private static final String SQL_UPDATE_BANK_CARD = "UPDATE card SET  balance = ? WHERE id = ?";
-    private static final String SQL_DELETE_BANK_CARD = "DELETE FROM card  WHERE id=?";
-    private static final String SQL_DELETE_BANK_CARD_BY_CARD_ID_AND_USER_ID = "DELETE FROM card  WHERE id= ? AND user_id= ?";
+    private static final String SQL_CREATE_BANK_CARD = "INSERT INTO bank_card(user_id, balance) VALUES (?,?)";
+    private static final String SQL_FIND_ALL_BANK_CARDS = "SELECT bank_card.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned ,balance" +
+            " FROM  bank_card" +
+            " INNER JOIN user u on bank_card.user_id = u.id" +
+            " INNER JOIN role r on u.role_id = r.id";
+    private static final String SQL_FIND_BANK_CARD_BY_ID = "SELECT bank_card.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned ,balance" +
+            " FROM  bank_card" +
+            " INNER JOIN user u on bank_card.user_id = u.id" +
+            " INNER JOIN role r on u.role_id = r.id" +
+            " WHERE id = ?";
+    private static final String SQL_UPDATE_BANK_CARD_BY_CARD_ID = "UPDATE bank_card SET user_id = ?, balance = ?" +
+            " WHERE id = ?";
+    private static final String SQL_DELETE_BANK_CARD_BY_CARD_ID = "DELETE FROM bank_card WHERE id = ?";
     private final Connection connection;
 
     public BankCardDaoImpl(Connection connection) {
@@ -40,258 +46,109 @@ public class BankCardDaoImpl implements BankCardDao {
 
     @Override
     public BankCard create(BankCard entity) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_CREATE_BANK_CARD, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1, entity.getUserId());
-            preparedStatement.setDouble(2, entity.getBalance());
-            final int updatedRows = preparedStatement.executeUpdate();
-            final ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            if (updatedRows > 0 & resultSet.next()) {
-                return new BankCard.Builder().
-                        withId(resultSet.getInt(1)).
-                        withUserId(entity.getUserId()).
-                        withBalance(entity.getBalance()).
-                        build();
-
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_BANK_CARD, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setInt(1, entity.getUser().getId());
+            preparedStatement.setDouble(2, entity.getBalance().doubleValue());
+            final int countRows = preparedStatement.executeUpdate();
+            if (countRows > 0) {
+                final ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    return new BankCard.Builder().
+                            withId(resultSet.getInt(1)).
+                            withUser(entity.getUser()).
+                            withBalance(entity.getBalance()).build();
+                }
             }
         } catch (SQLException e) {
-            LOG.error("SQLException in method create bankCard", e);
-            throw new DaoException("SQLException in method create bankCard", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
+            LOG.error("Cannot create bank card", e);
+            throw new DaoException("Cannot create bank card", e);
         }
-        LOG.error("DaoException in method create bankCard when we try create entity");
-        throw new DaoException("DaoException in method create bankCard");
-    }
-
-    @Override
-    public boolean addBankCard(Double balance, Integer userId) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_CREATE_BANK_CARD, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1, userId);
-            preparedStatement.setDouble(2, balance);
-            final int updatedRows = preparedStatement.executeUpdate();
-            if (updatedRows > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            LOG.error("SQLException in method add bankCard", e);
-            throw new DaoException("SQLException in method add bankCard", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
-        }
-        LOG.error("DaoException in method create bankCard when we try add bank card");
-        throw new DaoException("DaoException in method add bankCard");
+        throw new DaoException("Cannot create bank card");
     }
 
     @Override
     public List<BankCard> findAll() throws DaoException {
         final List<BankCard> bankCardList = new ArrayList<>();
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
+        try (final Statement statement = connection.createStatement()) {
             final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_BANK_CARDS);
             while (resultSet.next()) {
-                final BankCard bankCard = new BankCard.Builder().
+               final BankCard bankCard = new BankCard.Builder().
                         withId(resultSet.getInt(1)).
-                        withUserId(resultSet.getInt(2)).
-                        withBalance(resultSet.getDouble(3)).
-                        build();
+                        withUser(new User.Builder().
+                                withId(resultSet.getInt(2)).
+                                withLogin(resultSet.getString(3)).
+                                withPassword(resultSet.getString(4)).
+                                withRole(Role.valueOf(resultSet.getString(5))).
+                                withFirstName(resultSet.getString(6)).
+                                withLastName(resultSet.getString(7)).
+                                withBannedStatus(resultSet.getBoolean(8)).
+                                build()).
+                       withBalance(BigDecimal.valueOf(resultSet.getDouble(9))).
+                       build();
                 bankCardList.add(bankCard);
             }
         } catch (SQLException e) {
-            LOG.error("SQLException when we try findAll entities in BankCard", e);
-            throw new DaoException("SQLException when we try findAll entities in BankCard", e);
-        } finally {
-            Dao.closeStatement(statement);
+            LOG.error("Cannot find all bank cards ",e);
+            throw new DaoException("Cannot find all bank cards ",e);
         }
         return bankCardList;
-    }
-
-    @Override
-    public List<BankCard> findAllBankCardsByUserId(Integer userId) throws DaoException {
-        final List<BankCard> bankCardList = new ArrayList<>();
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_FIND_ALL_BANK_CARDS_BY_USER_ID);
-            preparedStatement.setInt(1, userId);
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                 BankCard bankCard = new BankCard.Builder().
-                        withId(resultSet.getInt(1)).
-                        withUserId(resultSet.getInt(2)).
-                        withBalance(resultSet.getDouble(3)).
-                        build();
-                bankCardList.add(bankCard);
-            }
-        } catch (SQLException e) {
-            LOG.error("SQLException when we try findAll entities in BankCard", e);
-            throw new DaoException("SQLException when we try findAll entities in BankCard", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
-        }
-        return bankCardList;
-    }
-
-    @Override
-    public Optional<BankCard> findAllBankCardsByUserIdAndCardId(Integer userId, Integer cardId) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_USER_ID_AND_CARD_ID);
-            preparedStatement.setInt(1, userId);
-            preparedStatement.setInt(2, cardId);
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                final BankCard bankCard = new BankCard.Builder().
-                        withId(resultSet.getInt(1)).
-                        withUserId(resultSet.getInt(2)).
-                        withBalance(resultSet.getDouble(3)).
-                        build();
-                return Optional.of(bankCard);
-            }
-        } catch (SQLException e) {
-            LOG.error("SQLException when we try findAll entities in BankCard", e);
-            throw new DaoException("SQLException when we try findAll entities in BankCard", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<BankCard> findBankCardByCardId(Integer cardId) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_CARD_ID);
-            preparedStatement.setInt(1, cardId);
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                final BankCard bankCard = new BankCard.Builder().
-                        withId(resultSet.getInt(1)).
-                        withUserId(resultSet.getInt(2)).
-                        withBalance(resultSet.getDouble(3)).
-                        build();
-                return Optional.of(bankCard);
-            }
-        } catch (SQLException e) {
-            LOG.error("SQLException when we try findAll entities in BankCard", e);
-            throw new DaoException("SQLException when we try findAll entities in BankCard", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
-        }
-        return Optional.empty();
     }
 
     @Override
     public Optional<BankCard> findEntityById(Integer id) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_ID);
-            preparedStatement.setInt(1, id);
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_ID)){
+            preparedStatement.setInt(1,id);
+           final ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
                 return Optional.of(new BankCard.Builder().
                         withId(resultSet.getInt(1)).
-                        withUserId(resultSet.getInt(2)).
-                        withBalance(resultSet.getDouble(3)).
+                        withUser(new User.Builder().
+                                withId(resultSet.getInt(2)).
+                                withLogin(resultSet.getString(3)).
+                                withPassword(resultSet.getString(4)).
+                                withRole(Role.valueOf(resultSet.getString(5))).
+                                withFirstName(resultSet.getString(6)).
+                                withLastName(resultSet.getString(7)).
+                                withBannedStatus(resultSet.getBoolean(8)).
+                                build()).
+                        withBalance(BigDecimal.valueOf(resultSet.getDouble(9))).
                         build());
-
             }
-        } catch (SQLException e) {
-            LOG.error("SQLException when we try to findEntityById bankCard", e);
-            throw new DaoException("SQLException when we try to findEntityById bankCard", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
+        }catch (SQLException e){
+            LOG.error("Cannot find bank card by id",e);
+            throw new DaoException("Cannot find bank card by id",e);
         }
-        LOG.error("cannot find bankCard entity by id");
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<BankCard> findBankCardByUserId(Integer userId) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_FIND_BANK_CARD_BY_USER_ID);
-            preparedStatement.setInt(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return Optional.of(new BankCard.Builder().
-                        withId(resultSet.getInt(1)).
-                        withUserId(resultSet.getInt(2)).
-                        withBalance(resultSet.getDouble(3)).
-                        build());
-
-            }
-        } catch (SQLException e) {
-            LOG.error("SQLException when we try to findEntityById bankCard", e);
-            throw new DaoException("SQLException when we try to findEntityById bankCard", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
-        }
-        LOG.error("cannot find bankCard by User id");
+        LOG.info("Cannot find bank card by card id");
         return Optional.empty();
     }
 
     @Override
     public BankCard update(BankCard entity) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_UPDATE_BANK_CARD);
-            preparedStatement.setDouble(1, entity.getBalance());
-            preparedStatement.setInt(2, entity.getId());
-            int countRows = preparedStatement.executeUpdate();
-            if (countRows > 0) {
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BANK_CARD_BY_CARD_ID)){
+            preparedStatement.setInt(1,entity.getUser().getId());
+            preparedStatement.setDouble(2,entity.getBalance().doubleValue());
+            preparedStatement.setInt(3,entity.getId());
+            final int countUpdatedRows = preparedStatement.executeUpdate();
+            if(countUpdatedRows>0){
                 return entity;
             }
-        } catch (SQLException e) {
-            LOG.error("Cannot update BankCard entity", e);
-            throw new DaoException("Cannot update BankCard entity", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
+        }catch (SQLException e){
+            LOG.error("Cannot update bank card by card id");
+            throw new DaoException("Cannot update bank card by card id",e);
         }
-        LOG.error("Cannot update bank card");
-        throw new DaoException();
+        LOG.error("Cannot update bank card by card id");
+        throw new DaoException("Cannot update bank card by card id");
     }
 
     @Override
     public boolean delete(BankCard entity) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_CARD);
-            preparedStatement.setInt(1, entity.getId());
-            final int countRows = preparedStatement.executeUpdate();
-            if (countRows > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            LOG.error("cannod delete bank card", e);
-            throw new DaoException("cannod delete bank card", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_CARD_BY_CARD_ID)){
+           preparedStatement.setInt(1,entity.getId());
+           final int countRowsUpdated = preparedStatement.executeUpdate();
+           return countRowsUpdated>0;
+        }catch (SQLException e){
+            LOG.error("Cannot delete bank card by card id", e);
+            throw new DaoException("Cannot delete bank card by card id", e);
         }
-        LOG.error("cannot delete bank card");
-        return false;
-    }
-
-    public boolean deleteByCardIdAndUserId(Integer cardId, Integer userId) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_CARD_BY_CARD_ID_AND_USER_ID);
-            preparedStatement.setInt(1, cardId);
-            preparedStatement.setInt(2, userId);
-            final int countRows = preparedStatement.executeUpdate();
-            if (countRows > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            LOG.error("cannod delete bank card", e);
-            throw new DaoException("cannod delete bank card", e);
-        } finally {
-            Dao.closeStatement(preparedStatement);
-        }
-        LOG.error("cannot delete bank card");
-        return false;
     }
 }
