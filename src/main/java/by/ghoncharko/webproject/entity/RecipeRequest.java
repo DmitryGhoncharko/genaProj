@@ -7,13 +7,11 @@ public class RecipeRequest implements Entity {
     private final Integer id;
     private final Recipe recipe;
     private final Boolean isExtended;
-    private final Date dateSolution;
 
     public RecipeRequest(Builder builder) {
         id = builder.id;
         recipe = builder.recipe;
         isExtended = builder.isExtended;
-        dateSolution = builder.dateSolution;
     }
 
     public Integer getId() {
@@ -28,12 +26,9 @@ public class RecipeRequest implements Entity {
         return isExtended;
     }
 
-    public Date getDateSolution() {
-        return dateSolution;
-    }
-
     @Override
     public boolean equals(Object o) {
+        
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -41,8 +36,7 @@ public class RecipeRequest implements Entity {
 
         if (!Objects.equals(id, that.id)) return false;
         if (!Objects.equals(recipe, that.recipe)) return false;
-        if (!Objects.equals(isExtended, that.isExtended)) return false;
-        return Objects.equals(dateSolution, that.dateSolution);
+        return Objects.equals(isExtended, that.isExtended);
     }
 
     @Override
@@ -50,7 +44,6 @@ public class RecipeRequest implements Entity {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (recipe != null ? recipe.hashCode() : 0);
         result = 31 * result + (isExtended != null ? isExtended.hashCode() : 0);
-        result = 31 * result + (dateSolution != null ? dateSolution.hashCode() : 0);
         return result;
     }
 
@@ -60,7 +53,6 @@ public class RecipeRequest implements Entity {
                 "id=" + id +
                 ", recipe=" + recipe +
                 ", isExtended=" + isExtended +
-                ", dateSolution=" + dateSolution +
                 '}';
     }
 
@@ -68,7 +60,6 @@ public class RecipeRequest implements Entity {
         private Integer id;
         private Recipe recipe;
         private Boolean isExtended;
-        private Date dateSolution;
         public Builder withId(Integer id) {
             this.id = id;
             return this;
@@ -83,11 +74,7 @@ public class RecipeRequest implements Entity {
             this.isExtended = isExtended;
             return this;
         }
-
-        public Builder withDateSolution(Date dateSolution) {
-            this.dateSolution = dateSolution;
-            return this;
-        }
+        
         public RecipeRequest build() {
             return new RecipeRequest(this);
         }

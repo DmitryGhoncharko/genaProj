@@ -14,17 +14,17 @@ import java.util.Optional;
 
 public class UserOrderDaoImpl implements UserOrderDao{
     private static final Logger LOG = LogManager.getLogger(UserOrderDaoImpl.class);
-    private static final String SQL_CREATE_USER_ORDER = "INSERT INTO user_order(user_id, is_payed, date_payed) VALUES (?,?,?)";
-    private static final String SQL_FIND_ALL_USER_ORDERS = "SELECT user_order.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned , is_payed, date_payed" +
+    private static final String SQL_CREATE_USER_ORDER = "INSERT INTO user_order(user_id, is_payed) VALUES (?,?)";
+    private static final String SQL_FIND_ALL_USER_ORDERS = "SELECT user_order.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned , is_payed" +
             " FROM  user_order" +
             " INNER JOIN user u ON user_order.user_id = u.id" +
             " INNER JOIN role r on u.role_id = r.id";
-    private static final String SQL_FIND_USER_ORDER_BY_ID = "SELECT user_order.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned , is_payed, date_payed" +
+    private static final String SQL_FIND_USER_ORDER_BY_ID = "SELECT user_order.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned , is_payed" +
             " FROM  user_order" +
             " INNER JOIN user u ON user_order.user_id = u.id" +
             " INNER JOIN role r ON u.role_id = r.id  " +
             " WHERE id = ?";
-    private static final String SQL_UPDATE_USER_ORDER_BY_ID = "UPDATE user_order SET user_id = ?, is_payed = ? , date_payed = ?" +
+    private static final String SQL_UPDATE_USER_ORDER_BY_ID = "UPDATE user_order SET user_id = ?, is_payed = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_USER_ORDER_BY_ID = "DELETE FROM user_order WHERE  id = ?";
     private final Connection connection;
@@ -38,7 +38,6 @@ public class UserOrderDaoImpl implements UserOrderDao{
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_USER_ORDER, Statement.RETURN_GENERATED_KEYS)){
             preparedStatement.setInt(1,entity.getUser().getId());
             preparedStatement.setBoolean(2,entity.getPayed());
-            preparedStatement.setDate(3,entity.getDatePayed());
             final int countCreatedRows = preparedStatement.executeUpdate();
             if(countCreatedRows>0){
                 final ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -47,7 +46,6 @@ public class UserOrderDaoImpl implements UserOrderDao{
                             withId(resultSet.getInt(1)).
                             withUser(entity.getUser()).
                             withIsPayed(entity.getPayed()).
-                            withDatePayed(entity.getDatePayed()).
                             build();
                 }
             }
@@ -78,7 +76,6 @@ public class UserOrderDaoImpl implements UserOrderDao{
                               build()
                       ).
                       withIsPayed(resultSet.getBoolean(9)).
-                      withDatePayed(resultSet.getDate(10)).
                       build();
           }
        }catch (SQLException e){
@@ -107,7 +104,6 @@ public class UserOrderDaoImpl implements UserOrderDao{
                                build()
                        ).
                        withIsPayed(resultSet.getBoolean(9)).
-                       withDatePayed(resultSet.getDate(10)).
                        build());
            }
        }catch (SQLException e){
@@ -123,8 +119,7 @@ public class UserOrderDaoImpl implements UserOrderDao{
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER_ORDER_BY_ID)){
             preparedStatement.setInt(1,entity.getUser().getId());
             preparedStatement.setBoolean(2,entity.getPayed());
-            preparedStatement.setDate(3,entity.getDatePayed());
-            preparedStatement.setInt(4,entity.getId());
+            preparedStatement.setInt(3,entity.getId());
             final  int countRowsUpdated = preparedStatement.executeUpdate();
             if(countRowsUpdated>0){
                 return entity;
