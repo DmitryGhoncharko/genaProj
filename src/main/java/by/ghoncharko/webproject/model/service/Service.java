@@ -2,7 +2,6 @@ package by.ghoncharko.webproject.model.service;
 
 
 import by.ghoncharko.webproject.entity.Entity;
-import by.ghoncharko.webproject.exception.DaoException;
 import by.ghoncharko.webproject.exception.ServiceException;
 
 import java.sql.Connection;

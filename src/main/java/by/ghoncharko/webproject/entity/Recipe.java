@@ -15,12 +15,14 @@ public class Recipe implements Entity {
     private final Drug drug;
     private final Date dateStart;
     private final Date dateEnd;
+    private final User doctor;
     private Recipe(Builder builder) {
         id = builder.id;
         drug = builder.drug;
         dateStart = builder.dateStart;
         dateEnd = builder.dateEnd;
         user = builder.user;
+        doctor = builder.doctor;
     }
 
     public Integer getId() {
@@ -43,6 +45,10 @@ public class Recipe implements Entity {
         return user;
     }
 
+    public User getDoctor() {
+        return doctor;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,7 +60,8 @@ public class Recipe implements Entity {
         if (!Objects.equals(user, recipe.user)) return false;
         if (!Objects.equals(drug, recipe.drug)) return false;
         if (!Objects.equals(dateStart, recipe.dateStart)) return false;
-        return Objects.equals(dateEnd, recipe.dateEnd);
+        if (!Objects.equals(dateEnd, recipe.dateEnd)) return false;
+        return Objects.equals(doctor, recipe.doctor);
     }
 
     @Override
@@ -64,6 +71,7 @@ public class Recipe implements Entity {
         result = 31 * result + (drug != null ? drug.hashCode() : 0);
         result = 31 * result + (dateStart != null ? dateStart.hashCode() : 0);
         result = 31 * result + (dateEnd != null ? dateEnd.hashCode() : 0);
+        result = 31 * result + (doctor != null ? doctor.hashCode() : 0);
         return result;
     }
 
@@ -75,6 +83,7 @@ public class Recipe implements Entity {
                 ", drug=" + drug +
                 ", dateStart=" + dateStart +
                 ", dateEnd=" + dateEnd +
+                ", doctor=" + doctor +
                 '}';
     }
 
@@ -84,6 +93,7 @@ public class Recipe implements Entity {
         private Date dateStart;
         private Date dateEnd;
         private User user;
+        private User doctor;
         public Builder withId(Integer id) {
             this.id = id;
             return this;
@@ -104,11 +114,14 @@ public class Recipe implements Entity {
             return this;
         }
 
-        public Builder withUser(User id) {
-            this.user = id;
+        public Builder withUser(User user) {
+            this.user = user;
             return this;
         }
-
+        public Builder withDoctor(User doctor){
+            this.doctor = doctor;
+            return this;
+        }
         public Recipe build() {
             return new Recipe(this);
         }

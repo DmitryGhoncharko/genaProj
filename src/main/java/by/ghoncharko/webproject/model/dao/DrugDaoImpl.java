@@ -14,19 +14,19 @@ import java.util.Optional;
 
 public class DrugDaoImpl implements DrugDao{
     private static final Logger LOG = LogManager.getLogger(DrugDaoImpl.class);
-    private static final String SQL_CREATE_DRUG = "INSERT INTO drug(name, price, drug_count, description, producer_id, need_receip)" +
+    private static final String SQL_CREATE_DRUG = "INSERT INTO drug(name, price, drug_count, description, producer_id, need_recipe)" +
             " VALUES (?,?,?,?,?,?);";
     private static final String SQL_FIND_ALL_DRUGS = "SELECT" +
-            " drug.id, name,price,drug_count,description,need_receip,is_deleted, p.id, p.producer_name" +
+            " drug.id, name,price,drug_count,description,need_recipe,is_deleted, p.id, p.producer_name" +
             " FROM drug" +
             " INNER JOIN producer p ON drug.producer_id = p.id";
 
-    private static final String SQL_FIND_DRUG_BY_DRUG_ID = "SELECT drug.id, name,price,drug_count,description,need_receip,is_deleted, p.id, p.producer_name" +
+    private static final String SQL_FIND_DRUG_BY_DRUG_ID = "SELECT drug.id, name,price,drug_count,description,need_recipe,is_deleted, p.id, p.producer_name" +
             " FROM drug" +
             " INNER JOIN producer p ON drug.producer_id = p.id" +
             " WHERE drug.id = ?";
     private static final String SQL_UPDATE_DRUG_BY_DRUG_ID = "UPDATE drug SET" +
-            " name = ?, price = ?, drug_count = ? , description = ?, producer_id = ? , need_receip = ? , is_deleted = ?" +
+            " name = ?, price = ?, drug_count = ? , description = ?, producer_id = ? , need_recipe = ? , is_deleted = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_DRUG_BY_DRUG_ID = "DELETE FROM drug WHERE id = ?";
     private final Connection connection;

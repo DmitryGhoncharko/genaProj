@@ -15,16 +15,16 @@ public class RecipeDaoImpl implements RecipeDao{
     private static final Logger LOG  = LogManager.getLogger(RecipeDaoImpl.class);
     private static final String SQL_CREATE_RECIPE = "INSERT INTO recipe(user_id, drug_id, date_start, date_end)  VALUES (?,?,?,?)";
     private static final String SQL_FIND_ALL_RECIPES = "SELECT" +
-            " recipe.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned,  d.id," +
-            " d.name, d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_receip, d.is_deleted,  date_start, date_end" +
+            " recipe.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.is_banned,  d.id," +
+            " d.name, d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_recipe, d.is_deleted,  date_start, date_end" +
             " FROM recipe" +
             " INNER JOIN user u ON recipe.user_id = u.id" +
             " INNER JOIN drug d ON recipe.drug_id = d.id" +
             " INNER JOIN producer p ON d.producer_id = p.id" +
             " INNER JOIN role r ON u.role_id = r.id";
     private static final String SQL_FIND_RECIPE_BY_RECIPE_ID = "SELECT" +
-            " recipe.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned,  d.id," +
-            " d.name, d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_receip, d.is_deleted,  date_start, date_end" +
+            " recipe.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.is_banned,  d.id," +
+            " d.name, d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_recipe, d.is_deleted,  date_start, date_end" +
             " FROM recipe" +
             " INNER JOIN user u ON recipe.user_id = u.id" +
             " INNER JOIN drug d ON recipe.drug_id = d.id" +

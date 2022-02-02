@@ -13,16 +13,21 @@ import java.util.Optional;
 
 public class UserDaoImpl implements UserDao{
     private static final Logger LOG = LogManager.getLogger(UserDaoImpl.class);
-    private static final String SQL_CREATE_USER = "INSERT INTO user(login, password, role_id, first_name, last_name, banned) VALUES (?,?,?,?,?,?)";
-    private static final String SQL_FIND_ALL_USERS = "SELECT user.id,login, password, r.role_name, first_name, last_name, banned" +
+    private static final String SQL_CREATE_USER = "INSERT INTO user(login, password, role_id, first_name, last_name, is_banned) VALUES (?,?,?,?,?,?)";
+    private static final String SQL_FIND_ALL_USERS = "SELECT user.id,login, password, r.role_name, first_name, last_name, is_banned" +
             " FROM user" +
             " INNER JOIN role r on user.role_id = r.id";
-    private static final String SQL_FIND_USER_BY_ID = "SELECT user.id,login, password, r.role_name, first_name, last_name, banned" +
+    private static final String SQL_FIND_USER_BY_ID = "SELECT user.id,login, password, r.role_name, first_name, last_name, is_banned" +
             " FROM user" +
             " INNER JOIN role r on user.role_id = r.id" +
             " WHERE user.id = ?";
-    private static final String SQL_UPDATE_USER_BY_ID  = "UPDATE user SET login = ?, password = ?, role_id = ?, first_name = ?, last_name = ?, banned = ?" +
+    private static final String SQL_UPDATE_USER_BY_ID  = "UPDATE user SET login = ?, password = ?, role_id = ?, first_name = ?, last_name = ?, is_banned = ?" +
             " WHERE id = ?";
+    
+    private static final String SQL_FIND_USER_BY_LOGIN = "SELECT user.id,login, password, r.role_name, first_name, last_name, is_banned" +
+            " FROM user" +
+            " INNER JOIN role r on user.role_id = r.id" +
+            " WHERE login = ?";
     private static final String SQL_DELETE_USER_BY_ID = "DELETE FROM user WHERE id  = ?";
     private final Connection connection;
 
@@ -105,6 +110,28 @@ public class UserDaoImpl implements UserDao{
             throw new DaoException("Cannot find user by id",e);
         }
         LOG.info("Cannot find user by id");
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> findUserByLogin(String login) throws DaoException {
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_USER_BY_LOGIN)){
+            preparedStatement.setString(1,login);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                return Optional.of(new User.Builder().
+                        withId(resultSet.getInt(1)).
+                        withLogin(resultSet.getString(2)).
+                        withRole(Role.valueOf(resultSet.getString(3))).
+                        withFirstName(resultSet.getString(4)).
+                        withLastName(resultSet.getString(5)).
+                        withBannedStatus(resultSet.getBoolean(6)).
+                        build());
+            }
+        }catch (SQLException e){
+            LOG.error("Cannot find user by login",e);
+            throw new DaoException("Cannot find user by login",e);
+        }
         return Optional.empty();
     }
 

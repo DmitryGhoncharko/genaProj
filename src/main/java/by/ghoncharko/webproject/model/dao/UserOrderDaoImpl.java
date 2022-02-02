@@ -14,17 +14,17 @@ import java.util.Optional;
 
 public class UserOrderDaoImpl implements UserOrderDao{
     private static final Logger LOG = LogManager.getLogger(UserOrderDaoImpl.class);
-    private static final String SQL_CREATE_USER_ORDER = "INSERT INTO user_order(user_id, is_payed) VALUES (?,?)";
-    private static final String SQL_FIND_ALL_USER_ORDERS = "SELECT user_order.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned , is_payed" +
+    private static final String SQL_CREATE_USER_ORDER = "INSERT INTO user_order(user_id, order_final_price) VALUES (?,?)";
+    private static final String SQL_FIND_ALL_USER_ORDERS = "SELECT user_order.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.is_banned , order_final_price" +
             " FROM  user_order" +
             " INNER JOIN user u ON user_order.user_id = u.id" +
             " INNER JOIN role r on u.role_id = r.id";
-    private static final String SQL_FIND_USER_ORDER_BY_ID = "SELECT user_order.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned , is_payed" +
+    private static final String SQL_FIND_USER_ORDER_BY_ID = "SELECT user_order.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.is_banned , order_final_price" +
             " FROM  user_order" +
             " INNER JOIN user u ON user_order.user_id = u.id" +
             " INNER JOIN role r ON u.role_id = r.id  " +
             " WHERE id = ?";
-    private static final String SQL_UPDATE_USER_ORDER_BY_ID = "UPDATE user_order SET user_id = ?, is_payed = ?" +
+    private static final String SQL_UPDATE_USER_ORDER_BY_ID = "UPDATE user_order SET user_id = ?, order_final_price = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_USER_ORDER_BY_ID = "DELETE FROM user_order WHERE  id = ?";
     private final Connection connection;
@@ -37,7 +37,7 @@ public class UserOrderDaoImpl implements UserOrderDao{
     public UserOrder create(UserOrder entity) throws DaoException {
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_USER_ORDER, Statement.RETURN_GENERATED_KEYS)){
             preparedStatement.setInt(1,entity.getUser().getId());
-            preparedStatement.setBoolean(2,entity.getPayed());
+            preparedStatement.setDouble(2,entity.getOrderFinalPrice().doubleValue());
             final int countCreatedRows = preparedStatement.executeUpdate();
             if(countCreatedRows>0){
                 final ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -45,7 +45,7 @@ public class UserOrderDaoImpl implements UserOrderDao{
                     return new UserOrder.Builder().
                             withId(resultSet.getInt(1)).
                             withUser(entity.getUser()).
-                            withIsPayed(entity.getPayed()).
+                            withOrderFinalPrice(entity.getOrderFinalPrice()).
                             build();
                 }
             }
@@ -75,7 +75,7 @@ public class UserOrderDaoImpl implements UserOrderDao{
                               withBannedStatus(resultSet.getBoolean(8)).
                               build()
                       ).
-                      withIsPayed(resultSet.getBoolean(9)).
+                      withOrderFinalPrice(resultSet.getBigDecimal(9)).
                       build();
           }
        }catch (SQLException e){
@@ -103,7 +103,7 @@ public class UserOrderDaoImpl implements UserOrderDao{
                                withBannedStatus(resultSet.getBoolean(8)).
                                build()
                        ).
-                       withIsPayed(resultSet.getBoolean(9)).
+                      withOrderFinalPrice(resultSet.getBigDecimal(9)).
                        build());
            }
        }catch (SQLException e){
@@ -118,7 +118,7 @@ public class UserOrderDaoImpl implements UserOrderDao{
     public UserOrder update(UserOrder entity) throws DaoException {
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER_ORDER_BY_ID)){
             preparedStatement.setInt(1,entity.getUser().getId());
-            preparedStatement.setBoolean(2,entity.getPayed());
+            preparedStatement.setBigDecimal(2,entity.getOrderFinalPrice());
             preparedStatement.setInt(3,entity.getId());
             final  int countRowsUpdated = preparedStatement.executeUpdate();
             if(countRowsUpdated>0){

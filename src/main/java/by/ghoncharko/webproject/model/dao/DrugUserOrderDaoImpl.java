@@ -22,11 +22,11 @@ import java.util.Optional;
 
 public class DrugUserOrderDaoImpl implements DrugUserOrderDao {
     private static final Logger LOG = LogManager.getLogger(DrugUserOrderDaoImpl.class);
-    private static final String SQL_CREATE_DRUG_USER_ORDER = "INSERT INTO drug_user_order (user_order_id, drug_id, drug_count) VALUES (?, ?, ?)";
+    private static final String SQL_CREATE_DRUG_USER_ORDER = "INSERT INTO drug_user_order (user_order_id, drug_id, drug_count, final_price) VALUES (?, ?, ?, ?)";
     private static final String SQL_FIND_ALL_DRUG_USER_ORDERS = "SELECT" +
             " drug_user_order.id, uo.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name," +
-            " u.banned, uo.date_payed, uo.is_payed , d.id, d.name," +
-            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_receip, d.is_deleted,  drug_user_order.drug_count" +
+            " u.is_banned, d.id, d.name," +
+            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_recipe, d.is_deleted,  drug_user_order.drug_count, drug_user_order.final_price" +
             " FROM drug_user_order" +
             " INNER JOIN drug d on drug_user_order.drug_id = d.id" +
             " INNER JOIN producer p on d.producer_id = p.id" +
@@ -34,8 +34,8 @@ public class DrugUserOrderDaoImpl implements DrugUserOrderDao {
             " INNER JOIN user u on uo.user_id = u.id" +
             " INNER JOIN role r on u.role_id = r.id";
     private static final String SQL_FIND_DRUG_USER_ORDER_BY_ID = "SELECT" +
-            " drug_user_order.id, uo.id, u.id, u.login, u.password, r.role_name , u.first_name, u.last_name, u.banned, uo.date_payed, uo.is_payed , d.id, d.name," +
-            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_receip, d.is_deleted,  drug_user_order.drug_count FROM drug_user_order" +
+            " drug_user_order.id, uo.id, u.id, u.login, u.password, r.role_name , u.first_name, u.last_name, u.is_banned, d.id, d.name," +
+            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_recipe, d.is_deleted,  drug_user_order.drug_count, drug_user_order.final_price FROM drug_user_order" +
             " INNER JOIN drug d on drug_user_order.drug_id = d.id" +
             " INNER JOIN producer p on d.producer_id = p.id" +
             " INNER JOIN user_order uo on drug_user_order.user_order_id = uo.id" +
@@ -58,6 +58,7 @@ public class DrugUserOrderDaoImpl implements DrugUserOrderDao {
             preparedStatement.setInt(1, entity.getUserOrder().getId());
             preparedStatement.setInt(2, entity.getDrug().getId());
             preparedStatement.setInt(3, entity.getDrugCount());
+            preparedStatement.setDouble(4,entity.getFinalPrice().doubleValue());
             final int countUpdatedRows = preparedStatement.executeUpdate();
             if (countUpdatedRows > 0) {
                 final ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -97,23 +98,22 @@ public class DrugUserOrderDaoImpl implements DrugUserOrderDao {
                                         withLastName(resultSet.getString(8)).
                                         withBannedStatus(resultSet.getBoolean(9)).
                                         build()).
-                                withDatePayed(resultSet.getDate(10)).
-                                withIsPayed(resultSet.getBoolean(11)).
                                 build()).
                         withDrug(new Drug.Builder().
-                                withId(resultSet.getInt(12)).
-                                withName(resultSet.getString(13)).
-                                withPrice(BigDecimal.valueOf(resultSet.getDouble(14))).
-                                withCount(resultSet.getInt(15)).
-                                withDescription(resultSet.getString(16)).
+                                withId(resultSet.getInt(10)).
+                                withName(resultSet.getString(11)).
+                                withPrice(BigDecimal.valueOf(resultSet.getDouble(12))).
+                                withCount(resultSet.getInt(13)).
+                                withDescription(resultSet.getString(14)).
                                 withProducer(new Producer.Builder().
-                                        withId(resultSet.getInt(17)).
-                                        withName(resultSet.getString(18)).
+                                        withId(resultSet.getInt(15)).
+                                        withName(resultSet.getString(16)).
                                         build()).
-                                withNeedReceip(resultSet.getBoolean(19)).
-                                withIsDeleted(resultSet.getBoolean(20)).
+                                withNeedReceip(resultSet.getBoolean(17)).
+                                withIsDeleted(resultSet.getBoolean(18)).
                                 build()).
-                        withDrugCount(resultSet.getInt(21)).
+                        withDrugCount(resultSet.getInt(19)).
+                        withFinalPrice(BigDecimal.valueOf(resultSet.getDouble(20))).
                         build();
                 drugUserOrderList.add(drugUserOrder);
             }
@@ -143,23 +143,22 @@ public class DrugUserOrderDaoImpl implements DrugUserOrderDao {
                                         withLastName(resultSet.getString(8)).
                                         withBannedStatus(resultSet.getBoolean(9)).
                                         build()).
-                                withDatePayed(resultSet.getDate(10)).
-                                withIsPayed(resultSet.getBoolean(11)).
                                 build()).
                         withDrug(new Drug.Builder().
-                                withId(resultSet.getInt(12)).
-                                withName(resultSet.getString(13)).
-                                withPrice(BigDecimal.valueOf(resultSet.getDouble(14))).
-                                withCount(resultSet.getInt(15)).
-                                withDescription(resultSet.getString(16)).
+                                withId(resultSet.getInt(10)).
+                                withName(resultSet.getString(11)).
+                                withPrice(BigDecimal.valueOf(resultSet.getDouble(12))).
+                                withCount(resultSet.getInt(13)).
+                                withDescription(resultSet.getString(14)).
                                 withProducer(new Producer.Builder().
-                                        withId(resultSet.getInt(17)).
-                                        withName(resultSet.getString(18)).
+                                        withId(resultSet.getInt(15)).
+                                        withName(resultSet.getString(16)).
                                         build()).
-                                withNeedReceip(resultSet.getBoolean(19)).
-                                withIsDeleted(resultSet.getBoolean(20)).
+                                withNeedReceip(resultSet.getBoolean(17)).
+                                withIsDeleted(resultSet.getBoolean(18)).
                                 build()).
-                        withDrugCount(resultSet.getInt(21)).
+                        withDrugCount(resultSet.getInt(19)).
+                        withFinalPrice(BigDecimal.valueOf(resultSet.getDouble(20))).
                         build());
             }
         } catch (SQLException e) {

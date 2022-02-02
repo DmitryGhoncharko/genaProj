@@ -13,10 +13,10 @@ import java.util.Optional;
 
 public class RecipeRequestDaoImpl implements RecipeRequestDao{
     private static final Logger LOG = LogManager.getLogger(RecipeRequestDaoImpl.class);
-    private static final String SQL_CREATE_RECIPE_REQUEST = "INSERT INTO recipe_request(recipe_id, is_extended) VALUES (?,?)";
+    private static final String SQL_CREATE_RECIPE_REQUEST = "INSERT INTO recipe_request(recipe_id) VALUES (?)";
     private static final String SQL_FIND_ALL_RECIPE_REQUESTS = "SELECT" +
-            " recipe_request.id, r.id, u.id, u.login, u.password, r2.role_name, u.first_name, u.last_name , u.banned, d.id, d.name," +
-            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_receip, d.is_deleted, r.date_start, r.date_end, is_extended" +
+            " recipe_request.id, r.id, u.id, u.login, u.password, r2.role_name, u.first_name, u.last_name , u.is_banned, d.id, d.name," +
+            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_recipe, d.is_deleted, r.date_start, r.date_end" +
             " FROM recipe_request" +
             " INNER JOIN recipe r on recipe_request.recipe_id = r.id" +
             " INNER JOIN user u on r.user_id = u.id" +
@@ -24,8 +24,8 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
             " INNER JOIN drug d on r.drug_id = d.id" +
             " INNER JOIN producer p on d.producer_id = p.id";
     private static final String SQL_FIND_RECIPE_REQUEST_BY_ID = "SELECT" +
-            " recipe_request.id, r.id, u.id, u.login, u.password, r2.role_name, u.first_name, u.last_name , u.banned, d.id, d.name," +
-            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_receip, d.is_deleted, r.date_start, r.date_end, is_extended" +
+            " recipe_request.id, r.id, u.id, u.login, u.password, r2.role_name, u.first_name, u.last_name , u.is_banned, d.id, d.name," +
+            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_recipe, d.is_deleted, r.date_start, r.date_end" +
             " FROM recipe_request" +
             " INNER JOIN recipe r on recipe_request.recipe_id = r.id" +
             " INNER JOIN user u on r.user_id = u.id" +
@@ -33,7 +33,7 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
             " INNER JOIN drug d on r.drug_id = d.id" +
             " INNER JOIN producer p on d.producer_id = p.id" +
             " WHERE recipe_request.id = ?";
-    private static final String SQL_UPDATE_RECIPE_REQUEST_BY_ID = "UPDATE recipe_request SET recipe_id = ? , is_extended = ?" +
+    private static final String SQL_UPDATE_RECIPE_REQUEST_BY_ID = "UPDATE recipe_request SET recipe_id = ? " +
             " WHERE id = ?";
     private static final String SQL_DELETE_RECIPE_REQUEST_BY_ID = "DELETE FROM recipe_request WHERE id = ?";
     private final Connection connection;
@@ -44,9 +44,8 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
 
     @Override
     public RecipeRequest create(RecipeRequest entity) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE_REQUEST)){
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE_REQUEST, Statement.RETURN_GENERATED_KEYS)){
             preparedStatement.setInt(1,entity.getRecipe().getId());
-            preparedStatement.setBoolean(2,entity.getExtended());
             final int countUpdatedRows = preparedStatement.executeUpdate();
             if(countUpdatedRows>0){
                 final ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -54,7 +53,6 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
                     return new RecipeRequest.Builder().
                             withId(resultSet.getInt(1)).
                             withRecipe(entity.getRecipe()).
-                            withIsExtended(entity.getExtended()).
                             build();
                 }
             }
@@ -101,7 +99,6 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
                                withDateStart(resultSet.getDate(19)).
                                withDateEnd(resultSet.getDate(20)).
                                build()).
-                       withIsExtended(resultSet.getBoolean(21)).
                        build();
                recipeRequestList.add(recipeRequest);
             }
@@ -146,7 +143,6 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
                             withDateStart(resultSet.getDate(19)).
                             withDateEnd(resultSet.getDate(20)).
                             build()).
-                    withIsExtended(resultSet.getBoolean(21)).
                     build());
         }catch (SQLException e){
             LOG.error("Cannot find recipe request by id",e);
@@ -158,8 +154,7 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
     public RecipeRequest update(RecipeRequest entity) throws DaoException {
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_RECIPE_REQUEST_BY_ID)){
             preparedStatement.setInt(1,entity.getRecipe().getId());
-            preparedStatement.setBoolean(2,entity.getExtended());
-            preparedStatement.setInt(3,entity.getId());
+            preparedStatement.setInt(2,entity.getId());
             final int countUpdatedRows = preparedStatement.executeUpdate();
             if(countUpdatedRows>0){
                 return entity;

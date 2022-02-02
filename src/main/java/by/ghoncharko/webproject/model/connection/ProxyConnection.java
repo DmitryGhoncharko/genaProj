@@ -80,11 +80,12 @@ public class ProxyConnection implements Connection {
      * @throws SQLException
      * @see ConnectionPool
      */
+    //this
     @Override
     public void close() throws SQLException {
-        if (!this.getAutoCommit()) {
-            this.commit();
-            this.setAutoCommit(true);
+        if (!getAutoCommit()) {
+            commit();
+            setAutoCommit(true);
         }
         BlockingConnectionPool.getInstance().releaseConnection(this);
     }

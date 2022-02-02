@@ -1,7 +1,7 @@
 package by.ghoncharko.webproject.model.service;
 
 
-import by.ghoncharko.webproject.entity.RolesHolder;
+
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.DaoException;
 import by.ghoncharko.webproject.exception.ServiceException;
@@ -105,26 +105,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> authenticate(String login, String password) throws ServiceException {
-        final Connection connection = connectionPool.getConnection();
         final boolean loginAndPasswordValide = ValidateLogin.getInstance().validate(login, password);
-        if (loginAndPasswordValide) {
-            try {
-                final UserDao userDao = new UserDaoImpl(connection);
-                final Optional<User> user = userDao.findUserByLogin(login);
-                if (user.isPresent()) {
-                    final String userPasswordFromDB = user.get().getPassword();
-                    if (BCrypt.checkpw(password, userPasswordFromDB)) {
-                        return user;
-                    }
-                }
-            } catch (DaoException e) {
-                LOG.error("Cannot authenticate user", e);
-                throw new ServiceException("Cannot authenticate user", e);
-            } finally {
-                Service.connectionClose(connection);
-            }
+        if (!loginAndPasswordValide) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        try(final Connection connection = connectionPool.getConnection()){
+            final UserDao userDao = new UserDaoImpl(connection);
+            final Optional<User> user = userDao.findUserByLogin(login);
+            if (user.isPresent()) {
+                final String userPasswordFromDB = user.get().getPassword();
+                if (BCrypt.checkpw(password, userPasswordFromDB)) {
+                    return user;
+                }
+            }
+        }catch (DaoException e){
+
+        }
     }
 
     @Override
