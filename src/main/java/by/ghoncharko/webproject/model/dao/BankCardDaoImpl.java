@@ -23,7 +23,7 @@ import java.util.Optional;
  *
  * @author Dmitry Ghoncharko
  */
-public class BankCardDaoImpl implements Dao<BankCard> {
+public class BankCardDaoImpl implements BankCardDao {
     private static final Logger LOG = LogManager.getLogger(BankCardDaoImpl.class);
     private static final String SQL_CREATE_BANK_CARD = "INSERT INTO bank_card(user_id, balance) VALUES (?,?)";
     private static final String SQL_FIND_ALL_BANK_CARDS = "SELECT bank_card.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned ,balance" +

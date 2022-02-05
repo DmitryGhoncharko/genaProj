@@ -81,11 +81,12 @@ public class ProxyConnection implements Connection {
      * @see ConnectionPool
      */
     //this
+    //выпилить отсюда клоуз проверку на коммит и добавить ее в мой код который будет в транзакшн менеджере
     @Override
     public void close() throws SQLException {
-        if (!getAutoCommit()) {
-            commit();
-            setAutoCommit(true);
+        if (!this.getAutoCommit()) {
+             this.commit();
+             this.setAutoCommit(true);
         }
         BlockingConnectionPool.getInstance().releaseConnection(this);
     }

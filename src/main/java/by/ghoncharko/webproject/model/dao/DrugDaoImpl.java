@@ -25,6 +25,10 @@ public class DrugDaoImpl implements DrugDao{
             " FROM drug" +
             " INNER JOIN producer p ON drug.producer_id = p.id" +
             " WHERE drug.id = ?";
+    private static final String SQL_FIND_DRUG_BY_DRUG_ID_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_DONT_DELETED = "SELECT drug.id, name,price,drug_count,description,need_recipe,is_deleted, p.id, p.producer_name" +
+            " FROM drug" +
+            " INNER JOIN producer p ON drug.producer_id = p.id" +
+            " WHERE drug.id = ? AND drug_count>0 AND is_deleted=false";
     private static final String SQL_UPDATE_DRUG_BY_DRUG_ID = "UPDATE drug SET" +
             " name = ?, price = ?, drug_count = ? , description = ?, producer_id = ? , need_recipe = ? , is_deleted = ?" +
             " WHERE id = ?";
@@ -97,7 +101,7 @@ public class DrugDaoImpl implements DrugDao{
 
     @Override
     public Optional<Drug> findEntityById(Integer id) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_BY_DRUG_ID)){
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_BY_DRUG_ID_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_DONT_DELETED)){
             preparedStatement.setInt(1,id);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
@@ -119,6 +123,33 @@ public class DrugDaoImpl implements DrugDao{
             throw new DaoException("Cannot find drug by drug id",e);
         }
         LOG.info("Drug by drug id not found");
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Drug> findDrugByDrugIdWhereCountMoreThanZeroAndDrugDontDeleted(Integer drugId) throws DaoException {
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_BY_DRUG_ID_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_DONT_DELETED)){
+            preparedStatement.setInt(1,drugId);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                return Optional.of(new Drug.Builder().
+                        withId(resultSet.getInt(1)).
+                        withName(resultSet.getString(2)).
+                        withPrice(BigDecimal.valueOf(resultSet.getDouble(3))).
+                        withCount(resultSet.getInt(4)).
+                        withDescription(resultSet.getString(5)).
+                        withNeedReceip(resultSet.getBoolean(6)).
+                        withIsDeleted(resultSet.getBoolean(7)).
+                        withProducer(new Producer.Builder().
+                                withId(resultSet.getInt(8)).
+                                withName(resultSet.getString(9)).build()).
+                        build());
+            }
+        }catch (SQLException e){
+            LOG.error("Cannot find drug where count more than zero and dont deleted by drug id",e);
+            throw new DaoException("Cannot find drug where count more than zero and dont deleted by drug id",e);
+        }
+        LOG.info("Cannot find drug where count more than zero and dont deleted by drug id");
         return Optional.empty();
     }
 

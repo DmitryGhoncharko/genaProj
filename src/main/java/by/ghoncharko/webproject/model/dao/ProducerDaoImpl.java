@@ -16,6 +16,8 @@ public class ProducerDaoImpl implements ProducerDao{
     private static final String SQL_FIND_ALL_PRODUCERS = "SELECT  id, producer_name FROM producer";
     private static final String SQL_FIND_PRODUCER_BY_ID = "SELECT producer_name FROM producer" +
             " WHERE id = ?";
+    private static final String SQL_FIND_PRODUCER_BY_PRODUCER_NAME = "SELECT id FROM producer" +
+            " WHERE producer_name = ?";
     private static final String SQL_UPDATE_PRODUCER_BY_ID = "UPDATE producer SET producer_name = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_PRODUCER_BY_ID = "DELETE FROM producer WHERE id = ?";
@@ -64,6 +66,25 @@ public class ProducerDaoImpl implements ProducerDao{
             throw new DaoException("Cannot find all producers",e);
         }
         return producerList;
+    }
+
+    @Override
+    public Optional<Producer> findProducerByProducerName(String producerName) throws DaoException {
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PRODUCER_BY_PRODUCER_NAME)){
+            preparedStatement.setString(1,producerName);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                return Optional.of(new Producer.Builder().
+                        withId(resultSet.getInt(1)).
+                        withName(producerName).
+                        build());
+            }
+        }catch (SQLException e){
+            LOG.error("Cannot find producer by producer name",e);
+            throw new DaoException("Cannot find producer by producer name",e);
+        }
+        LOG.info("Cannot find producer by producer name");
+        return Optional.empty();
     }
 
     @Override

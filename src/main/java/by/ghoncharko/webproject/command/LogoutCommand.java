@@ -3,8 +3,8 @@ package by.ghoncharko.webproject.command;
 import by.ghoncharko.webproject.controller.RequestFactory;
 
 public class LogoutCommand implements Command {
-    private final RequestFactory requestFactory = RequestFactory.getInstance();
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
+    private final RequestFactory requestFactory = RequestFactory.getInstance();
 
     private LogoutCommand() {
     }

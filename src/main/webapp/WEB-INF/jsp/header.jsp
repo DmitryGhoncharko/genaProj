@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jwds" uri="by.ghoncharko.webproject" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="by.ghoncharko.webproject.entity.RolesHolder"%>
+<%@ page import="by.ghoncharko.webproject.entity.Role"%>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -32,32 +32,32 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/controller?command=preparates&page=1">Preparates</a>
                 </li>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                     <li class="nav-item">
                         <a class="nav-link" href="/controller?command=recipes">Recipes</a>
                     </li>
                 </c:if>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                     <li class="nav-item">
                         <a class="nav-link" href="/controller?command=order">Order</a>
                     </li>
                 </c:if>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                     <li class="nav-item">
                         <a class="nav-link" href="/controller?command=card">Show my bank cards</a>
                     </li>
                 </c:if>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.PHARMACY}">
                     <li class="nav-item">
                         <a class="nav-link" href="/controller?command=createDrug">Create new drug</a>
                     </li>
                 </c:if>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.DOCTOR}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.DOCTOR}">
                     <li class="nav-item">
                         <a class="nav-link" href="/controller?command=recipeRequest">Show recipe requests</a>
                     </li>
                 </c:if>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.DOCTOR}">
+                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.DOCTOR}">
                     <li class="nav-item">
                         <a class="nav-link" href="/controller?command=usersAsClients">Create recipe for clent</a>
                     </li>

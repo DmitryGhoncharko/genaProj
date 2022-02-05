@@ -4,11 +4,12 @@ import by.ghoncharko.webproject.controller.RequestFactory;
 
 import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.DrugService;
+import by.ghoncharko.webproject.model.service.DrugServiceImpl;
 
 import java.util.Optional;
 
 public class CreateDrugCommand implements Command {
-    private static final String ERROR_ATTRIBUTE_NAME = "error";
+     private static final String ERROR_ATTRIBUTE_NAME = "error";
     private static final String ERROR_ATTRIBUTE_MESSAGE = "Cannot create drug";
     private static final String DRUG_NAME_PARAM_NAME = "drugName";
     private static final String DRUG_PRICE_PARAM_NAME = "drugPrice";
@@ -26,7 +27,7 @@ public class CreateDrugCommand implements Command {
     public CommandResponse execute(CommandRequest request) {
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_SESSION_ATTRIBUTE_NAME);
         if (userFromSession.isPresent()) {
-            final DrugService drugService = DrugService.getInstance();
+            final DrugService drugService = DrugServiceImpl.getInstance();
             final String drugName = request.getParameter(DRUG_NAME_PARAM_NAME);
             final double drugPrice = Double.parseDouble(request.getParameter(DRUG_PRICE_PARAM_NAME));
             final int drugCount = Integer.parseInt(request.getParameter(DRUG_COUNT_PARAM_NAME));
@@ -34,7 +35,7 @@ public class CreateDrugCommand implements Command {
             final String drugProducerName = request.getParameter(DRUG_PRODUCER_NAME_PARAM_NAME);
             final boolean drugNeedRecipe = Boolean.parseBoolean(request.getParameter(DRUG_NEED_RECIPE_PARAM_NAME));
             try{
-                final boolean drugIsCreated = drugService.create(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName);
+                final boolean drugIsCreated = drugService.createDrug(drugName, drugNeedRecipe, drugCount, drugPrice, drugDescription, drugProducerName);
                 if (drugIsCreated) {
                     return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
                 }

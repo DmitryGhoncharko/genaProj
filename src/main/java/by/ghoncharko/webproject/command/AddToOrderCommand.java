@@ -9,7 +9,7 @@ import javax.sql.rowset.serial.SerialException;
 import java.util.Optional;
 
 public class AddToOrderCommand implements Command {
-    private static final String DRUG_ID_PARAM_NAME = "drugId";
+     private static final String DRUG_ID_PARAM_NAME = "drugId";
     private static final String COUNT_USER_BUY_DRUGS_PARAM_NAME = "countUserBuyDrugs";
     private static final String DRUG_PRICE_PARAM_NAME = "drugPrice";
     private static final String DRUG_NEED_RECIPE_PARAM_NAME = "drugNeedRecipe";

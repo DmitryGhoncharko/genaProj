@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Optional;
 
 public class LoginCommand implements Command {
-    private static final Logger LOG = LogManager.getLogger(LoginCommand.class);
+     private static final Logger LOG = LogManager.getLogger(LoginCommand.class);
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
     private static final String LOGIN_REQUEST_PARAM_NAME = "login";
     private static final String PASSWORD_REQUEST_PARAM_NAME = "password";

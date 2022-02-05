@@ -4,6 +4,7 @@ import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.BankCardService;
+import by.ghoncharko.webproject.model.service.BankCardServiceImpl;
 
 
 import java.util.Optional;
@@ -23,11 +24,10 @@ public class AddBankCardCommand implements Command {
         final Optional<Object> userFromSession = request.retrieveFromSession(USER_FROM_SESSION_ATTRIBUTE_NAME);
         if (userFromSession.isPresent()) {
             final User user = (User) userFromSession.get();
-            final BankCardService bankCardService = BankCardService.getInstance();
+            final BankCardService bankCardService = BankCardServiceImpl.getInstance();
             final double balance = Double.parseDouble(request.getParameter(BALANCE_PARAM_NAME));
-            final int userId = user.getId();
             try{
-                final boolean bankCardAdded = bankCardService.addBankCard(balance, userId);
+                final boolean bankCardAdded = bankCardService.addBankCard(balance, user);
                 if (bankCardAdded) {
                     return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
                 }

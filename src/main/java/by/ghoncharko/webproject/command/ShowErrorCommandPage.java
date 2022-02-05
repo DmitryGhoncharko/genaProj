@@ -4,7 +4,7 @@ package by.ghoncharko.webproject.command;
 import by.ghoncharko.webproject.controller.RequestFactory;
 
 public class ShowErrorCommandPage implements Command {
-    private final RequestFactory requestFactory = RequestFactory.getInstance();
+     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
     private ShowErrorCommandPage() {
     }

@@ -33,6 +33,10 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
             " INNER JOIN drug d on r.drug_id = d.id" +
             " INNER JOIN producer p on d.producer_id = p.id" +
             " WHERE recipe_request.id = ?";
+    private static final String SQL_FIND_RECIPE_REQUEST_IS_EXIST_OR_REJECTED_BY_RECIPE_AND_USER_ID = "SELECT  recipe_request.id FROM  recipe_request" +
+            " INNER JOIN recipe r on recipe_request.recipe_id = r.id" +
+            " LEFT JOIN recipe_request_decision rrd on recipe_request.id = rrd.recipe_request_id" +
+            " WHERE recipe_request.recipe_id = ? and r.user_id = ? and r.date_end>=current_date and (rrd.id is null or rrd.is_extended = false)";
     private static final String SQL_UPDATE_RECIPE_REQUEST_BY_ID = "UPDATE recipe_request SET recipe_id = ? " +
             " WHERE id = ?";
     private static final String SQL_DELETE_RECIPE_REQUEST_BY_ID = "DELETE FROM recipe_request WHERE id = ?";
@@ -62,6 +66,23 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
         }
         LOG.error("Cannot create recipeRequest");
         throw new DaoException("Cannot create recipeRequest");
+    }
+
+    @Override
+    public boolean findRecipeRequestIsExistOrRejected(Integer recipeId, Integer userId) throws DaoException {
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_RECIPE_REQUEST_IS_EXIST_OR_REJECTED_BY_RECIPE_AND_USER_ID)){
+            preparedStatement.setInt(1,recipeId);
+            preparedStatement.setInt(2,userId);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                return true;
+            }
+        }catch (SQLException e){
+            LOG.error("Cannot find recipe request is exsist or rejected",e);
+            throw new DaoException("Cannot find recipe request is exsist or rejected",e);
+        }
+        LOG.info("Recipe request is not exist");
+        return false;
     }
 
     @Override

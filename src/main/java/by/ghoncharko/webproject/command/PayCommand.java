@@ -2,14 +2,8 @@ package by.ghoncharko.webproject.command;
 
 
 import by.ghoncharko.webproject.controller.RequestFactory;
-import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
-import by.ghoncharko.webproject.model.service.BankCardService;
-
-import by.ghoncharko.webproject.model.service.OrderService;
-
-
 import java.util.Optional;
 
 public class PayCommand implements Command {

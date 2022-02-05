@@ -17,7 +17,7 @@ public class BcryptWithSaltHasherImpl implements PasswordHasher {
 
 
     @Override
-    public boolean checkIsEqualsPasswordAndPasswordHash(String password, String passwordHash) {
+    public boolean checkIsEqualsPasswordAndPasswordHash(String password, String passwordHash) { ;
         return BCrypt.checkpw(password, passwordHash);
     }
 
