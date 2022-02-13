@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RecipeRequestDaoImpl implements RecipeRequestDao{
+public class RecipeRequestDaoImpl extends AbstractDao<RecipeRequest> implements RecipeRequestDao{
     private static final Logger LOG = LogManager.getLogger(RecipeRequestDaoImpl.class);
     private static final String SQL_CREATE_RECIPE_REQUEST = "INSERT INTO recipe_request(recipe_id) VALUES (?)";
     private static final String SQL_FIND_ALL_RECIPE_REQUESTS = "SELECT" +
@@ -40,10 +40,10 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
     private static final String SQL_UPDATE_RECIPE_REQUEST_BY_ID = "UPDATE recipe_request SET recipe_id = ? " +
             " WHERE id = ?";
     private static final String SQL_DELETE_RECIPE_REQUEST_BY_ID = "DELETE FROM recipe_request WHERE id = ?";
-    private final Connection connection;
+
 
     public RecipeRequestDaoImpl(Connection connection) {
-        this.connection = connection;
+        super(connection);
     }
 
     @Override
@@ -91,36 +91,7 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
         try(final Statement statement = connection.createStatement()){
             final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_RECIPE_REQUESTS);
             while (resultSet.next()){
-               final RecipeRequest recipeRequest = new RecipeRequest.Builder().
-                       withId(resultSet.getInt(1)).
-                       withRecipe(new Recipe.Builder().
-                               withId(resultSet.getInt(2)).
-                               withUser(new User.Builder().
-                                       withId(resultSet.getInt(3)).
-                                       withLogin(resultSet.getString(4)).
-                                       withPassword(resultSet.getString(5)).
-                                       withRole(Role.valueOf(resultSet.getString(6))).
-                                       withFirstName(resultSet.getString(7)).
-                                       withLastName(resultSet.getString(8)).
-                                       withBannedStatus(resultSet.getBoolean(9)).
-                                       build()).
-                               withDrug(new Drug.Builder().
-                                       withId(resultSet.getInt(10)).
-                                       withName(resultSet.getString(11)).
-                                       withPrice(BigDecimal.valueOf(resultSet.getDouble(12))).
-                                       withCount(resultSet.getInt(13)).
-                                       withDescription(resultSet.getString(14)).
-                                       withProducer(new Producer.Builder().
-                                               withId(resultSet.getInt(15)).
-                                               withName(resultSet.getString(16)).
-                                               build()).
-                                       withNeedReceip(resultSet.getBoolean(17)).
-                                       withIsDeleted(resultSet.getBoolean(18)).
-                                       build()).
-                               withDateStart(resultSet.getDate(19)).
-                               withDateEnd(resultSet.getDate(20)).
-                               build()).
-                       build();
+               final RecipeRequest recipeRequest = extractEntity(resultSet);
                recipeRequestList.add(recipeRequest);
             }
         }catch (SQLException e){
@@ -135,36 +106,7 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_RECIPE_REQUEST_BY_ID)){
             preparedStatement.setInt(1,id);
            final ResultSet resultSet = preparedStatement.executeQuery();
-            return Optional.of(new RecipeRequest.Builder().
-                    withId(resultSet.getInt(1)).
-                    withRecipe(new Recipe.Builder().
-                            withId(resultSet.getInt(2)).
-                            withUser(new User.Builder().
-                                    withId(resultSet.getInt(3)).
-                                    withLogin(resultSet.getString(4)).
-                                    withPassword(resultSet.getString(5)).
-                                    withRole(Role.valueOf(resultSet.getString(6))).
-                                    withFirstName(resultSet.getString(7)).
-                                    withLastName(resultSet.getString(8)).
-                                    withBannedStatus(resultSet.getBoolean(9)).
-                                    build()).
-                            withDrug(new Drug.Builder().
-                                    withId(resultSet.getInt(10)).
-                                    withName(resultSet.getString(11)).
-                                    withPrice(BigDecimal.valueOf(resultSet.getDouble(12))).
-                                    withCount(resultSet.getInt(13)).
-                                    withDescription(resultSet.getString(14)).
-                                    withProducer(new Producer.Builder().
-                                            withId(resultSet.getInt(15)).
-                                            withName(resultSet.getString(16)).
-                                            build()).
-                                    withNeedReceip(resultSet.getBoolean(17)).
-                                    withIsDeleted(resultSet.getBoolean(18)).
-                                    build()).
-                            withDateStart(resultSet.getDate(19)).
-                            withDateEnd(resultSet.getDate(20)).
-                            build()).
-                    build());
+            return Optional.of(extractEntity(resultSet));
         }catch (SQLException e){
             LOG.error("Cannot find recipe request by id",e);
             throw new DaoException("Cannot find recipe request by id",e);
@@ -189,14 +131,46 @@ public class RecipeRequestDaoImpl implements RecipeRequestDao{
     }
 
     @Override
-    public boolean delete(RecipeRequest entity) throws DaoException {
+    public boolean delete(Integer id) throws DaoException {
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE_REQUEST_BY_ID)){
-            preparedStatement.setInt(1,entity.getId());
-            final int countDeletedRows = preparedStatement.executeUpdate();
-            return countDeletedRows>0;
+           return deleteBillet(preparedStatement,id);
         }catch (SQLException e){
             LOG.error("Cannot delete recipeRequest by id",e);
             throw new DaoException("Cannot delete recipeRequest by id",e);
         }
+    }
+
+    @Override
+    protected RecipeRequest extractEntity(ResultSet resultSet) throws SQLException {
+        return new RecipeRequest.Builder().
+                withId(resultSet.getInt(1)).
+                withRecipe(new Recipe.Builder().
+                        withId(resultSet.getInt(2)).
+                        withUser(new User.Builder().
+                                withId(resultSet.getInt(3)).
+                                withLogin(resultSet.getString(4)).
+                                withPassword(resultSet.getString(5)).
+                                withRole(Role.valueOf(resultSet.getString(6))).
+                                withFirstName(resultSet.getString(7)).
+                                withLastName(resultSet.getString(8)).
+                                withBannedStatus(resultSet.getBoolean(9)).
+                                build()).
+                        withDrug(new Drug.Builder().
+                                withId(resultSet.getInt(10)).
+                                withName(resultSet.getString(11)).
+                                withPrice(BigDecimal.valueOf(resultSet.getDouble(12))).
+                                withCount(resultSet.getInt(13)).
+                                withDescription(resultSet.getString(14)).
+                                withProducer(new Producer.Builder().
+                                        withId(resultSet.getInt(15)).
+                                        withName(resultSet.getString(16)).
+                                        build()).
+                                withNeedReceip(resultSet.getBoolean(17)).
+                                withIsDeleted(resultSet.getBoolean(18)).
+                                build()).
+                        withDateStart(resultSet.getDate(19)).
+                        withDateEnd(resultSet.getDate(20)).
+                        build()).
+                build();
     }
 }

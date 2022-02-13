@@ -10,21 +10,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ProducerDaoImpl implements ProducerDao{
+public class ProducerDaoImpl extends AbstractDao<Producer> implements ProducerDao{
     private static final Logger LOG = LogManager.getLogger(ProducerDaoImpl.class);
     private static final String SQL_CREATE_PRODUCER = "INSERT INTO producer (producer_name)  VALUES (?)";
     private static final String SQL_FIND_ALL_PRODUCERS = "SELECT  id, producer_name FROM producer";
-    private static final String SQL_FIND_PRODUCER_BY_ID = "SELECT producer_name FROM producer" +
+    private static final String SQL_FIND_PRODUCER_BY_ID = "SELECT id producer_name FROM producer" +
             " WHERE id = ?";
     private static final String SQL_FIND_PRODUCER_BY_PRODUCER_NAME = "SELECT id FROM producer" +
             " WHERE producer_name = ?";
     private static final String SQL_UPDATE_PRODUCER_BY_ID = "UPDATE producer SET producer_name = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_PRODUCER_BY_ID = "DELETE FROM producer WHERE id = ?";
-    private final Connection connection;
+
 
     public ProducerDaoImpl(Connection connection) {
-        this.connection = connection;
+        super(connection);
     }
 
     @Override
@@ -55,10 +55,7 @@ public class ProducerDaoImpl implements ProducerDao{
         try(final Statement statement = connection.createStatement()){
            final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_PRODUCERS);
            while (resultSet.next()){
-               final Producer producer = new Producer.Builder().
-                       withId(resultSet.getInt(1)).
-                       withName(resultSet.getString(2)).
-                       build();
+               final Producer producer = extractEntity(resultSet);
                producerList.add(producer);
            }
         }catch (SQLException e){
@@ -74,10 +71,7 @@ public class ProducerDaoImpl implements ProducerDao{
             preparedStatement.setString(1,producerName);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                return Optional.of(new Producer.Builder().
-                        withId(resultSet.getInt(1)).
-                        withName(producerName).
-                        build());
+                return Optional.of(extractEntity(resultSet));
             }
         }catch (SQLException e){
             LOG.error("Cannot find producer by producer name",e);
@@ -93,10 +87,7 @@ public class ProducerDaoImpl implements ProducerDao{
             preparedStatement.setInt(1,id);
            final ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                return Optional.of(new Producer.Builder().
-                        withId(id).
-                        withName(resultSet.getString(1)).
-                        build());
+                return Optional.of(extractEntity(resultSet));
             }
         }catch (SQLException e){
             LOG.error("Cannot find producer by id",e);
@@ -124,14 +115,20 @@ public class ProducerDaoImpl implements ProducerDao{
     }
 
     @Override
-    public boolean delete(Producer entity) throws DaoException {
+    public boolean delete(Integer id) throws DaoException {
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_PRODUCER_BY_ID)){
-            preparedStatement.setInt(1,entity.getId());
-            final int countUpdatedRows = preparedStatement.executeUpdate();
-            return countUpdatedRows>0;
+            return deleteBillet(preparedStatement,id);
         }catch (SQLException e){
             LOG.error("Cannot delete producer by id",e);
             throw new DaoException("Cannot delete producer by id",e);
         }
+    }
+
+    @Override
+    protected Producer extractEntity(ResultSet resultSet) throws SQLException {
+        return new Producer.Builder().
+                withId(resultSet.getInt(1)).
+                withName(resultSet.getString(2)).
+                build();
     }
 }

@@ -4,10 +4,12 @@ import by.ghoncharko.webproject.controller.RequestFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DeleteBankCardCommand implements Command{
-    private static final Logger LOG  = LogManager.getLogger(DeleteBankCardCommand.class);
+public class DeleteOrderCommand implements Command{
+    private static final Logger LOG = LogManager.getLogger(DeleteOrderCommand.class);
+
     private final RequestFactory requestFactory = RequestFactory.getInstance();
-    private DeleteBankCardCommand(){
+    private DeleteOrderCommand(){
+
     }
 
     @Override
@@ -15,12 +17,10 @@ public class DeleteBankCardCommand implements Command{
         return null;
     }
 
-    public static DeleteBankCardCommand getInstance() {
-        return Holder.INSTANCE;
+    public static DeleteOrderCommand getInstance() {
+        return Holder.INSTACNE;
     }
-
-
     private static class Holder{
-        private static final DeleteBankCardCommand INSTANCE = new DeleteBankCardCommand();
+        private static final DeleteOrderCommand INSTACNE = new DeleteOrderCommand();
     }
 }

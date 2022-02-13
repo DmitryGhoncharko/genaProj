@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl extends AbstractDao<User> implements UserDao{
     private static final Logger LOG = LogManager.getLogger(UserDaoImpl.class);
     private static final String SQL_CREATE_USER = "INSERT INTO user(login, password, role_id, first_name, last_name, is_banned) VALUES (?,?,?,?,?,?)";
     private static final String SQL_FIND_ALL_USERS = "SELECT user.id,login, password, r.role_name, first_name, last_name, is_banned" +
@@ -29,10 +29,9 @@ public class UserDaoImpl implements UserDao{
             " INNER JOIN role r on user.role_id = r.id" +
             " WHERE login = ?";
     private static final String SQL_DELETE_USER_BY_ID = "DELETE FROM user WHERE id  = ?";
-    private final Connection connection;
 
     public UserDaoImpl(Connection connection) {
-       this.connection = connection;
+        super(connection);
     }
 
     @Override
@@ -73,14 +72,7 @@ public class UserDaoImpl implements UserDao{
         try(final Statement statement = connection.createStatement()){
             final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS);
             while (resultSet.next()){
-                final User user = new User.Builder().
-                        withId(resultSet.getInt(1)).
-                        withLogin(resultSet.getString(2)).
-                        withRole(Role.valueOf(resultSet.getString(3))).
-                        withFirstName(resultSet.getString(4)).
-                        withLastName(resultSet.getString(5)).
-                        withBannedStatus(resultSet.getBoolean(6)).
-                        build();
+                final User user = extractEntity(resultSet);
                 userList.add(user);
             }
         }catch (SQLException e){
@@ -96,14 +88,7 @@ public class UserDaoImpl implements UserDao{
             preparedStatement.setInt(1,id);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                return Optional.of(new User.Builder().
-                        withId(resultSet.getInt(1)).
-                        withLogin(resultSet.getString(2)).
-                        withRole(Role.valueOf(resultSet.getString(3))).
-                        withFirstName(resultSet.getString(4)).
-                        withLastName(resultSet.getString(5)).
-                        withBannedStatus(resultSet.getBoolean(6)).
-                        build());
+                return Optional.of(extractEntity(resultSet));
             }
         }catch (SQLException e){
             LOG.error("Cannot find user by id",e);
@@ -119,14 +104,7 @@ public class UserDaoImpl implements UserDao{
             preparedStatement.setString(1,login);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                return Optional.of(new User.Builder().
-                        withId(resultSet.getInt(1)).
-                        withLogin(resultSet.getString(2)).
-                        withRole(Role.valueOf(resultSet.getString(3))).
-                        withFirstName(resultSet.getString(4)).
-                        withLastName(resultSet.getString(5)).
-                        withBannedStatus(resultSet.getBoolean(6)).
-                        build());
+                return Optional.of(extractEntity(resultSet));
             }
         }catch (SQLException e){
             LOG.error("Cannot find user by login",e);
@@ -158,14 +136,25 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
-    public boolean delete(User entity) throws DaoException {
+    public boolean delete(Integer id) throws DaoException {
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_BY_ID)){
-            preparedStatement.setInt(1,entity.getId());
-            final int countDeletedRows = preparedStatement.executeUpdate();
-            return countDeletedRows>0;
+           return deleteBillet(preparedStatement,id);
         }catch (SQLException e){
             LOG.error("Cannot delete user by id",e);
             throw new DaoException("Cannot delete user by id",e);
         }
+    }
+
+    @Override
+    protected User extractEntity(ResultSet resultSet) throws SQLException {
+        return new User.Builder().
+                withId(resultSet.getInt(1)).
+                withLogin(resultSet.getString(2)).
+                withPassword(resultSet.getString(3)).
+                withRole(Role.valueOf(resultSet.getString(4))).
+                withFirstName(resultSet.getString(5)).
+                withLastName(resultSet.getString(6)).
+                withBannedStatus(resultSet.getBoolean(7)).
+                build();
     }
 }

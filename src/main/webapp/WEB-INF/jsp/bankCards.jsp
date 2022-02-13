@@ -64,7 +64,7 @@
                     </c:forEach>
                     <form action="/controller?command=addCard" method="post" novalidate class="needs-validation">
                         <label>Balance</label>
-                        <input class="form-control" placeholder="balance" name="balance" type="text" required pattern="[0-9]{1,14}[.][0-9]{1,2}" minlength="1" min="0">
+                        <input class="form-control" placeholder="balance" name="balance" type="text" required pattern="^[0-9]{0,14}[.]?[0-9]{0,2}$">
                         <div class="invalid-feedback">
                             Баланс карты не может быть более чем девять цифр и всегда должен заканчиваться на баланс.00
                         </div>

@@ -8,12 +8,12 @@ public class ValidateLogin {
     }
     public boolean validate(String login, String password) {
         if (login != null && password != null) {
-            Pattern pattern = Pattern.compile(".{6,35}");
+            Pattern pattern = Pattern.compile("[a-zA-Z0-9]{6,45}");
             Matcher matcher = pattern.matcher(login);
-            boolean loginIsValide = matcher.find();
+            boolean loginIsValide = matcher.matches();
             pattern = Pattern.compile("(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}");
             matcher = pattern.matcher(password);
-            boolean passwordIsValide = matcher.find();
+            boolean passwordIsValide = matcher.matches();
             return loginIsValide && passwordIsValide;
         }
         return false;

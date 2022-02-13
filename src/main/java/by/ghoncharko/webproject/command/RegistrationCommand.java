@@ -31,7 +31,7 @@ public class RegistrationCommand implements Command {
         final String userName = request.getParameter(FIRST_NAME_REQUEST_PARAM);
         final String userSurName = request.getParameter(LAST_NAME_REQUEST_PARAM);
         try{
-            final Optional<User> user = UserService.getInstance().createClient(userLogin, userPassword,
+            final Optional<User> user = UserService.getInstance().createClientWithBannedStatusFalse(userLogin, userPassword,
                     userName, userSurName);
             if (user.isPresent()) {
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);

@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="by.ghoncharko.webproject.entity.RolesHolder" %>
+<%@ page import="by.ghoncharko.webproject.entity.Role" %>
 <html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -57,7 +57,7 @@
         <div class="col-md-12">
             <c:forEach var="drug" items="${requestScope.drugs}">
                 <c:choose>
-                    <c:when test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.PHARMACY}">
+                    <c:when test="${not empty sessionScope.user && sessionScope.user.role eq Role.PHARMACY}">
                         <div class="row">
                             <div class="col-md-6">
                                 <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
@@ -74,6 +74,19 @@
                                             <li class="list-group-item">
                                                 <select name="updateDrugNeedRecipe" class="needs-validation" required>
                                                     <option selected value="${drug.needRecipe}"><button class="button-prmary">current need recipe ${drug.needRecipe}</button></option>
+                                                    <option value="true">
+                                                        <button class="btn btn-primary">
+                                                            true
+                                                        </button>
+                                                    </option>
+                                                    <option value="false">
+                                                        <button class="btn btn-primary">
+                                                            false
+                                                        </button>
+                                                    </option>
+                                                </select>
+                                                <select name="updateDrugIsDeleted" class="needs-validation" required>
+                                                    <option selected value="${drug.isDeleted}"><button class="button-prmary">current need recipe ${drug.isDeleted}</button></option>
                                                     <option value="true">
                                                         <button class="btn btn-primary">
                                                             true
@@ -102,7 +115,6 @@
                                             </c:if>
                                         </div>
                                     </div>
-
                             </form>
                             </div>
                             <div class="col-md-6">
@@ -132,7 +144,7 @@
                                         <li class="list-group-item">${drug.count}</li>
                                         <li class="list-group-item">${drug.needRecipe}</li>
                                         <li class="list-group-item">${drug.price}</li>
-                                        <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
+                                        <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                                             <li class="list-group-item">
                                                 <input class="needs-validation" type="number" name="countUserBuyDrugs" placeholder="count drugs"
                                                        min="1"
@@ -144,8 +156,8 @@
                                         </c:if>
                                     </ul>
                                     <div class="card-body">
-                                        <c:if test="${not empty sessionScope.user && sessionScope.user.role eq RolesHolder.CLIENT}">
-                                            <button class="btn btn-primary" type="submit" formaction="/controller?command=addToBucket" formmethod="post">Add to order</button>
+                                        <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
+                                            <button class="btn btn-primary" type="submit" formaction="/controller?command=addToOrder" formmethod="post">Add to order</button>
                                         </c:if>
                                         <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
                                             <div class="alert alert-danger" role="alert">
@@ -174,7 +186,7 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination" style="padding-left: 50%">
                     <c:forEach var="pageNum" begin="1" end="${requestScope.maxPagesCount}">
-                        <li class="page-item <c:if test="${pageNum eq requestScope.currentPageNumber}">active</c:if>"><a class="page-link" href="/controller?command=preparates&page=${pageNum}">${pageNum}</a></li>
+                        <li class="page-item <c:if test="${pageNum eq requestScope.currentPageNumber}">active"</c:if>"><a class="page-link" href="/controller?command=preparates&page=${pageNum}">${pageNum}</a></li>
                     </c:forEach>
                 </ul>
             </nav>

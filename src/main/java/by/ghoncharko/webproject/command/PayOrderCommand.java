@@ -4,11 +4,11 @@ import by.ghoncharko.webproject.controller.RequestFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ShowOrderPageCommand implements Command{
-    private static final Logger LOG = LogManager.getLogger(ShowOrderPageCommand.class);
+public class PayOrderCommand implements Command{
+    private final Logger LOG = LogManager.getLogger(PayOrderCommand.class);
     private final RequestFactory requestFactory = RequestFactory.getInstance();
 
-    private ShowOrderPageCommand(){
+    private PayOrderCommand(){
 
     }
 
@@ -17,10 +17,10 @@ public class ShowOrderPageCommand implements Command{
         return null;
     }
 
-    public static ShowOrderPageCommand getInstance() {
+    public static PayOrderCommand getInstance() {
         return Holder.INSTANCE;
     }
     private static class Holder{
-        private static final ShowOrderPageCommand INSTANCE = new ShowOrderPageCommand();
+        private static final PayOrderCommand INSTANCE = new PayOrderCommand();
     }
 }

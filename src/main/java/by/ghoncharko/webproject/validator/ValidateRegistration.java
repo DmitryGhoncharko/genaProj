@@ -9,18 +9,18 @@ public class ValidateRegistration {
 
     public boolean validateRegistration(String login, String password, String firstName, String lastName) {
         if (login != null && password != null && firstName != null && lastName != null) {
-            Pattern pattern = Pattern.compile(".{6,35}");
+            Pattern pattern = Pattern.compile("[a-zA-Z0-9]{6,45}");
             Matcher matcher = pattern.matcher(login);
-            boolean loginIsValide = matcher.find();
-            pattern = Pattern.compile("(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}");
+            boolean loginIsValid = matcher.matches();
+            pattern = Pattern.compile("(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,45}");
             matcher = pattern.matcher(password);
-            boolean passwordIsValide = matcher.find();
-            pattern = Pattern.compile(".{1,35}");
+            boolean passwordIsValid = matcher.matches();
+            pattern = Pattern.compile("[a-zA-Z0-9]{1,45}");
             matcher = pattern.matcher(firstName);
-            boolean firstNameIsValide = matcher.find();
+            boolean firstNameIsValid = matcher.matches();
             matcher = pattern.matcher(lastName);
-            boolean lastNameIsValide = matcher.find();
-            return loginIsValide && passwordIsValide && firstNameIsValide && lastNameIsValide;
+            boolean lastNameIsValid = matcher.matches();
+            return loginIsValid && passwordIsValid && firstNameIsValid && lastNameIsValid;
         }
         return false;
     }

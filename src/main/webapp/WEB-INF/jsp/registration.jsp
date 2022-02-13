@@ -188,21 +188,21 @@
                 <span class="heading">Регистрация</span>
                 <div class="form-group">
                     <label>First name</label>
-                    <input  type="text" name="Fname"  pattern=".{1,35}" class="form-control needs-validation"  placeholder="First Name" required>
+                    <input  type="text" name="Fname"  pattern="[a-zA-Z0-9]{1,45}" class="form-control needs-validation"  placeholder="First Name" required>
                     <div class="invalid-feedback">
                         Invalid First Name
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Last name</label>
-                    <input  type="text" name="Lname"  pattern=".{1,35}" class="form-control needs-validation"  placeholder="Last Name" required>
+                    <input  type="text" name="Lname"  pattern="[a-zA-Z0-9]{1,45}" class="form-control needs-validation"  placeholder="Last Name" required>
                     <div class="invalid-feedback">
                         Invalid last name
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Login</label>
-                    <input type="text" pattern=".{6,35}" class="form-control needs-validation" id="inputText" name="login" placeholder="Login" required>
+                    <input type="text" pattern="[a-zA-Z0-9]{6,45}" class="form-control needs-validation" id="inputText" name="login" placeholder="Login" required>
                     <div class="invalid-feedback">
                         invalid login
                     </div>
@@ -221,6 +221,7 @@
                     <button type="submit" class="btn btn-default">Зарегистрироваться</button>
                 </div>
             </form>
+            <a class="btn btn-default" href="/controller?command=main_page">Отмена</a>
         </div>
     </div>
 </div>

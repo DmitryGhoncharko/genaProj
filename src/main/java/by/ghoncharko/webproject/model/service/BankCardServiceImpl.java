@@ -7,29 +7,30 @@ import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.connection.ConnectionPool;
 import by.ghoncharko.webproject.model.dao.BankCardDao;
 import by.ghoncharko.webproject.model.dao.BankCardDaoImpl;
-import by.ghoncharko.webproject.model.dao.Dao;
-import by.ghoncharko.webproject.validator.ValidateAddBankCard;
+import by.ghoncharko.webproject.validator.BankCardServiceValidator;
+import by.ghoncharko.webproject.validator.BankCardServiceValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.List;
 
 public class BankCardServiceImpl implements BankCardService{
     private static final Logger LOG = LogManager.getLogger(BankCardServiceImpl.class);
-    private final ConnectionPool connectionPool =  ConnectionPool.getInstance();
-
+    private static final BankCardServiceValidator bankValidator = BankCardServiceValidatorImpl.getInstance();
     private BankCardServiceImpl(){
     }
+    private final ConnectionPool connectionPool =  ConnectionPool.getInstance();
     @Override
     public List<BankCard> findAll() throws ServiceException {
         return null;
     }
-    //mb big dec
+
     @Override
     public boolean addBankCard(Double balance, User user) throws ServiceException {
-        final boolean isValidData = ValidateAddBankCard.getInstance().validate(balance, user);
+        final boolean isValidData = bankValidator.validateAddBankCard(balance, user);
         if(!isValidData){
             return false;
         }
@@ -48,6 +49,44 @@ public class BankCardServiceImpl implements BankCardService{
             Service.connectionClose(connection);
         }
         return true;
+    }
+
+    @Override
+    public List<BankCard> findBankCardsByUserId(User user) throws ServiceException {
+        final boolean dataIsValid = bankValidator.validateFindBankCardByUserId(user);
+        if(!dataIsValid){
+            return Collections.emptyList();
+        }
+        final Connection connection = connectionPool.getConnection();
+        final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+        final int userId = user.getId();
+        try{
+            return bankCardDao.findUserBankCardsByUserId(userId);
+        }catch (DaoException e){
+            LOG.error("Cannot find bank cards by user id",e);
+            throw new ServiceException("Cannot find bank cards by user id",e);
+        }finally {
+            Service.connectionClose(connection);
+        }
+    }
+
+    @Override
+    public void deleteBankCard(User user, Integer cardId) throws ServiceException {
+        final boolean dataIsValid = bankValidator.validateDeleteBankCard(user, cardId);
+        if(!dataIsValid){
+            return;
+        }
+        final Connection connection = connectionPool.getConnection();
+        final int userId = user.getId();
+        final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
+        try{
+            bankCardDao.deleteCardByCardIdAndUserId(cardId,userId);
+        }catch (DaoException e){
+            LOG.error("Cannot delete bank card by card id and user id ",e);
+            throw new ServiceException("Cannot delete bank card by card id and user id ",e);
+        }finally {
+            Service.connectionClose(connection);
+        }
     }
 
     public static BankCardServiceImpl getInstance() {

@@ -26,25 +26,7 @@ public class RecipeRequestServiceImpl implements RecipeRequestService{
 
     }
 
-    @Override
-    public boolean createRecipeRequestByUserAndRecipeId(User user, Integer recipeId) {
-        final Connection connection = connectionPool.getConnection();
-        Service.autoCommitFalse(connection);
-        final int userId = user.getId();
-        try{
-            final RecipeDao recipeDao = new RecipeDaoImpl(connection);
-            final RecipeRequestDao recipeRequestDao = new RecipeRequestDaoImpl(connection);
-            final  boolean recipeRequestIsExist = recipeRequestDao.findRecipeRequestIsExistOrRejected(recipeId,userId);
-                if(recipeRequestIsExist){
-                    return false;
-                }
-        }catch (DaoException e){
-            Service.rollbackConnection(connection);
 
-        }finally {
-            Service.connectionClose(connection);
-        }
-    }
 
     @Override
     public List<RecipeRequest> findAll() throws ServiceException {

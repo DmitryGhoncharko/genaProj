@@ -3,7 +3,6 @@ package by.ghoncharko.webproject.filter;
 
 import by.ghoncharko.webproject.command.CommandRegistry;
 import by.ghoncharko.webproject.entity.Role;
-import by.ghoncharko.webproject.entity.RolesHolder;
 import by.ghoncharko.webproject.entity.User;
 
 import javax.servlet.Filter;
@@ -61,7 +60,7 @@ public class RoleFilter implements Filter {
 
     private boolean checkUserUnauthorizedAndAccesNotRestricted(Optional<Role> currentUserRole, List<Role> allowedRoles) {
 
-        return !currentUserRole.isPresent() && allowedRoles.size() == 0 || !currentUserRole.isPresent() && allowedRoles.contains(RolesHolder.UNAUTHORIZED);
+        return !currentUserRole.isPresent() && allowedRoles.size() == 0 || !currentUserRole.isPresent() && allowedRoles.contains(Role.UNAUTHORIZED);
     }
 
     private boolean checkUserAuthorizedAndAccesNotRestricted(Optional<Role> currentUserRole, List<Role> allowedRoles) {

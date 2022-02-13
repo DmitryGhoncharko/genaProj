@@ -5,5 +5,5 @@ import by.ghoncharko.webproject.entity.User;
 
 public interface RecipeRequestService extends Service<RecipeRequest> {
 
-    boolean createRecipeRequestByUserAndRecipeId(User user, Integer recipeId);
+
 }

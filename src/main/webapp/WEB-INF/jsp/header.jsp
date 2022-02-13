@@ -83,9 +83,9 @@
             </c:when>
             <c:otherwise>
                 <a class="btn btn-primary" href="/controller?command=login" role="button">Login</a>
+                <a class="nav-link" href="/controller?command=registration">Registration</a>
             </c:otherwise>
         </c:choose>
-        <a class="nav-link" href="/controller?command=registration">Registration</a>
     </nav>
 </div>
 </header>

@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class RecipeRequestDecisionDaoImpl implements RecipeRequestDecisionDao{
+public class RecipeRequestDecisionDaoImpl extends AbstractDao<RecipeRequestDecision> implements RecipeRequestDecisionDao{
     private static final Logger LOG = LogManager.getLogger(RecipeRequestDecisionDaoImpl.class);
     private static final String SQL_CREATE_RECIPE_REQUEST_DECISION = "INSERT INTO recipe_request_decision(recipe_request_id, is_extended, date_decision) VALUES (?,?,?)";
     private static final String SQL_FIND_ALL_RECIPE_REQUEST_DECISIONS = "SELECT" +
@@ -50,10 +50,10 @@ public class RecipeRequestDecisionDaoImpl implements RecipeRequestDecisionDao{
     private static final String SQL_UPDATE_RECIPE_REQUEST_DECISION_BY_ID = "UPDATE recipe_request_decision SET recipe_request_id = ? , is_extended = ?, date_decision = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_RECIPE_REQUEST_DECISIOH_BY_ID = "DELETE FROM recipe_request_decision WHERE id = ?";
-    private final Connection connection;
 
-    public RecipeRequestDecisionDaoImpl(Connection connection){
-        this.connection = connection;
+
+    public RecipeRequestDecisionDaoImpl(Connection connection) {
+        super(connection);
     }
 
     @Override
@@ -88,40 +88,7 @@ public class RecipeRequestDecisionDaoImpl implements RecipeRequestDecisionDao{
         try(final Statement statement = connection.createStatement()){
             final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_RECIPE_REQUEST_DECISIONS);
             while (resultSet.next()){
-                final RecipeRequestDecision recipeRequestDecision = new RecipeRequestDecision.Builder().
-                        withId(resultSet.getInt(1)).
-                        withRecipeRequest(new RecipeRequest.Builder().
-                                withId(resultSet.getInt(2)).
-                                withRecipe(new Recipe.Builder().
-                                        withId(resultSet.getInt(3)).
-                                        withUser(new User.Builder().
-                                                withId(resultSet.getInt(4)).
-                                                withLogin(resultSet.getString(5)).
-                                                withPassword(resultSet.getString(6)).
-                                                withRole(Role.valueOf(resultSet.getString(7))).
-                                                withFirstName(resultSet.getString(8)).
-                                                withLastName(resultSet.getString(9)).
-                                                withBannedStatus(resultSet.getBoolean(10)).
-                                                build()).
-                                        withDrug(new Drug.Builder().
-                                                withId(resultSet.getInt(11)).
-                                                withName(resultSet.getString(12)).
-                                                withPrice(resultSet.getBigDecimal(13)).
-                                                withCount(resultSet.getInt(14)).
-                                                withDescription(resultSet.getString(15)).
-                                                withProducer(new Producer.Builder().
-                                                        withId(resultSet.getInt(16)).
-                                                        withName(resultSet.getString(17)).
-                                                        build()).
-                                                withNeedReceip(resultSet.getBoolean(18)).
-                                                withIsDeleted(resultSet.getBoolean(19)).
-                                                build()).
-                                        withDateStart(resultSet.getDate(20)).
-                                        withDateEnd(resultSet.getDate(21)).
-                                        build())
-                                .build()).
-                        withIsExtended(resultSet.getBoolean(22)).
-                        withDateDecision(resultSet.getDate(23)).build();
+                final RecipeRequestDecision recipeRequestDecision = extractEntity(resultSet);
                 recipeRequestDecisionList.add(recipeRequestDecision);
             }
         }catch (SQLException e){
@@ -138,40 +105,7 @@ public class RecipeRequestDecisionDaoImpl implements RecipeRequestDecisionDao{
             preparedStatement.setInt(1,id);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                return Optional.of(new RecipeRequestDecision.Builder().
-                        withId(resultSet.getInt(1)).
-                        withRecipeRequest(new RecipeRequest.Builder().
-                                withId(resultSet.getInt(2)).
-                                withRecipe(new Recipe.Builder().
-                                        withId(resultSet.getInt(3)).
-                                        withUser(new User.Builder().
-                                                withId(resultSet.getInt(4)).
-                                                withLogin(resultSet.getString(5)).
-                                                withPassword(resultSet.getString(6)).
-                                                withRole(Role.valueOf(resultSet.getString(7))).
-                                                withFirstName(resultSet.getString(8)).
-                                                withLastName(resultSet.getString(9)).
-                                                withBannedStatus(resultSet.getBoolean(10)).
-                                                build()).
-                                        withDrug(new Drug.Builder().
-                                                withId(resultSet.getInt(11)).
-                                                withName(resultSet.getString(12)).
-                                                withPrice(resultSet.getBigDecimal(13)).
-                                                withCount(resultSet.getInt(14)).
-                                                withDescription(resultSet.getString(15)).
-                                                withProducer(new Producer.Builder().
-                                                        withId(resultSet.getInt(16)).
-                                                        withName(resultSet.getString(17)).
-                                                        build()).
-                                                withNeedReceip(resultSet.getBoolean(18)).
-                                                withIsDeleted(resultSet.getBoolean(19)).
-                                                build()).
-                                        withDateStart(resultSet.getDate(20)).
-                                        withDateEnd(resultSet.getDate(21)).
-                                        build())
-                                .build()).
-                        withIsExtended(resultSet.getBoolean(22)).
-                        withDateDecision(resultSet.getDate(23)).build());
+                return Optional.of(extractEntity(resultSet));
             }
         }catch (SQLException e){
             LOG.error("Cannot find RecipeRequestDecision by id",e);
@@ -201,14 +135,50 @@ public class RecipeRequestDecisionDaoImpl implements RecipeRequestDecisionDao{
     }
 
     @Override
-    public boolean delete(RecipeRequestDecision entity) throws DaoException {
+    public boolean delete(Integer id) throws DaoException {
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE_REQUEST_DECISIOH_BY_ID)){
-            preparedStatement.setInt(1,entity.getId());
-            final int countDeletedRows = preparedStatement.executeUpdate();
-            return countDeletedRows>0;
+           return deleteBillet(preparedStatement,id);
         }catch (SQLException e){
             LOG.error("Cannot delete RecipeRequestDecision by id",e);
             throw new DaoException("Cannot delete RecipeRequestDecision by id",e);
         }
+    }
+
+    @Override
+    protected RecipeRequestDecision extractEntity(ResultSet resultSet) throws SQLException {
+        return new RecipeRequestDecision.Builder().
+                withId(resultSet.getInt(1)).
+                withRecipeRequest(new RecipeRequest.Builder().
+                        withId(resultSet.getInt(2)).
+                        withRecipe(new Recipe.Builder().
+                                withId(resultSet.getInt(3)).
+                                withUser(new User.Builder().
+                                        withId(resultSet.getInt(4)).
+                                        withLogin(resultSet.getString(5)).
+                                        withPassword(resultSet.getString(6)).
+                                        withRole(Role.valueOf(resultSet.getString(7))).
+                                        withFirstName(resultSet.getString(8)).
+                                        withLastName(resultSet.getString(9)).
+                                        withBannedStatus(resultSet.getBoolean(10)).
+                                        build()).
+                                withDrug(new Drug.Builder().
+                                        withId(resultSet.getInt(11)).
+                                        withName(resultSet.getString(12)).
+                                        withPrice(resultSet.getBigDecimal(13)).
+                                        withCount(resultSet.getInt(14)).
+                                        withDescription(resultSet.getString(15)).
+                                        withProducer(new Producer.Builder().
+                                                withId(resultSet.getInt(16)).
+                                                withName(resultSet.getString(17)).
+                                                build()).
+                                        withNeedReceip(resultSet.getBoolean(18)).
+                                        withIsDeleted(resultSet.getBoolean(19)).
+                                        build()).
+                                withDateStart(resultSet.getDate(20)).
+                                withDateEnd(resultSet.getDate(21)).
+                                build())
+                        .build()).
+                withIsExtended(resultSet.getBoolean(22)).
+                withDateDecision(resultSet.getDate(23)).build();
     }
 }

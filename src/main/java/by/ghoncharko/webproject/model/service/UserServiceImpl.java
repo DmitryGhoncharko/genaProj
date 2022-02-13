@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> createClient(String login, String password, String firstName, String lastName) throws ServiceException {
+    public Optional<User> createClientWithBannedStatusFalse(String login, String password, String firstName, String lastName) throws ServiceException {
         final boolean isValidData = ValidateRegistration.getInstance().validateRegistration(login, password, firstName, lastName);
         if (!isValidData) {
             return Optional.empty();
@@ -73,6 +73,7 @@ public class UserServiceImpl implements UserService {
                         withFirstName(firstName).
                         withLastName(lastName).
                         withRole(Role.CLIENT).
+                        withBannedStatus(false).
                         build();
                 final UserDao userDao = new UserDaoImpl(connection);
                 final User userWithId = userDao.create(user);

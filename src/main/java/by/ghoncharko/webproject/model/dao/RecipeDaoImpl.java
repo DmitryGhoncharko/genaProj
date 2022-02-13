@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RecipeDaoImpl implements RecipeDao{
+public class RecipeDaoImpl extends AbstractDao<Recipe> implements RecipeDao{
     private static final Logger LOG  = LogManager.getLogger(RecipeDaoImpl.class);
     private static final String SQL_CREATE_RECIPE = "INSERT INTO recipe(user_id, drug_id, date_start, date_end)  VALUES (?,?,?,?)";
     private static final String SQL_FIND_ALL_RECIPES = "SELECT" +
@@ -45,10 +45,10 @@ public class RecipeDaoImpl implements RecipeDao{
             " SET user_id = ?, drug_id = ?, date_start = ?, date_end = ?" +
             "WHERE id = ?";
     private static final String SQL_DELETE_RECIPE_BY_RECIPE_ID = "DELETE FROM recipe WHERE id = ?";
-    private final Connection connection;
+
 
     public RecipeDaoImpl(Connection connection) {
-        this.connection = connection;
+        super(connection);
     }
 
     @Override
@@ -87,33 +87,7 @@ public class RecipeDaoImpl implements RecipeDao{
             preparedStatement.setInt(2,drugId);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                return Optional.of(new Recipe.Builder().
-                        withId(resultSet.getInt(1)).
-                        withUser(new User.Builder().
-                                withId(resultSet.getInt(2)).
-                                withLogin(resultSet.getString(3)).
-                                withPassword(resultSet.getString(4)).
-                                withRole(Role.valueOf(resultSet.getString(5))).
-                                withFirstName(resultSet.getString(6)).
-                                withLastName(resultSet.getString(7)).
-                                withBannedStatus(resultSet.getBoolean(8)).
-                                build()).
-                        withDrug(new Drug.Builder().
-                                withId(resultSet.getInt(9)).
-                                withName(resultSet.getString(10)).
-                                withPrice(BigDecimal.valueOf(resultSet.getDouble(11))).
-                                withCount(resultSet.getInt(12)).
-                                withDescription(resultSet.getString(13)).
-                                withProducer(new Producer.Builder().
-                                        withId(resultSet.getInt(14)).
-                                        withName(resultSet.getString(15)).
-                                        build()).
-                                withNeedReceip(resultSet.getBoolean(16)).
-                                withIsDeleted(resultSet.getBoolean(17)).
-                                build()).
-                        withDateStart(resultSet.getDate(18)).
-                        withDateEnd(resultSet.getDate(19)).
-                        build());
+                return Optional.of(extractEntity(resultSet));
             }
         }catch (SQLException e){
             LOG.error("Cannot find recipe by recipe id and user id",e);
@@ -129,33 +103,7 @@ public class RecipeDaoImpl implements RecipeDao{
         try(final Statement statement = connection.createStatement()){
            final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_RECIPES);
            while (resultSet.next()){
-             final   Recipe recipe = new Recipe.Builder().
-                       withId(resultSet.getInt(1)).
-                       withUser(new User.Builder().
-                               withId(resultSet.getInt(2)).
-                               withLogin(resultSet.getString(3)).
-                               withPassword(resultSet.getString(4)).
-                               withRole(Role.valueOf(resultSet.getString(5))).
-                               withFirstName(resultSet.getString(6)).
-                               withLastName(resultSet.getString(7)).
-                               withBannedStatus(resultSet.getBoolean(8)).
-                               build()).
-                       withDrug(new Drug.Builder().
-                               withId(resultSet.getInt(9)).
-                               withName(resultSet.getString(10)).
-                               withPrice(BigDecimal.valueOf(resultSet.getDouble(11))).
-                               withCount(resultSet.getInt(12)).
-                               withDescription(resultSet.getString(13)).
-                               withProducer(new Producer.Builder().
-                                       withId(resultSet.getInt(14)).
-                                       withName(resultSet.getString(15)).
-                                       build()).
-                               withNeedReceip(resultSet.getBoolean(16)).
-                               withIsDeleted(resultSet.getBoolean(17)).
-                               build()).
-                       withDateStart(resultSet.getDate(18)).
-                       withDateEnd(resultSet.getDate(19)).
-                       build();
+             final   Recipe recipe = extractEntity(resultSet);
              recipeList.add(recipe);
            }
        }catch (SQLException e){
@@ -171,33 +119,7 @@ public class RecipeDaoImpl implements RecipeDao{
             preparedStatement.setInt(1,id);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                return Optional.of(new Recipe.Builder().
-                        withId(resultSet.getInt(1)).
-                        withUser(new User.Builder().
-                                withId(resultSet.getInt(2)).
-                                withLogin(resultSet.getString(3)).
-                                withPassword(resultSet.getString(4)).
-                                withRole(Role.valueOf(resultSet.getString(5))).
-                                withFirstName(resultSet.getString(6)).
-                                withLastName(resultSet.getString(7)).
-                                withBannedStatus(resultSet.getBoolean(8)).
-                                build()).
-                        withDrug(new Drug.Builder().
-                                withId(resultSet.getInt(9)).
-                                withName(resultSet.getString(10)).
-                                withPrice(BigDecimal.valueOf(resultSet.getDouble(11))).
-                                withCount(resultSet.getInt(12)).
-                                withDescription(resultSet.getString(13)).
-                                withProducer(new Producer.Builder().
-                                        withId(resultSet.getInt(14)).
-                                        withName(resultSet.getString(15)).
-                                        build()).
-                                withNeedReceip(resultSet.getBoolean(16)).
-                                withIsDeleted(resultSet.getBoolean(17)).
-                                build()).
-                        withDateStart(resultSet.getDate(18)).
-                        withDateEnd(resultSet.getDate(19)).
-                        build());
+                return Optional.of(extractEntity(resultSet));
             }
         }catch (SQLException e){
             LOG.error("Cannot find recipe by id", e);
@@ -228,14 +150,43 @@ public class RecipeDaoImpl implements RecipeDao{
     }
 
     @Override
-    public boolean delete(Recipe entity) throws DaoException {
+    public boolean delete(Integer id) throws DaoException {
         try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE_BY_RECIPE_ID)){
-            preparedStatement.setInt(1,entity.getId());
-            final int countUpdatedRows = preparedStatement.executeUpdate();
-            return countUpdatedRows>0;
+         return   deleteBillet(preparedStatement,id);
         }catch (SQLException e){
             LOG.error("Cannot delete recipe by id",e);
             throw new DaoException("Cannot delete recipe by id",e);
         }
+    }
+
+    @Override
+    protected Recipe extractEntity(ResultSet resultSet) throws SQLException {
+        return new Recipe.Builder().
+                withId(resultSet.getInt(1)).
+                withUser(new User.Builder().
+                        withId(resultSet.getInt(2)).
+                        withLogin(resultSet.getString(3)).
+                        withPassword(resultSet.getString(4)).
+                        withRole(Role.valueOf(resultSet.getString(5))).
+                        withFirstName(resultSet.getString(6)).
+                        withLastName(resultSet.getString(7)).
+                        withBannedStatus(resultSet.getBoolean(8)).
+                        build()).
+                withDrug(new Drug.Builder().
+                        withId(resultSet.getInt(9)).
+                        withName(resultSet.getString(10)).
+                        withPrice(BigDecimal.valueOf(resultSet.getDouble(11))).
+                        withCount(resultSet.getInt(12)).
+                        withDescription(resultSet.getString(13)).
+                        withProducer(new Producer.Builder().
+                                withId(resultSet.getInt(14)).
+                                withName(resultSet.getString(15)).
+                                build()).
+                        withNeedReceip(resultSet.getBoolean(16)).
+                        withIsDeleted(resultSet.getBoolean(17)).
+                        build()).
+                withDateStart(resultSet.getDate(18)).
+                withDateEnd(resultSet.getDate(19)).
+                build();
     }
 }

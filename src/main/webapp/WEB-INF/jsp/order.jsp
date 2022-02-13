@@ -92,7 +92,7 @@
                                 </li>
                             </ul>
                             <div class="card-body">
-                                <button class="btn btn-primary" type="submit" formaction="/controller?command=pay" formmethod="post">Pay</button>
+                                <button class="btn btn-primary" type="submit" formaction="/controller?command=payOrder" formmethod="post">Pay</button>
                                 <button class="btn btn-primary" formaction="/controller?command=deleteFromOrder" formmethod="post"> Delete</button>
                                 <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
                                     <div class="alert alert-danger" role="alert">

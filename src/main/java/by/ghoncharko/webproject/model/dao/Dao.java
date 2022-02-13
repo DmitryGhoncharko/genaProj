@@ -5,10 +5,6 @@ import by.ghoncharko.webproject.entity.Entity;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +17,6 @@ import java.util.Optional;
  */
 public interface Dao<T extends Entity> {
     Logger LOG = LogManager.getLogger(Dao.class);
-
 
     /**
      * @param entity accept entity which extends Entity(Interface-marker)
@@ -60,5 +55,5 @@ public interface Dao<T extends Entity> {
      * @throws DaoException when cannot delete entity
      * @see Entity - Interface-marker
      */
-    boolean delete(T entity) throws DaoException;
+    boolean delete(Integer id) throws DaoException;
 }

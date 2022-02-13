@@ -185,7 +185,7 @@
             <form class="form-horizontal needs-validation" action="/controller?command=logincmnd" method="post" novalidate>
                 <span class="heading">АВТОРИЗАЦИЯ</span>
                 <div class="form-group">
-                    <input type="text" pattern=".{6,35}" class="form-control needs-validation" id="validationServer03" name="login" placeholder="Login" required>
+                    <input type="text" pattern="[a-zA-Z0-9]{6,45}" class="form-control needs-validation" id="validationServer03" name="login" placeholder="Login" required>
                     <div class="invalid-feedback">
                         minimal login length = 6
                     </div>
@@ -204,6 +204,7 @@
                     <button type="submit" class="btn btn-default">Войти</button>
                 </div>
             </form>
+            <a class="btn btn-default" href="/controller?command = main_page">Отмена</a>
         </div>
 
     </div>
