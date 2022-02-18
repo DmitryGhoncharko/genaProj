@@ -2,6 +2,17 @@
 <%@ taglib prefix="jwds" uri="by.ghoncharko.webproject" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="by.ghoncharko.webproject.entity.Role"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<fmt:setLocale value="${cookie.lang.value}"/>
+<fmt:setBundle basename="l10n.page.main" var="loc"/>
+<fmt:message bundle="${loc}" key="label.header.home" var="home"/>
+<fmt:message bundle="${loc}" key="label.header.drugs" var="drugs"/>
+<fmt:message bundle="${loc}" key="label.header.order" var="order"/>
+<fmt:message bundle="${loc}" key="label.header.cards" var="cards"/>
+<fmt:message bundle="${loc}" key="label.header.newDrug" var="newDrug"/>
+<fmt:message bundle="${loc}" key="label.header.login" var="login"/>
+<fmt:message bundle="${loc}" key="label.header.logOut" var="logOut"/>
+<fmt:message bundle="${loc}" key="label.header.registration" var="registration"/>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -26,25 +37,25 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/controller?command=/">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/controller?command=/">${home} <span class="sr-only">(current)</span></a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/controller?command=preparates&page=1">Preparates</a>
+                    <a class="nav-link" href="/controller?command=preparates&page=1">${drugs}</a>
                 </li>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                     <li class="nav-item">
-                        <a class="nav-link" href="/controller?command=orderPage">Order</a>
-                    </li>
+                        <a class="nav-link" href="/controller?command=orderPage">${order}</a>
+                    </li>la
                 </c:if>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                     <li class="nav-item">
-                        <a class="nav-link" href="/controller?command=card">Show my bank cards</a>
+                        <a class="nav-link" href="/controller?command=card">${cards}</a>
                     </li>
                 </c:if>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.PHARMACY}">
                     <li class="nav-item">
-                        <a class="nav-link" href="/controller?command=createDrug">Create new drug</a>
+                        <a class="nav-link" href="/controller?command=createDrug">${newDrug}</a>
                     </li>
                 </c:if>
                 <c:if test="${not empty sessionScope.user}">
@@ -64,11 +75,11 @@
 
         <c:choose>
             <c:when test="${not empty sessionScope.user}">
-                <a class="btn btn-primary" href="/controller?command=logout" role="button">Logout</a>
+                <a class="btn btn-primary" href="/controller?command=logout" role="button">${logOut}</a>
             </c:when>
             <c:otherwise>
-                <a class="btn btn-primary" href="/controller?command=login" role="button">Login</a>
-                <a class="nav-link" href="/controller?command=registration">Registration</a>
+                <a class="btn btn-primary" href="/controller?command=login" role="button">${login}</a>
+                <a class="nav-link" href="/controller?command=registration">${registration}</a>
             </c:otherwise>
         </c:choose>
     </nav>

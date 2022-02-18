@@ -31,7 +31,7 @@ public class AddBankCardCommand implements Command{
                     return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
                 }
             }catch (ServiceException e){
-
+                LOG.error("Service exception",e);
             }
         }
         return requestFactory.createForwardResponse(PagePath.INDEX_PATH);

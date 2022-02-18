@@ -3,7 +3,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <fmt:setLocale value="${cookie.lang.value}"/>
 <fmt:setBundle basename="l10n.page.main" var="loc"/>
-<fmt:message bundle="${loc}" key="label.title" var="pageTitle"/>
+<fmt:message bundle="${loc}" key="label.main.title" var="mainTitle"/>
+<fmt:message bundle="${loc}" key="label.main.thumbnail1" var="thumbnail1"/>
+<fmt:message bundle="${loc}" key="label.main.thumbnail1p" var="thumbnail1p"/>
+<fmt:message bundle="${loc}" key="label.main.thumbnail2" var="thumbnail2"/>
+<fmt:message bundle="${loc}" key="label.main.thumbnail2p" var="thumbnail2p"/>
+<fmt:message bundle="${loc}" key="label.main.thumbnail3" var="thumbnail3"/>
+<fmt:message bundle="${loc}" key="label.main.thumbnail3p" var="thumbnail3p"/>
 <html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -46,7 +52,7 @@
 
 </style>
 <head>
-    <title>${pageTitle}</title>
+    <title>${mainTitle}</title>
 </head>
 <body>
 <div class="container-fluid flex">
@@ -71,10 +77,10 @@
                         <img class="d-block w-100 h-100" alt="Carousel Bootstrap First" src="${pageContext.request.contextPath}/static/main1.png"/>
                         <div class="carousel-caption">
                             <h4>
-                                First Thumbnail label
+                                ${thumbnail1}
                             </h4>
                             <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                                ${thumbnail1p}
                             </p>
                         </div>
                     </div>
@@ -82,10 +88,10 @@
                         <img class="d-block w-100 h-100" alt="Carousel Bootstrap Second" src="${pageContext.request.contextPath}/static/main2.png"/>
                         <div class="carousel-caption">
                             <h4>
-                                Second Thumbnail label
+                                ${thumbnail2}
                             </h4>
                             <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                                ${thumbnail2p}
                             </p>
                         </div>
                     </div>
@@ -93,10 +99,10 @@
                         <img class="d-block w-100 h-100" alt="Carousel Bootstrap Third" src="${pageContext.request.contextPath}/static/main3.png"/>
                         <div class="carousel-caption">
                             <h4>
-                                Third Thumbnail label
+                                ${thumbnail3}
                             </h4>
                             <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                                ${thumbnail3p}
                             </p>
                         </div>
                     </div>

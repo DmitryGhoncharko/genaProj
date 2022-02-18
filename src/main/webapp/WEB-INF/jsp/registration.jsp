@@ -1,5 +1,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="utf-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<fmt:setLocale value="${cookie.lang.value}"/>
+<fmt:setBundle basename="l10n.page.main" var="loc"/>
+<fmt:message bundle="${loc}" key="label.registration.title" var="title"/>
+<fmt:message bundle="${loc}" key="label.registration.heading" var="heading"/>
+<fmt:message bundle="${loc}" key="label.registration.fNameLabel" var="fNameLabel"/>
+<fmt:message bundle="${loc}" key="label.registration.fNameInvalidFeedback" var="fNameInvalidFeedback"/>
+<fmt:message bundle="${loc}" key="label.registration.lNameLabel" var="lNameLabel"/>
+<fmt:message bundle="${loc}" key="label.registration.login" var="login"/>
+<fmt:message bundle="${loc}" key="label.registration.password" var="password"/>
+<fmt:message bundle="${loc}" key="label.registration.registration" var="registration"/>
+<fmt:message bundle="${loc}" key="label.registration.cancel" var="cancel"/>
+<fmt:message bundle="${loc}" key="label.login.loginInvalid" var="loginInvalid"/>
+<fmt:message bundle="${loc}" key="label.login.passwordInvalid" var="passwordInvalid"/>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
@@ -177,7 +191,7 @@
 <html>
 <head>
     <title>
-
+        ${title}
     </title>
 </head>
 <body>
@@ -185,42 +199,42 @@
     <div class="row">
         <div class="col-md-offset-3 col-md-6">
             <form accept-charset="UTF-8" class="form-horizontal needs-validation" action="/controller?command=registrationcmnd" method="post" novalidate>
-                <span class="heading">Регистрация</span>
+                <span class="heading">${heading}</span>
                 <div class="form-group">
-                    <label>First name</label>
+                    <label>${fNameLabel}</label>
                     <input  type="text" name="Fname"  pattern="^[a-zA-Z0-9]{1,45}$" class="form-control needs-validation"  placeholder="First Name" required>
                     <div class="invalid-feedback">
-                        First name must be latin letters with numbers, length at least 1 to 45
+                        ${fNameInvalidFeedback}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Last name</label>
+                    <label>${lNameLabel}</label>
                     <input  type="text" name="Lname"  pattern="^[a-zA-Z0-9]{1,45}$" class="form-control needs-validation"  placeholder="Last Name" required>
                     <div class="invalid-feedback">
-                        Last name must be latin letters with numbers, length at least 1 to 45
+                        ${fNameInvalidFeedback}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Login</label>
+                    <label>${login}</label>
                     <input type="text" pattern="^[a-zA-Z0-9]{6,45}$" class="form-control needs-validation" id="inputText" name="login" placeholder="Login" required>
                     <div class="invalid-feedback">
-                        Login must be latin letters with numbers, lengh at least 1 to 45
+                        ${loginInvalid}
                     </div>
                 </div>
                 <div class="form-group ">
-                    <label>Password</label>
+                    <label>${password}</label>
                     <input type="password" name="password"  pattern="^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}$" class="form-control needs-validation" id="inputPassword" placeholder="Password" required>
                     <div class="invalid-feedback">
-                        Invalid password
+                        ${passwordInvalid}
                     </div>
                 </div>
                 <div class="form-group">
                     <c:if test="${not empty requestScope.registrationError}">
                         <b>${requestScope.registrationError}</b>
                     </c:if>
-                    <button type="submit" class="btn btn-default">Зарегистрироваться</button>
+                    <button type="submit" class="btn btn-default">${registration}</button>
 
-                    <a class="btn btn-default" style="margin-right: 50%" href="/controller?command=main_page">Отмена</a>
+                    <a class="btn btn-default" style="margin-right: 30%" href="/controller?command=main_page">${cancel}</a>
                 </div>
             </form>
         </div>

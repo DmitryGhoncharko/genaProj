@@ -1,6 +1,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="by.ghoncharko.webproject.entity.Role" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<fmt:setLocale value="${cookie.lang.value}"/>
+<fmt:setBundle basename="l10n.page.main" var="loc"/>
+<fmt:message bundle="${loc}" key="label.preparates.title" var="title"/>
+<fmt:message bundle="${loc}" key="label.preparates.name" var="name"/>
+<fmt:message bundle="${loc}" key="label.preparates.prodName" var="prodName"/>
+<fmt:message bundle="${loc}" key="label.preparates.drugCount" var="drugCount"/>
+<fmt:message bundle="${loc}" key="label.preparates.needRecipe" var="needRecipe"/>
+<fmt:message bundle="${loc}" key="label.preparates.isDeleted" var="isDeleted"/>
+<fmt:message bundle="${loc}" key="label.preparates.update" var="update"/>
+<fmt:message bundle="${loc}" key="label.preparates.description" var="description"/>
+<fmt:message bundle="${loc}" key="label.preparates.price" var="price"/>
+
+
 <html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -43,7 +57,7 @@
 
 </style>
 <head>
-    <title>Title</title>
+    <title>${title}</title>
 </head>
 <body>
 <div class="container-fluid flex">
@@ -136,13 +150,13 @@
                             <input hidden="" name="drugId" value="${drug.id}">
                                 <div class="card" style="width: 18rem;">
                                     <div class="card-body">
-                                        <h5 class="card-title">Drug name: ${drug.name}</h5>
-                                        <p class="card-text">${drug.producer.name}</p>
+                                        <h5 class="card-title">${name} ${drug.name}</h5>
+                                        <p class="card-text">${prodName} ${drug.producer.name}</p>
                                     </div>
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">${drug.count}</li>
-                                        <li class="list-group-item">${drug.needRecipe}</li>
-                                        <li class="list-group-item">${drug.price}</li>
+                                        <li class="list-group-item">${drugCount} ${drug.count}</li>
+                                        <li class="list-group-item">${needRecipe} ${drug.needRecipe}</li>
+                                        <li class="list-group-item">${price} ${drug.price}</li>
                                         <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                                             <li class="list-group-item">
                                                 <input class="needs-validation" type="number" name="countUserAddDrugsToOrder" placeholder="count drugs"
@@ -170,7 +184,7 @@
                         </form>
                     </div>
                     <div class="col-md-6">
-                        <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">Description</p>
+                        <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">${description}</p>
                         <a style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%">${drug.description}</a>
                     </div>
 
