@@ -17,5 +17,6 @@ public interface DrugUserOrderDao extends Dao<DrugUserOrder> {
 
     Optional<DrugUserOrder> findDrugUserOrderByUserOrderIdAndDrugId(Integer userOrderId, Integer drugId) throws DaoException;
 
+    List<DrugUserOrder> findDrugUserOrdersByUserOrderId(Integer userOrderId)throws DaoException ;
 
 }

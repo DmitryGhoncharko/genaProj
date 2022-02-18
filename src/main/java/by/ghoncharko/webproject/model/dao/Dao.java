@@ -50,7 +50,6 @@ public interface Dao<T extends Entity> {
     T update(T entity) throws DaoException;
 
     /**
-     * @param entity accept entity which extends Entity(Interface-marker)
      * @return true if delete was success and false if delete was unsuccess
      * @throws DaoException when cannot delete entity
      * @see Entity - Interface-marker

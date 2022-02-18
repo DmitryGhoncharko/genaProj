@@ -12,9 +12,12 @@ import java.util.Optional;
 
 public class AddBankCardCommand implements Command{
     private static final Logger LOG = LogManager.getLogger(AddBankCardCommand.class);
-    private final RequestFactory requestFactory = RequestFactory.getInstance();
+    private final RequestFactory requestFactory;
+    private final BankCardService bankCardService;
 
-    private AddBankCardCommand(){
+    public AddBankCardCommand(RequestFactory requestFactory, BankCardService bankCardService){
+        this.requestFactory = requestFactory;
+        this.bankCardService = bankCardService;
     }
 
     @Override
@@ -22,25 +25,16 @@ public class AddBankCardCommand implements Command{
         final Optional<Object> userFromSession = request.retrieveFromSession("user");
         if(userFromSession.isPresent()){
             final User user = (User) userFromSession.get();
-            final BankCardService bankCardService = BankCardServiceImpl.getInstance();
             final Double balanceCard = Double.valueOf(request.getParameter("balance"));
-
             try{
                 final  boolean bankCardIsCreated = bankCardService.addBankCard(balanceCard, user);
                 if(bankCardIsCreated){
                     return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
                 }
-                return requestFactory.createForwardResponse(PagePath.INDEX_PATH);
             }catch (ServiceException e){
 
             }
         }
-    }
-
-    public static AddBankCardCommand getInstance() {
-        return Holder.INSTANCE;
-    }
-    private static class Holder{
-        private static final AddBankCardCommand INSTANCE = new AddBankCardCommand();
+        return requestFactory.createForwardResponse(PagePath.INDEX_PATH);
     }
 }

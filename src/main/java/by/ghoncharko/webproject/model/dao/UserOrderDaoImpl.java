@@ -28,8 +28,8 @@ public class UserOrderDaoImpl extends AbstractDao<UserOrder> implements UserOrde
             " FROM  user_order" +
             " INNER JOIN user u ON user_order.user_id = u.id" +
             " INNER JOIN role r ON u.role_id = r.id  " +
-            " RIGHT JOIN paid_user_order p ON p.user_order_id = user_order.id" +
-            " WHERE user_order_id = ? AND p.id IS NULL";
+            " LEFT JOIN paid_user_order p ON user_order.id = p.user_order_id" +
+            " WHERE user_id = ? AND p.id IS NULL";
     private static final String SQL_UPDATE_USER_ORDER_BY_ID = "UPDATE user_order SET user_id = ?" +
             " WHERE id = ?";
     private static final String SQL_DELETE_USER_ORDER_BY_ID = "DELETE FROM user_order WHERE  id = ?";

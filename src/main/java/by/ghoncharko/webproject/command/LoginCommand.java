@@ -16,8 +16,11 @@ public class LoginCommand implements Command {
     private static final String PASSWORD_REQUEST_PARAM_NAME = "password";
     private static final String ERROR_LOGIN_PASS_MESSAGE = "Invalid login or password";
     private static final String ERROR_LOGIN_PASS_ATTRIBUTE = "errorLoginPassMessage";
-    private final RequestFactory requestFactory = RequestFactory.getInstance();
-    private LoginCommand() {
+    private final RequestFactory requestFactory;
+    private final UserService userService;
+    public LoginCommand(RequestFactory requestFactory, UserService userService) {
+        this.requestFactory = requestFactory;
+        this.userService = userService;
     }
 
     @Override
@@ -28,7 +31,7 @@ public class LoginCommand implements Command {
         final String login = request.getParameter(LOGIN_REQUEST_PARAM_NAME);
         final String password = request.getParameter(PASSWORD_REQUEST_PARAM_NAME);
         try {
-            final Optional<User> user = UserService.getInstance().authenticate(login, password);
+            final Optional<User> user = userService.authenticate(login, password);
             if (!user.isPresent()) {
                 request.addAttributeToJsp(ERROR_LOGIN_PASS_ATTRIBUTE, ERROR_LOGIN_PASS_MESSAGE);
                 return requestFactory.createForwardResponse(PagePath.LOGIN_PAGE_PATH);
@@ -42,13 +45,5 @@ public class LoginCommand implements Command {
             return requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
         }
 
-    }
-
-    public static LoginCommand getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    private static class Holder {
-        private static final LoginCommand INSTANCE = new LoginCommand();
     }
 }

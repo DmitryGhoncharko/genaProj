@@ -26,16 +26,16 @@ import java.util.Optional;
 public class BankCardDaoImpl extends AbstractDao<BankCard> implements BankCardDao {
     private static final Logger LOG = LogManager.getLogger(BankCardDaoImpl.class);
     private static final String SQL_CREATE_BANK_CARD = "INSERT INTO bank_card(user_id, balance) VALUES (?,?)";
-    private static final String SQL_FIND_ALL_BANK_CARDS = "SELECT bank_card.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned ,balance" +
+    private static final String SQL_FIND_ALL_BANK_CARDS = "SELECT bank_card.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.is_banned ,balance" +
             " FROM  bank_card" +
             " INNER JOIN user u on bank_card.user_id = u.id" +
             " INNER JOIN role r on u.role_id = r.id";
-    private static final String SQL_FIND_BANK_CARD_BY_ID = "SELECT bank_card.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned ,balance" +
+    private static final String SQL_FIND_BANK_CARD_BY_ID = "SELECT bank_card.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.is_banned ,balance" +
             " FROM  bank_card" +
             " INNER JOIN user u on bank_card.user_id = u.id" +
             " INNER JOIN role r on u.role_id = r.id" +
-            " WHERE id = ?";
-    private static final String SQL_FIND_USER_BANKS_CARDS_BY_USER_ID = "SELECT bank_card.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.banned ,balance" +
+            " WHERE bank_card.id = ?";
+    private static final String SQL_FIND_USER_BANKS_CARDS_BY_USER_ID = "SELECT bank_card.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name, u.is_banned ,balance" +
             " FROM  bank_card" +
             " INNER JOIN user u on bank_card.user_id = u.id" +
             " INNER JOIN role r on u.role_id = r.id" +

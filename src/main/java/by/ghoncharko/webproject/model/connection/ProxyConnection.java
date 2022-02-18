@@ -28,7 +28,7 @@ import java.util.concurrent.Executor;
  */
 public class ProxyConnection implements Connection {
     private final Connection connection;
-
+    // todo add connection pool in constructor
     ProxyConnection(Connection connection) {
         this.connection = connection;
     }
@@ -84,10 +84,6 @@ public class ProxyConnection implements Connection {
     //выпилить отсюда клоуз проверку на коммит и добавить ее в мой код который будет в транзакшн менеджере
     @Override
     public void close() throws SQLException {
-        if (!this.getAutoCommit()) {
-             this.commit();
-             this.setAutoCommit(true);
-        }
         BlockingConnectionPool.getInstance().releaseConnection(this);
     }
 

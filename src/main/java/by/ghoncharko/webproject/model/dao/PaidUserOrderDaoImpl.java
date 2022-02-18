@@ -21,7 +21,8 @@ import java.util.Optional;
 public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements PaidUserOrderDao{
     private static final Logger LOG  = LogManager.getLogger(PaidUserOrderDaoImpl.class);
     private static final String SQL_CREATE_PAID_USER_ORDER = "INSERT INTO paid_user_order(user_order_id, date_payed) VALUES (?,?)";
-    private static final String SQL_FIND_ALL_PAID_USER_ORDERS = "SELECT paid_user_order.id, uo.id, uo.order_final_price, u.id, login, password, r.role_name, first_name, last_name, is_banned, order_final_price, date_payed" +
+    private static final String SQL_CREATE_PAID_USER_ORDER_WITH_CURRENT_DATE_BY_USER_ORDER_ID = "INSERT INTO paid_user_order(user_order_id, date_payed) VALUES (?,current_date)";
+    private static final String SQL_FIND_ALL_PAID_USER_ORDERS = "SELECT paid_user_order.id, uo.id, u.id, login, password, r.role_name, first_name, last_name, is_banned,  date_payed" +
             " FROM  paid_user_order" +
             " INNER JOIN user_order uo on paid_user_order.user_order_id = uo.id" +
             " INNER JOIN user u on uo.user_id = u.id" +
@@ -64,6 +65,18 @@ public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements 
         }
         LOG.error("Cannot create PaidUserOrder");
         throw new DaoException("Cannot create PaidUserOrder");
+    }
+
+    @Override
+    public boolean createPaidUserOrderWithCurrentDateByUserOrderId(Integer userOrderId) throws DaoException {
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_PAID_USER_ORDER_WITH_CURRENT_DATE_BY_USER_ORDER_ID)){
+            preparedStatement.setInt(1,userOrderId);
+            final int countCreatedRows = preparedStatement.executeUpdate();
+            return countCreatedRows>=0;
+        }catch (SQLException e){
+            LOG.error("Cannot create paid user order by user order id with current date",e);
+            throw new DaoException("Cannot create paid user order by user order id with current date",e);
+        }
     }
 
     @Override

@@ -178,33 +178,39 @@
 
 </head>
 <body>
-<div class="container">
+<div class="container-fluide">
     <div class="row">
-
         <div class="col-md-offset-3 col-md-6">
             <form class="form-horizontal needs-validation" action="/controller?command=logincmnd" method="post" novalidate>
                 <span class="heading">АВТОРИЗАЦИЯ</span>
                 <div class="form-group">
-                    <input type="text" pattern="[a-zA-Z0-9]{6,45}" class="form-control needs-validation" id="validationServer03" name="login" placeholder="Login" required>
+                    <input type="text" pattern="^[a-zA-Z0-9]{6,45}$" class="form-control needs-validation" id="validationServer03" name="login" placeholder="Login" required>
                     <div class="invalid-feedback">
                         minimal login length = 6
                     </div>
                 </div>
 
                 <div class="form-group help">
-                    <input type="password" name="password"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control needs-validation" id="inputPassword" placeholder="Password" required>
+                    <input type="password" name="password"  pattern="^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}$" class="form-control needs-validation" id="inputPassword" placeholder="Password" required>
                     <div class="invalid-feedback">
                         minimal password length = 6
                     </div>
                 </div>
+
                 <div class="form-group">
                     <c:if test="${not empty requestScope.errorLoginPassMessage}">
                         <b>${requestScope.errorLoginPassMessage}</b>
                     </c:if>
+                    <div class="row">
+                        <div class="col-md-6">
                     <button type="submit" class="btn btn-default">Войти</button>
-                </div>
+                        </div>
+                        <div class="col-md-6">
+                        <a class="btn btn-default" href="/controller?command = main_page">Отмена</a>
+                        </div>
+                        </div>
+                    </div>
             </form>
-            <a class="btn btn-default" href="/controller?command = main_page">Отмена</a>
         </div>
 
     </div>

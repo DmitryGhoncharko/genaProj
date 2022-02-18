@@ -107,7 +107,6 @@
                                         </ul>
                                         <div class="card-body">
                                             <button class="btn btn-primary" type="submit" formaction="/controller?command=updateDrug" formmethod="post">Update</button>
-                                            <button class="btn btn-primary" type="submit" formaction="/controller?command=deleteDrug" formmethod="post">Delete</button>
                                             <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
                                                 <div class="alert alert-danger" role="alert">
                                                         ${requestScope.errorDelete}
@@ -137,7 +136,7 @@
                             <input hidden="" name="drugId" value="${drug.id}">
                                 <div class="card" style="width: 18rem;">
                                     <div class="card-body">
-                                        <h5 class="card-title">${drug.name}</h5>
+                                        <h5 class="card-title">Drug name: ${drug.name}</h5>
                                         <p class="card-text">${drug.producer.name}</p>
                                     </div>
                                     <ul class="list-group list-group-flush">
@@ -146,7 +145,7 @@
                                         <li class="list-group-item">${drug.price}</li>
                                         <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                                             <li class="list-group-item">
-                                                <input class="needs-validation" type="number" name="countUserBuyDrugs" placeholder="count drugs"
+                                                <input class="needs-validation" type="number" name="countUserAddDrugsToOrder" placeholder="count drugs"
                                                        min="1"
                                                        max="${drug.count}" required> Count Drugs</input>
                                                 <div class="invalid-feedback">

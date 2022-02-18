@@ -8,6 +8,7 @@ import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.DrugService;
 import by.ghoncharko.webproject.model.service.DrugServiceImpl;
+import by.ghoncharko.webproject.model.service.OrderService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,14 +18,16 @@ import java.util.Optional;
 
 public class ShowPreparatesPageCommand implements Command{
     private static final Logger LOG = LogManager.getLogger(ShowPreparatesPageCommand.class);
-    private final RequestFactory requestFactory = RequestFactory.getInstance();
-    private ShowPreparatesPageCommand() {
+    private final RequestFactory requestFactory;
+    private final DrugService drugService;
+    public ShowPreparatesPageCommand(RequestFactory requestFactory, DrugService drugService) {
+        this.requestFactory = requestFactory;
+        this.drugService = drugService;
     }
 
     @Override
     public CommandResponse execute(CommandRequest request) {
        final Optional<Object> userFromSession = request.retrieveFromSession("user");
-        final   DrugService drugService = DrugServiceImpl.getInstance();
         final Integer pageNumber = Integer.valueOf(request.getParameter("page"));
        try{
         if(userFromSession.isPresent()){
@@ -38,7 +41,7 @@ public class ShowPreparatesPageCommand implements Command{
                     request.addAttributeToJsp("maxPagesCount",countPages);
                     request.addAttributeToJsp("drugs",drugList);
                 }else {
-                    final DrugsPaginationDto drugsPaginationDto = drugService.findAllDrugsWhereCountMoreThanZeroAndDrugNotDeletedLimitOffsetPagination(pageNumber);
+                    final DrugsPaginationDto drugsPaginationDto = drugService.findAllDrugsWhereCountMoreThanZeroAndCalculateDrugCountWithCountInOrderAndDrugNotDeletedLimitOffsetPagination(user, pageNumber);
                     final List<Drug> drugList = drugsPaginationDto.getDrugList();
                     final int countPages = drugsPaginationDto.getCountPages();
                     request.addAttributeToJsp("currentPageNumber",pageNumber);
@@ -59,10 +62,4 @@ public class ShowPreparatesPageCommand implements Command{
         return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
     }
 
-    public static ShowPreparatesPageCommand getInstance() {
-        return Holder.INSTANCE;
-    }
-    private static class Holder{
-        private static final ShowPreparatesPageCommand INSTANCE = new ShowPreparatesPageCommand();
-    }
 }

@@ -1,12 +1,14 @@
 package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
+import by.ghoncharko.webproject.model.service.UserService;
 
 public class LogoutCommand implements Command {
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
-    private final RequestFactory requestFactory = RequestFactory.getInstance();
+    private final RequestFactory requestFactory;
 
-    private LogoutCommand() {
+    public LogoutCommand(RequestFactory requestFactory) {
+        this.requestFactory =requestFactory;
     }
 
     @Override
@@ -24,13 +26,5 @@ public class LogoutCommand implements Command {
                         && !request.retrieveFromSession(USER_SESSION_ATTRIBUTE_NAME)
                         .isPresent()
         );
-    }
-
-    public static LogoutCommand getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    private static class Holder {
-        private static final LogoutCommand INSTANCE = new LogoutCommand();
     }
 }

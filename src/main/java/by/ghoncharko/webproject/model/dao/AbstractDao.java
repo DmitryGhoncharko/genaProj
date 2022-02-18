@@ -2,7 +2,7 @@ package by.ghoncharko.webproject.model.dao;
 
 import by.ghoncharko.webproject.entity.Entity;
 
-import javax.transaction.Transactional;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

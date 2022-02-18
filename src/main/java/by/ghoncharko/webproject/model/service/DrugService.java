@@ -13,7 +13,11 @@ public interface DrugService extends Service<Drug> {
 
     boolean createDrug(String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) throws ServiceException;
 
+    DrugsPaginationDto findAllDrugsWhereCountMoreThanZeroAndCalculateDrugCountWithCountInOrderAndDrugNotDeletedLimitOffsetPagination(User user, Integer pageNumber) throws ServiceException;
+
     DrugsPaginationDto findAllDrugsWhereCountMoreThanZeroAndDrugNotDeletedLimitOffsetPagination(Integer pageNumber) throws ServiceException;
 
     DrugsPaginationDto findAllDrugsLimitOffsetPagination(Integer pageNumber) throws ServiceException;
+
+    boolean updateDrug(Integer drugId, String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName, Boolean drugIsDeleted);
 }

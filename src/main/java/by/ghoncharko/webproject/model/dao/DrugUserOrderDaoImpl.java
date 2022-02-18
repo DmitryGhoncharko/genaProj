@@ -42,7 +42,7 @@ public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements 
             " INNER JOIN user u on uo.user_id = u.id" +
             " INNER JOIN role r on u.role_id = r.id" +
             " WHERE drug_user_order.id = ?";
-    private static final String SQL_FIND_DRUG_USER_ORDER_BY_USER_ORDER_ID = "SELECT" +
+    private static final String SQL_FIND_DRUG_USER_ORDER_BY_USER_ORDER_ID_AND_DRUG_ID = "SELECT" +
             " drug_user_order.id, uo.id, u.id, u.login, u.password, r.role_name , u.first_name, u.last_name, u.is_banned, d.id, d.name," +
             " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_recipe, d.is_deleted,  drug_user_order.drug_count, drug_user_order.final_price FROM drug_user_order" +
             " INNER JOIN drug d on drug_user_order.drug_id = d.id" +
@@ -51,6 +51,15 @@ public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements 
             " INNER JOIN user u on uo.user_id = u.id" +
             " INNER JOIN role r on u.role_id = r.id" +
             " WHERE drug_user_order.user_order_id = ? AND drug_user_order.drug_id = ?";
+    private static final String SQL_FIND_DRUG_USER_ORDER_BY_USER_ORDER_ID = "SELECT" +
+            " drug_user_order.id, uo.id, u.id, u.login, u.password, r.role_name , u.first_name, u.last_name, u.is_banned, d.id, d.name," +
+            " d.price, d.drug_count, d.description, p.id, p.producer_name, d.need_recipe, d.is_deleted,  drug_user_order.drug_count, drug_user_order.final_price FROM drug_user_order" +
+            " INNER JOIN drug d on drug_user_order.drug_id = d.id" +
+            " INNER JOIN producer p on d.producer_id = p.id" +
+            " INNER JOIN user_order uo on drug_user_order.user_order_id = uo.id" +
+            " INNER JOIN user u on uo.user_id = u.id" +
+            " INNER JOIN role r on u.role_id = r.id" +
+            " WHERE drug_user_order.user_order_id = ?";
     private static final String SQL_UPDATE_DRUG_USER_ORDER_BY_ID = "UPDATE drug_user_order" +
             " SET user_order_id = ?, drug_id = ?, drug_count = ?" +
             " WHERE id = ?";
@@ -90,6 +99,39 @@ public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements 
         }
         LOG.error("Cannot create DrugUserOrder");
         throw new DaoException("Cannot create DrugUserOrder");
+    }
+
+    @Override
+    public List<DrugUserOrder> findDrugUserOrdersByUserOrderId(Integer userOrderId) throws DaoException {
+        final List<DrugUserOrder> drugUserOrderList = new ArrayList<>();
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_USER_ORDER_BY_USER_ORDER_ID)){
+           preparedStatement.setInt(1,userOrderId);
+           final ResultSet resultSet = preparedStatement.executeQuery();
+           while (resultSet.next()){
+               final DrugUserOrder drugUserOrder = extractEntity(resultSet);
+               drugUserOrderList.add(drugUserOrder);
+           }
+       }catch (SQLException e){
+           LOG.error("Cannot find drugUserOrders buy user order id ",e);
+           throw new DaoException("Cannot find drugUserOrders buy user order id ",e);
+       }
+        return drugUserOrderList;
+    }
+    @Override
+    public Optional<DrugUserOrder> findDrugUserOrderByUserOrderIdAndDrugId(Integer userOrderId, Integer drugId) throws DaoException {
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_USER_ORDER_BY_USER_ORDER_ID_AND_DRUG_ID)){
+            preparedStatement.setInt(1,userOrderId);
+            preparedStatement.setInt(2,drugId);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                return Optional.of(extractEntity(resultSet));
+            }
+        }catch (SQLException e){
+            LOG.error("Cannot find drug user order by user order id",e);
+            throw new DaoException("Cannot find drug user order by user order id",e);
+        }
+        LOG.info("Cannot find drug user order by user order id");
+        return Optional.empty();
     }
 
     @Override
@@ -175,23 +217,6 @@ public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements 
             LOG.error("Cannot delete drugUserOrder by id", e);
             throw new DaoException("Cannot delete drugUserOrder by id", e);
         }
-    }
-
-    @Override
-    public Optional<DrugUserOrder> findDrugUserOrderByUserOrderIdAndDrugId(Integer userOrderId, Integer drugId) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_USER_ORDER_BY_USER_ORDER_ID)){
-            preparedStatement.setInt(1,userOrderId);
-            preparedStatement.setInt(2,drugId);
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                return Optional.of(extractEntity(resultSet));
-            }
-        }catch (SQLException e){
-            LOG.error("Cannot find drug user order by user order id",e);
-            throw new DaoException("Cannot find drug user order by user order id",e);
-        }
-        LOG.info("Cannot find drug user order by user order id");
-        return Optional.empty();
     }
 
     @Override

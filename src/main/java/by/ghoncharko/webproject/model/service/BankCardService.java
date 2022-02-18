@@ -7,7 +7,7 @@ import by.ghoncharko.webproject.exception.ServiceException;
 import java.util.List;
 
 public interface BankCardService extends Service<BankCard> {
-    //mb big dec
+
     boolean addBankCard(Double balance, User user) throws ServiceException;
 
     void deleteBankCard(User user, Integer cardId) throws ServiceException;

@@ -188,28 +188,28 @@
                 <span class="heading">Регистрация</span>
                 <div class="form-group">
                     <label>First name</label>
-                    <input  type="text" name="Fname"  pattern="[a-zA-Z0-9]{1,45}" class="form-control needs-validation"  placeholder="First Name" required>
+                    <input  type="text" name="Fname"  pattern="^[a-zA-Z0-9]{1,45}$" class="form-control needs-validation"  placeholder="First Name" required>
                     <div class="invalid-feedback">
-                        Invalid First Name
+                        First name must be latin letters with numbers, length at least 1 to 45
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Last name</label>
-                    <input  type="text" name="Lname"  pattern="[a-zA-Z0-9]{1,45}" class="form-control needs-validation"  placeholder="Last Name" required>
+                    <input  type="text" name="Lname"  pattern="^[a-zA-Z0-9]{1,45}$" class="form-control needs-validation"  placeholder="Last Name" required>
                     <div class="invalid-feedback">
-                        Invalid last name
+                        Last name must be latin letters with numbers, length at least 1 to 45
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Login</label>
-                    <input type="text" pattern="[a-zA-Z0-9]{6,45}" class="form-control needs-validation" id="inputText" name="login" placeholder="Login" required>
+                    <input type="text" pattern="^[a-zA-Z0-9]{6,45}$" class="form-control needs-validation" id="inputText" name="login" placeholder="Login" required>
                     <div class="invalid-feedback">
-                        invalid login
+                        Login must be latin letters with numbers, lengh at least 1 to 45
                     </div>
                 </div>
                 <div class="form-group ">
                     <label>Password</label>
-                    <input type="password" name="password"  pattern="(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}" class="form-control needs-validation" id="inputPassword" placeholder="Password" required>
+                    <input type="password" name="password"  pattern="^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,35}$" class="form-control needs-validation" id="inputPassword" placeholder="Password" required>
                     <div class="invalid-feedback">
                         Invalid password
                     </div>
@@ -219,9 +219,10 @@
                         <b>${requestScope.registrationError}</b>
                     </c:if>
                     <button type="submit" class="btn btn-default">Зарегистрироваться</button>
+
+                    <a class="btn btn-default" style="margin-right: 50%" href="/controller?command=main_page">Отмена</a>
                 </div>
             </form>
-            <a class="btn btn-default" href="/controller?command=main_page">Отмена</a>
         </div>
     </div>
 </div>

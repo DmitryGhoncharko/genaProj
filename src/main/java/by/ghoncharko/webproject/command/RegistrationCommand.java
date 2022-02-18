@@ -18,9 +18,12 @@ public class RegistrationCommand implements Command {
     private static final String LAST_NAME_REQUEST_PARAM = "Fname";
     private static final String ERROR_REGISTRATION_ATTRIBUTE_NAME = "registrationError";
     private static final String ERROR_REGISTRATION_MESSAGE = "Invalid data for registration";
-    private final RequestFactory requestFactory = RequestFactory.getInstance();
+    private final RequestFactory requestFactory;
+    private final UserService userService;
 
-    private RegistrationCommand() {
+    public RegistrationCommand(RequestFactory requestFactory, UserService userService) {
+        this.requestFactory = requestFactory;
+        this.userService = userService;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class RegistrationCommand implements Command {
         final String userName = request.getParameter(FIRST_NAME_REQUEST_PARAM);
         final String userSurName = request.getParameter(LAST_NAME_REQUEST_PARAM);
         try{
-            final Optional<User> user = UserService.getInstance().createClientWithBannedStatusFalse(userLogin, userPassword,
+            final Optional<User> user = userService.createClientWithBannedStatusFalse(userLogin, userPassword,
                     userName, userSurName);
             if (user.isPresent()) {
                 return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
@@ -42,13 +45,5 @@ public class RegistrationCommand implements Command {
             LOG.error("Cannot registration user as client",e);
             return requestFactory.createRedirectResponse(PagePath.ERROR_PAGE_PATH);
         }
-    }
-
-    public static RegistrationCommand getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    private static class Holder {
-        private static final RegistrationCommand INSTANCE = new RegistrationCommand();
     }
 }

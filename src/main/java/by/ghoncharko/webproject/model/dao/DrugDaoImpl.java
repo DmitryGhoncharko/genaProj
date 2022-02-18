@@ -30,7 +30,16 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
             " FROM drug" +
             " INNER JOIN producer p ON drug.producer_id = p.id" +
             " WHERE drug.id = ?";
-    private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED_LIMIT_OFFSET_PAGINATION = "SELECT drug.id, name,price,drug_count,description,need_recipe,is_deleted, p.id, p.producer_name" +
+    private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_CALCULATE_COUNT_WITH_COUNT_IN_ORDER_AND_DRUG_IS_NOT_DELETED_LIMIT_OFFSET_PAGINATION = "SELECT drug.id as dr, name,price,drug_count-ifnull((SELECT drug_count from drug_user_order" +
+            "    inner join user_order uo on drug_user_order.user_order_id = uo.id" +
+            "    left join paid_user_order puo on uo.id = puo.user_order_id" +
+            "    where dr = drug_user_order.drug_id and user_id = ? and puo.id is null" +
+            "    ),0),description,need_recipe,is_deleted, p.id, p.producer_name" +
+            " FROM drug" +
+            " INNER JOIN producer p ON drug.producer_id = p.id" +
+            " WHERE drug.drug_count > 0 AND drug.is_deleted = false" +
+            " LIMIT ? OFFSET ?";
+    private static final String SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED = "SELECT drug.id as dr, name,price,drug_count,description,need_recipe,is_deleted, p.id, p.producer_name" +
             " FROM drug" +
             " INNER JOIN producer p ON drug.producer_id = p.id" +
             " WHERE drug.drug_count > 0 AND drug.is_deleted = false" +
@@ -38,7 +47,11 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     private static final String SQL_FIND_ALL_DRUGS_COUNT_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED = "SELECT COUNT(drug.id)" +
             " FROM drug" +
             " WHERE drug.drug_count > 0 AND drug.is_deleted = false";
-    private static final String SQL_FIND_DRUG_BY_DRUG_ID_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_DONT_DELETED = "SELECT drug.id, name,price,drug_count,description,need_recipe,is_deleted, p.id, p.producer_name" +
+    private static final String SQL_FIND_DRUG_BY_DRUG_ID_WHERE_COUNT_MORE_THAN_ZERO_WITH_CALCULATE_COUNT_FROM_USER_ORDER_AND_DRUG_DONT_DELETED = "SELECT drug.id as dr, name,price,drug_count-ifnull((SELECT drug_count from drug_user_order" +
+            " inner join user_order uo on drug_user_order.user_order_id = uo.id" +
+            " left join paid_user_order puo on uo.id = puo.user_order_id" +
+            " where dr = drug_user_order.drug_id and user_id = ? and puo.id is null" +
+            " ),0),description,need_recipe,is_deleted, p.id, p.producer_name" +
             " FROM drug" +
             " INNER JOIN producer p ON drug.producer_id = p.id" +
             " WHERE drug.id = ? AND drug_count>0 AND is_deleted=false";
@@ -145,11 +158,12 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     }
 
     @Override
-    public List<Drug> findAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeletedWithLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
+    public List<Drug> findAllDrugsWhereCountMoreThanZeroAndCalculateCountWithCountInOrderAndDrugIsNotDeletedWithLimitOffsetPagination(Integer userId, Integer limit, Integer offset) throws DaoException {
         final List<Drug> drugList = new ArrayList<>();
-        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED_LIMIT_OFFSET_PAGINATION)) {
-            preparedStatement.setInt(1,limit);
-            preparedStatement.setInt(2,offset);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_CALCULATE_COUNT_WITH_COUNT_IN_ORDER_AND_DRUG_IS_NOT_DELETED_LIMIT_OFFSET_PAGINATION)) {
+            preparedStatement.setInt(1,userId);
+            preparedStatement.setInt(2,limit);
+            preparedStatement.setInt(3,offset);
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 final Drug drug = extractEntity(resultSet);
@@ -158,6 +172,23 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
         } catch (SQLException e) {
             LOG.error("Cannot find all drugs where count drug more than zero and drug is not deleted", e);
             throw new DaoException("Cannot find all drugs where count drug more than zero and drug is not deleted", e);
+        }
+        return drugList;
+    }
+
+    @Override
+    public List<Drug> findAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeletedLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
+        final List<Drug> drugList = new ArrayList<>();
+        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED)){
+            preparedStatement.setInt(1,limit);
+            preparedStatement.setInt(2,offset);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                final Drug drug = extractEntity(resultSet);
+                drugList.add(drug);
+            }
+        }catch (SQLException e){
+
         }
         return drugList;
     }
@@ -196,9 +227,10 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     }
 
     @Override
-    public Optional<Drug> findDrugByDrugIdWhereCountMoreThanZeroAndDrugDontDeleted(Integer drugId) throws DaoException {
-        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_BY_DRUG_ID_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_DONT_DELETED)) {
-            preparedStatement.setInt(1, drugId);
+    public Optional<Drug> findDrugByDrugIdWhereCountMoreThanZeroAndCalculateCountFromUserOrderAndDrugDontDeleted(Integer userId, Integer drugId) throws DaoException {
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_BY_DRUG_ID_WHERE_COUNT_MORE_THAN_ZERO_WITH_CALCULATE_COUNT_FROM_USER_ORDER_AND_DRUG_DONT_DELETED)) {
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, drugId);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(extractEntity(resultSet));

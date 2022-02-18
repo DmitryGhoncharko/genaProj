@@ -39,7 +39,7 @@
                 </c:if>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                     <li class="nav-item">
-                        <a class="nav-link" href="/controller?command=order">Order</a>
+                        <a class="nav-link" href="/controller?command=orderPage">Order</a>
                     </li>
                 </c:if>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">

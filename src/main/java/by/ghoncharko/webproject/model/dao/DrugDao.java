@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface DrugDao extends Dao<Drug>{
 
-    Optional<Drug> findDrugByDrugIdWhereCountMoreThanZeroAndDrugDontDeleted(Integer drugId) throws DaoException;
+    Optional<Drug> findDrugByDrugIdWhereCountMoreThanZeroAndCalculateCountFromUserOrderAndDrugDontDeleted(Integer userId, Integer drugId) throws DaoException;
 
-    List<Drug> findAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeletedWithLimitOffsetPagination(Integer limit, Integer offset) throws DaoException;
+    List<Drug> findAllDrugsWhereCountMoreThanZeroAndCalculateCountWithCountInOrderAndDrugIsNotDeletedWithLimitOffsetPagination(Integer userId, Integer limit, Integer offset) throws DaoException;
 
     int findCountAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeleted() throws DaoException;
 
@@ -18,4 +18,5 @@ public interface DrugDao extends Dao<Drug>{
 
     int findCountAllDrugCount() throws DaoException;
 
+    List<Drug> findAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeletedLimitOffsetPagination(Integer limit, Integer offset) throws DaoException;
 }

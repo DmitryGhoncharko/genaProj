@@ -4,7 +4,6 @@ import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
 import by.ghoncharko.webproject.model.service.OrderService;
-import by.ghoncharko.webproject.model.service.OrderServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,18 +11,19 @@ import java.util.Optional;
 
 public class AddDrugToOrderCommand implements Command{
     private static final Logger LOG = LogManager.getLogger(AddDrugToOrderCommand.class);
-    private final RequestFactory requestFactory = RequestFactory.getInstance();
-    private AddDrugToOrderCommand(){
-
+    private final RequestFactory requestFactory;
+    private final OrderService orderService;
+    public AddDrugToOrderCommand(RequestFactory requestFactory, OrderService orderService){
+        this.requestFactory = requestFactory;
+        this.orderService = orderService;
     }
     @Override
-    public CommandResponse execute(CommandRequest request) {
+    public CommandResponse execute(CommandRequest request) throws ServiceException {
         final Optional<Object> userFromSession = request.retrieveFromSession("user");
         if(userFromSession.isPresent()){
             final User user =(User)userFromSession.get();
             final Integer drugId = Integer.valueOf(request.getParameter("drugId"));
-            final Integer drugCount = Integer.valueOf(request.getParameter("drugCount"));
-            final OrderService orderService = OrderServiceImpl.getInstance();
+            final Integer drugCount = Integer.valueOf(request.getParameter("countUserAddDrugsToOrder"));
             try{
                 //todo Сделать перенаправление на страницу заказа
                 final boolean wasAddedToOrder = orderService.addDrugToOrder(user,drugId,drugCount);
@@ -34,17 +34,10 @@ public class AddDrugToOrderCommand implements Command{
 
             }catch (ServiceException e){
                 LOG.error("Cannot add drug to order");
-                return requestFactory.createForwardResponse(PagePath.ERROR_PAGE_PATH);
+                throw e;
             }
         }
         //todo сообщение о неудаче
         return requestFactory.createForwardResponse(PagePath.PREPARATES_PAGE_PATH);
-    }
-
-    public static AddDrugToOrderCommand getInstance() {
-        return Holder.INSTANCE;
-    }
-    private static class Holder{
-        private static final AddDrugToOrderCommand INSTANCE = new AddDrugToOrderCommand();
     }
 }
