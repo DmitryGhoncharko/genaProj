@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
 /**
  * Controller for request from client
  *
@@ -34,7 +35,7 @@ public class Controller extends HttpServlet {
         try {
             processRequest(req, resp);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            LOG.error("Service exception in do get method", e);
         }
     }
 
@@ -44,7 +45,7 @@ public class Controller extends HttpServlet {
         try {
             processRequest(req, resp);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            LOG.error("Service exception in do post method", e);
         }
     }
 

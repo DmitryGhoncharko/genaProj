@@ -105,34 +105,34 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     @Override
     public List<Drug> findAllDrugsLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
         final List<Drug> drugList = new ArrayList<>();
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_LIMIT_OFFSET_PAGINATION)){
-            preparedStatement.setInt(1,limit);
-            preparedStatement.setInt(2,offset);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_LIMIT_OFFSET_PAGINATION)) {
+            preparedStatement.setInt(1, limit);
+            preparedStatement.setInt(2, offset);
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 final Drug drug = extractEntity(resultSet);
                 drugList.add(drug);
             }
-        }catch (SQLException e){
-            LOG.error("Cannot find all drugs",e);
-            throw new DaoException("Cannot find all drugs",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot find all drugs", e);
+            throw new DaoException("Cannot find all drugs", e);
         }
         return drugList;
     }
 
     @Override
     public int findCountAllDrugCount() throws DaoException {
-        try(final Statement statement = connection.createStatement()){
+        try (final Statement statement = connection.createStatement()) {
             final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_DRUGS_COUNT);
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 final int countRows = resultSet.getInt(1);
-                if(countRows>0){
+                if (countRows > 0) {
                     return countRows;
                 }
             }
-        }catch (SQLException e){
-            LOG.error("Cannot find all drugs count",e);
-            throw new DaoException("Cannot find all drugs count",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot find all drugs count", e);
+            throw new DaoException("Cannot find all drugs count", e);
         }
         LOG.info("Zero drugs was found");
         throw new DaoException("Zero drugs was found");
@@ -141,11 +141,11 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     @Override
     public int findCountAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeleted() throws DaoException {
         try (final Statement statement = connection.createStatement()) {
-           final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_DRUGS_COUNT_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED);
-            if(resultSet.next()){
+            final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_DRUGS_COUNT_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED);
+            if (resultSet.next()) {
                 final int countRows = resultSet.getInt(1);
                 LOG.debug("countRows ", countRows);
-                if(countRows>0){
+                if (countRows > 0) {
                     return countRows;
                 }
             }
@@ -161,9 +161,9 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     public List<Drug> findAllDrugsWhereCountMoreThanZeroAndCalculateCountWithCountInOrderAndDrugIsNotDeletedWithLimitOffsetPagination(Integer userId, Integer limit, Integer offset) throws DaoException {
         final List<Drug> drugList = new ArrayList<>();
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_CALCULATE_COUNT_WITH_COUNT_IN_ORDER_AND_DRUG_IS_NOT_DELETED_LIMIT_OFFSET_PAGINATION)) {
-            preparedStatement.setInt(1,userId);
-            preparedStatement.setInt(2,limit);
-            preparedStatement.setInt(3,offset);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, limit);
+            preparedStatement.setInt(3, offset);
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 final Drug drug = extractEntity(resultSet);
@@ -179,15 +179,15 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     @Override
     public List<Drug> findAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeletedLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
         final List<Drug> drugList = new ArrayList<>();
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED)){
-            preparedStatement.setInt(1,limit);
-            preparedStatement.setInt(2,offset);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED)) {
+            preparedStatement.setInt(1, limit);
+            preparedStatement.setInt(2, offset);
             final ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 final Drug drug = extractEntity(resultSet);
                 drugList.add(drug);
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
 
         }
         return drugList;
@@ -270,7 +270,7 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     @Override
     public boolean delete(Integer id) throws DaoException {
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_DRUG_BY_DRUG_ID)) {
-          return   deleteBillet(preparedStatement,id);
+            return deleteBillet(preparedStatement, id);
         } catch (SQLException e) {
             LOG.error("Cannot delete drug by drug id", e);
             throw new DaoException("Cannot delete drug by drug id", e);

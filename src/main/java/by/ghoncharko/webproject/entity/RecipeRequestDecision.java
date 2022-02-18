@@ -3,13 +3,13 @@ package by.ghoncharko.webproject.entity;
 import java.sql.Date;
 import java.util.Objects;
 
-public class RecipeRequestDecision implements Entity{
+public class RecipeRequestDecision implements Entity {
     private final Integer id;
     private final RecipeRequest recipeRequest;
     private final Boolean isExtended;
     private final Date dateDecision;
 
-    private RecipeRequestDecision(Builder builder){
+    private RecipeRequestDecision(Builder builder) {
         id = builder.id;
         isExtended = builder.isExtended;
         dateDecision = builder.dateDecision;
@@ -65,28 +65,33 @@ public class RecipeRequestDecision implements Entity{
                 '}';
     }
 
-    public static class Builder{
+    public static class Builder {
         private Integer id;
         private Boolean isExtended;
         private Date dateDecision;
         private RecipeRequest recipeRequest;
-        public Builder withId(Integer id){
+
+        public Builder withId(Integer id) {
             this.id = id;
             return this;
         }
-        public Builder withIsExtended(Boolean isExtended){
+
+        public Builder withIsExtended(Boolean isExtended) {
             this.isExtended = isExtended;
             return this;
         }
-        public Builder withDateDecision(Date dateDecision){
+
+        public Builder withDateDecision(Date dateDecision) {
             this.dateDecision = dateDecision;
             return this;
         }
-        public Builder withRecipeRequest(RecipeRequest recipeRequest){
+
+        public Builder withRecipeRequest(RecipeRequest recipeRequest) {
             this.recipeRequest = recipeRequest;
             return this;
         }
-        public RecipeRequestDecision build(){
+
+        public RecipeRequestDecision build() {
             return new RecipeRequestDecision(this);
         }
     }

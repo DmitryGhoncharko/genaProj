@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class RecipeRequestDecisionDaoImpl extends AbstractDao<RecipeRequestDecision> implements RecipeRequestDecisionDao{
+public class RecipeRequestDecisionDaoImpl extends AbstractDao<RecipeRequestDecision> implements RecipeRequestDecisionDao {
     private static final Logger LOG = LogManager.getLogger(RecipeRequestDecisionDaoImpl.class);
     private static final String SQL_CREATE_RECIPE_REQUEST_DECISION = "INSERT INTO recipe_request_decision(recipe_request_id, is_extended, date_decision) VALUES (?,?,?)";
     private static final String SQL_FIND_ALL_RECIPE_REQUEST_DECISIONS = "SELECT" +
@@ -58,42 +58,42 @@ public class RecipeRequestDecisionDaoImpl extends AbstractDao<RecipeRequestDecis
 
     @Override
     public RecipeRequestDecision create(RecipeRequestDecision entity) throws DaoException {
-       try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE_REQUEST_DECISION, Statement.RETURN_GENERATED_KEYS)){
-           preparedStatement.setInt(1,entity.getRecipeRequest().getId());
-           preparedStatement.setBoolean(2,entity.getExtended());
-           preparedStatement.setDate(3,entity.getDateDecision());
-           final  int countCreatedRows = preparedStatement.executeUpdate();
-           if(countCreatedRows>0){
-               final ResultSet resultSet = preparedStatement.executeQuery();
-               if(resultSet.next()){
-                   return new RecipeRequestDecision.Builder().
-                           withId(resultSet.getInt(1)).
-                           withRecipeRequest(entity.getRecipeRequest()).
-                           withIsExtended(entity.getExtended()).
-                           withDateDecision(entity.getDateDecision()).
-                           build();
-               }
-           }
-       }catch (SQLException e){
-            LOG.error("Cannot create RecipeRequestDecision",e);
-            throw new DaoException("Cannot create RecipeRequestDecision",e);
-       }
-       LOG.error("Cannot create RecipeRequestDecision");
-       throw new DaoException("Cannot create RecipeRequestDecision");
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_RECIPE_REQUEST_DECISION, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setInt(1, entity.getRecipeRequest().getId());
+            preparedStatement.setBoolean(2, entity.getExtended());
+            preparedStatement.setDate(3, entity.getDateDecision());
+            final int countCreatedRows = preparedStatement.executeUpdate();
+            if (countCreatedRows > 0) {
+                final ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    return new RecipeRequestDecision.Builder().
+                            withId(resultSet.getInt(1)).
+                            withRecipeRequest(entity.getRecipeRequest()).
+                            withIsExtended(entity.getExtended()).
+                            withDateDecision(entity.getDateDecision()).
+                            build();
+                }
+            }
+        } catch (SQLException e) {
+            LOG.error("Cannot create RecipeRequestDecision", e);
+            throw new DaoException("Cannot create RecipeRequestDecision", e);
+        }
+        LOG.error("Cannot create RecipeRequestDecision");
+        throw new DaoException("Cannot create RecipeRequestDecision");
     }
 
     @Override
     public List<RecipeRequestDecision> findAll() throws DaoException {
         final List<RecipeRequestDecision> recipeRequestDecisionList = new ArrayList<>();
-        try(final Statement statement = connection.createStatement()){
+        try (final Statement statement = connection.createStatement()) {
             final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_RECIPE_REQUEST_DECISIONS);
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 final RecipeRequestDecision recipeRequestDecision = extractEntity(resultSet);
                 recipeRequestDecisionList.add(recipeRequestDecision);
             }
-        }catch (SQLException e){
-            LOG.error("Cannot find all RecipeRequestDecisions",e);
-            throw new DaoException("Cannot find all RecipeRequestDecisions",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot find all RecipeRequestDecisions", e);
+            throw new DaoException("Cannot find all RecipeRequestDecisions", e);
         }
         LOG.info("Cannot find all RecipeRequestDecisions");
         return Collections.emptyList();
@@ -101,15 +101,15 @@ public class RecipeRequestDecisionDaoImpl extends AbstractDao<RecipeRequestDecis
 
     @Override
     public Optional<RecipeRequestDecision> findEntityById(Integer id) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_RECIPE_REQUEST_DECISION_BY_ID)){
-            preparedStatement.setInt(1,id);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_RECIPE_REQUEST_DECISION_BY_ID)) {
+            preparedStatement.setInt(1, id);
             final ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 return Optional.of(extractEntity(resultSet));
             }
-        }catch (SQLException e){
-            LOG.error("Cannot find RecipeRequestDecision by id",e);
-            throw new DaoException("Cannot find RecipeRequestDecision by id",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot find RecipeRequestDecision by id", e);
+            throw new DaoException("Cannot find RecipeRequestDecision by id", e);
         }
         LOG.info("Cannot find RecipeRequestDecision by id");
         return Optional.empty();
@@ -117,18 +117,18 @@ public class RecipeRequestDecisionDaoImpl extends AbstractDao<RecipeRequestDecis
 
     @Override
     public RecipeRequestDecision update(RecipeRequestDecision entity) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_RECIPE_REQUEST_DECISION_BY_ID)){
-            preparedStatement.setInt(1,entity.getRecipeRequest().getId());
-            preparedStatement.setBoolean(2,entity.getExtended());
-            preparedStatement.setDate(3,entity.getDateDecision());
-            preparedStatement.setInt(4,entity.getId());
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_RECIPE_REQUEST_DECISION_BY_ID)) {
+            preparedStatement.setInt(1, entity.getRecipeRequest().getId());
+            preparedStatement.setBoolean(2, entity.getExtended());
+            preparedStatement.setDate(3, entity.getDateDecision());
+            preparedStatement.setInt(4, entity.getId());
             final int countUpdatedRows = preparedStatement.executeUpdate();
-            if(countUpdatedRows>0){
+            if (countUpdatedRows > 0) {
                 return entity;
             }
-        }catch (SQLException e){
-            LOG.error("Cannot updae RecipeRequestDecision",e);
-            throw new DaoException("Cannot updae RecipeRequestDecision",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot updae RecipeRequestDecision", e);
+            throw new DaoException("Cannot updae RecipeRequestDecision", e);
         }
         LOG.error("Cannot updae RecipeRequestDecision");
         throw new DaoException("Cannot updae RecipeRequestDecision");
@@ -136,11 +136,11 @@ public class RecipeRequestDecisionDaoImpl extends AbstractDao<RecipeRequestDecis
 
     @Override
     public boolean delete(Integer id) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE_REQUEST_DECISIOH_BY_ID)){
-           return deleteBillet(preparedStatement,id);
-        }catch (SQLException e){
-            LOG.error("Cannot delete RecipeRequestDecision by id",e);
-            throw new DaoException("Cannot delete RecipeRequestDecision by id",e);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_RECIPE_REQUEST_DECISIOH_BY_ID)) {
+            return deleteBillet(preparedStatement, id);
+        } catch (SQLException e) {
+            LOG.error("Cannot delete RecipeRequestDecision by id", e);
+            throw new DaoException("Cannot delete RecipeRequestDecision by id", e);
         }
     }
 

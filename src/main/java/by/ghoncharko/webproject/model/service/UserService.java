@@ -1,7 +1,6 @@
 package by.ghoncharko.webproject.model.service;
 
 
-
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
 
@@ -13,5 +12,5 @@ public interface UserService extends Service<User> {
 
     Optional<User> createClientWithBannedStatusFalse(String login, String password, String firstName, String lastName) throws ServiceException;
 
-
+    List<User> findAllNotBannedUsersAsClients();
 }

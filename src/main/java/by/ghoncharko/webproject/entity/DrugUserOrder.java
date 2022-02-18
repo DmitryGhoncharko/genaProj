@@ -3,12 +3,13 @@ package by.ghoncharko.webproject.entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public  class DrugUserOrder implements Entity {
+public class DrugUserOrder implements Entity {
     private final Integer id;
     private final UserOrder userOrder;
     private final Drug drug;
     private final Integer drugCount;
     private final BigDecimal finalPrice;
+
     private DrugUserOrder(Builder builder) {
         id = builder.id;
         userOrder = builder.userOrder;
@@ -35,39 +36,6 @@ public  class DrugUserOrder implements Entity {
 
     public BigDecimal getFinalPrice() {
         return finalPrice;
-    }
-
-    public static class Builder {
-        private Integer id;
-        private UserOrder userOrder;
-        private Drug drug;
-        private Integer drugCount;
-        private BigDecimal finalPrice;
-        public Builder withId(Integer id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder withUserOrder(UserOrder userOrder) {
-            this.userOrder = userOrder;
-            return this;
-        }
-
-        public Builder withDrug(Drug drug) {
-            this.drug = drug;
-            return this;
-        }
-        public Builder withDrugCount(Integer drugCount){
-            this.drugCount = drugCount;
-            return this;
-        }
-        public Builder withFinalPrice(BigDecimal finalPrice){
-            this.finalPrice = finalPrice;
-            return this;
-        }
-        public DrugUserOrder build() {
-            return new DrugUserOrder(this);
-        }
     }
 
     @Override
@@ -103,5 +71,42 @@ public  class DrugUserOrder implements Entity {
                 ", drugCount=" + drugCount +
                 ", drugFinalPrice=" + finalPrice +
                 '}';
+    }
+
+    public static class Builder {
+        private Integer id;
+        private UserOrder userOrder;
+        private Drug drug;
+        private Integer drugCount;
+        private BigDecimal finalPrice;
+
+        public Builder withId(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withUserOrder(UserOrder userOrder) {
+            this.userOrder = userOrder;
+            return this;
+        }
+
+        public Builder withDrug(Drug drug) {
+            this.drug = drug;
+            return this;
+        }
+
+        public Builder withDrugCount(Integer drugCount) {
+            this.drugCount = drugCount;
+            return this;
+        }
+
+        public Builder withFinalPrice(BigDecimal finalPrice) {
+            this.finalPrice = finalPrice;
+            return this;
+        }
+
+        public DrugUserOrder build() {
+            return new DrugUserOrder(this);
+        }
     }
 }

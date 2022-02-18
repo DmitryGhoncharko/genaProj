@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class DrugUserOrderDto {
-   private final List<DrugUserOrder> drugUserOrderList;
-   private final List<BankCard> bankCardList;
-   private final BigDecimal finalPrice;
+    private final List<DrugUserOrder> drugUserOrderList;
+    private final List<BankCard> bankCardList;
+    private final BigDecimal finalPrice;
 
     public DrugUserOrderDto(Builder builder) {
-        drugUserOrderList =builder.drugUserOrderList;
+        drugUserOrderList = builder.drugUserOrderList;
         bankCardList = builder.bankCardList;
         finalPrice = builder.finalPrice;
     }
@@ -60,24 +60,27 @@ public class DrugUserOrderDto {
                 '}';
     }
 
-    public static class Builder{
+    public static class Builder {
         private List<DrugUserOrder> drugUserOrderList;
         private List<BankCard> bankCardList;
         private BigDecimal finalPrice;
 
-        public Builder withDrugUserOrderList(List<DrugUserOrder> drugUserOrderList){
+        public Builder withDrugUserOrderList(List<DrugUserOrder> drugUserOrderList) {
             this.drugUserOrderList = drugUserOrderList;
             return this;
         }
-        public Builder withBankCardList(List<BankCard> bankCardList){
+
+        public Builder withBankCardList(List<BankCard> bankCardList) {
             this.bankCardList = bankCardList;
             return this;
         }
-        public Builder withFinalPrice(BigDecimal finalPrice){
+
+        public Builder withFinalPrice(BigDecimal finalPrice) {
             this.finalPrice = finalPrice;
             return this;
         }
-        public DrugUserOrderDto build(){
+
+        public DrugUserOrderDto build() {
             return new DrugUserOrderDto(this);
         }
     }

@@ -11,6 +11,7 @@ import java.util.Objects;
 public class UserOrder implements Entity {
     private final Integer id;
     private final User user;
+
     private UserOrder(Builder builder) {
         id = builder.id;
         user = builder.user;
@@ -54,6 +55,7 @@ public class UserOrder implements Entity {
     public static class Builder {
         private Integer id;
         private User user;
+
         public Builder withId(Integer id) {
             this.id = id;
             return this;

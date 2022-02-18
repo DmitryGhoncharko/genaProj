@@ -6,7 +6,7 @@ import by.ghoncharko.webproject.exception.DaoException;
 import java.util.List;
 import java.util.Optional;
 
-public interface DrugDao extends Dao<Drug>{
+public interface DrugDao extends Dao<Drug> {
 
     Optional<Drug> findDrugByDrugIdWhereCountMoreThanZeroAndCalculateCountFromUserOrderAndDrugDontDeleted(Integer userId, Integer drugId) throws DaoException;
 

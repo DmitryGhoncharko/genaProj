@@ -34,11 +34,6 @@
                 </li>
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                     <li class="nav-item">
-                        <a class="nav-link" href="/controller?command=recipes">Recipes</a>
-                    </li>
-                </c:if>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
-                    <li class="nav-item">
                         <a class="nav-link" href="/controller?command=orderPage">Order</a>
                     </li>
                 </c:if>
@@ -50,16 +45,6 @@
                 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.PHARMACY}">
                     <li class="nav-item">
                         <a class="nav-link" href="/controller?command=createDrug">Create new drug</a>
-                    </li>
-                </c:if>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.DOCTOR}">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/controller?command=recipeRequest">Show recipe requests</a>
-                    </li>
-                </c:if>
-                <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.DOCTOR}">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/controller?command=usersAsClients">Create recipe for clent</a>
                     </li>
                 </c:if>
                 <c:if test="${not empty sessionScope.user}">

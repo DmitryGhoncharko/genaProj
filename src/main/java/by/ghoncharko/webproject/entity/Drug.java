@@ -8,7 +8,7 @@ import java.util.Objects;
  *
  * @author Dmitry Ghoncharko
  */
-public  class Drug implements Entity {
+public class Drug implements Entity {
     private final Integer id;
     private final String name;
     private final BigDecimal price;
@@ -59,6 +59,50 @@ public  class Drug implements Entity {
 
     public Boolean getDeleted() {
         return isDeleted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Drug drug = (Drug) o;
+
+        if (!Objects.equals(id, drug.id)) return false;
+        if (!Objects.equals(name, drug.name)) return false;
+        if (!Objects.equals(price, drug.price)) return false;
+        if (!Objects.equals(count, drug.count)) return false;
+        if (!Objects.equals(description, drug.description)) return false;
+        if (!Objects.equals(producer, drug.producer)) return false;
+        if (!Objects.equals(needRecipe, drug.needRecipe)) return false;
+        return Objects.equals(isDeleted, drug.isDeleted);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (count != null ? count.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (producer != null ? producer.hashCode() : 0);
+        result = 31 * result + (needRecipe != null ? needRecipe.hashCode() : 0);
+        result = 31 * result + (isDeleted != null ? isDeleted.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Drug{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", count=" + count +
+                ", description='" + description + '\'' +
+                ", producer=" + producer +
+                ", needRecipe=" + needRecipe +
+                ", isDeleted=" + isDeleted +
+                '}';
     }
 
     public static class Builder {
@@ -114,49 +158,5 @@ public  class Drug implements Entity {
         public Drug build() {
             return new Drug(this);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Drug drug = (Drug) o;
-
-        if (!Objects.equals(id, drug.id)) return false;
-        if (!Objects.equals(name, drug.name)) return false;
-        if (!Objects.equals(price, drug.price)) return false;
-        if (!Objects.equals(count, drug.count)) return false;
-        if (!Objects.equals(description, drug.description)) return false;
-        if (!Objects.equals(producer, drug.producer)) return false;
-        if (!Objects.equals(needRecipe, drug.needRecipe)) return false;
-        return Objects.equals(isDeleted, drug.isDeleted);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (price != null ? price.hashCode() : 0);
-        result = 31 * result + (count != null ? count.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (producer != null ? producer.hashCode() : 0);
-        result = 31 * result + (needRecipe != null ? needRecipe.hashCode() : 0);
-        result = 31 * result + (isDeleted != null ? isDeleted.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Drug{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", count=" + count +
-                ", description='" + description + '\'' +
-                ", producer=" + producer +
-                ", needRecipe=" + needRecipe +
-                ", isDeleted=" + isDeleted +
-                '}';
     }
 }

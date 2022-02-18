@@ -26,7 +26,7 @@ public class DrugServiceImpl implements DrugService {
     public DrugServiceImpl(DaoHelperFactory daoHelperFactory) {
         this.daoHelperFactory = daoHelperFactory;
     }
-    
+
     @Override
     public boolean createDrug(String drugName, Boolean drugNeedRecipe, Integer drugCount, Double drugPrice, String drugDescription, String drugProducerName) throws ServiceException {
         final boolean isValidData = ValidateCreateOrUpdatePreparate.getInstance().validate(drugName, drugPrice, drugCount, drugDescription, drugProducerName, drugNeedRecipe);
@@ -37,7 +37,7 @@ public class DrugServiceImpl implements DrugService {
         daoHelper.startTransaction();
         final ProducerDao producerDao = daoHelper.createProducerDao();
         final DrugDao drugDao = daoHelper.createDrugDao();
-        try{
+        try {
             final Optional<Producer> producerFromDB = producerDao.findProducerByProducerName(drugProducerName);
             if (producerFromDB.isPresent()) {
                 final Producer producer = producerFromDB.get();
@@ -51,7 +51,7 @@ public class DrugServiceImpl implements DrugService {
             daoHelper.rollbackTransactionAndCloseConnection();
             LOG.error("Cannot create new drug", e);
             throw new ServiceException("Cannot create new drug", e);
-        }finally {
+        } finally {
             daoHelper.commitTransactionAndCloseConnection();
         }
 
@@ -63,9 +63,9 @@ public class DrugServiceImpl implements DrugService {
         daoHelper.startTransaction();
         final ProducerDao producerDao = daoHelper.createProducerDao();
         final DrugDao drugDao = daoHelper.createDrugDao();
-        try{
+        try {
             final Optional<Producer> producerFromDB = producerDao.findProducerByProducerName(drugProducerName);
-            if(producerFromDB.isPresent()){
+            if (producerFromDB.isPresent()) {
                 final Producer producer = producerFromDB.get();
                 drugDao.update(new Drug.Builder().
                         withId(drugId).
@@ -77,7 +77,7 @@ public class DrugServiceImpl implements DrugService {
                         withNeedReceip(drugNeedRecipe).
                         withIsDeleted(drugIsDeleted).
                         build());
-            }else {
+            } else {
                 final Producer createdProducer = producerDao.create(new Producer.Builder().
                         withName(drugProducerName).
                         build());
@@ -92,7 +92,7 @@ public class DrugServiceImpl implements DrugService {
                         withIsDeleted(drugIsDeleted).
                         build());
             }
-        }catch (DaoException e){
+        } catch (DaoException e) {
 
 
         }
@@ -120,7 +120,7 @@ public class DrugServiceImpl implements DrugService {
 
     @Override
     public List<Drug> findAll() throws ServiceException {
-        try(final DaoHelper daoHelper = daoHelperFactory.create()) {
+        try (final DaoHelper daoHelper = daoHelperFactory.create()) {
             final DrugDao drugDao = daoHelper.createDrugDao();
             return drugDao.findAll();
         } catch (Exception e) {
@@ -145,7 +145,7 @@ public class DrugServiceImpl implements DrugService {
             daoHelper.rollbackTransactionAndCloseConnection();
             LOG.error("Cannot find all drugs", e);
             throw new ServiceException("Cannot find all drugs", e);
-        }finally {
+        } finally {
             daoHelper.commitTransactionAndCloseConnection();
         }
     }
@@ -187,7 +187,7 @@ public class DrugServiceImpl implements DrugService {
             final int countDrugs = drugDao.findCountAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeleted();
             final int countPages = (int) Math.ceil((double) countDrugs / LIMIT_DRUGS_ON_ONE_PAGE);
             final int offset = pageNumber * LIMIT_DRUGS_ON_ONE_PAGE - LIMIT_DRUGS_ON_ONE_PAGE;
-            final List<Drug> drugList = drugDao.findAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeletedLimitOffsetPagination(LIMIT_DRUGS_ON_ONE_PAGE,offset);
+            final List<Drug> drugList = drugDao.findAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeletedLimitOffsetPagination(LIMIT_DRUGS_ON_ONE_PAGE, offset);
             return createDrugsPaginationDto(countPages, drugList);
         } catch (Exception e) {
             daoHelper.rollbackTransactionAndCloseConnection();

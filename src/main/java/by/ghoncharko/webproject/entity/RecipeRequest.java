@@ -49,6 +49,7 @@ public class RecipeRequest implements Entity {
     public static class Builder {
         private Integer id;
         private Recipe recipe;
+
         public Builder withId(Integer id) {
             this.id = id;
             return this;

@@ -7,11 +7,11 @@ public class DaoHelperFactory {
 
     private final ConnectionPool connectionPool;
 
-    public DaoHelperFactory(ConnectionPool connectionPool){
+    public DaoHelperFactory(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
-    public DaoHelper create(){
+    public DaoHelper create() {
         return new DaoHelper(connectionPool);
     }
 }

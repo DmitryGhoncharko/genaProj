@@ -1,12 +1,10 @@
 package by.ghoncharko.webproject.model.service;
 
 import by.ghoncharko.webproject.dto.DrugUserOrderDto;
-import by.ghoncharko.webproject.entity.Drug;
 import by.ghoncharko.webproject.entity.DrugUserOrder;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface OrderService extends Service<DrugUserOrder> {
@@ -21,3 +19,4 @@ public interface OrderService extends Service<DrugUserOrder> {
 
     boolean payOrder(User user, Integer cardId);
 }
+

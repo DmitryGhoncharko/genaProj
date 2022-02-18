@@ -10,6 +10,13 @@ import java.sql.Connection;
  */
 public interface ConnectionPool {
     /**
+     * @return Instance of connection pool
+     */
+    static ConnectionPool getInstance() {
+        return BlockingConnectionPool.getInstance();
+    }
+
+    /**
      * @return connection from connection pool
      */
     Connection getConnection();
@@ -23,12 +30,5 @@ public interface ConnectionPool {
      * Destroy pool - close all connections and deregister drivers
      */
     void destroyPool();
-
-    /**
-     * @return Instance of connection pool
-     */
-    static ConnectionPool getInstance() {
-        return BlockingConnectionPool.getInstance();
-    }
 
 }

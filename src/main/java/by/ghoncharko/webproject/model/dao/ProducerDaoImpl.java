@@ -5,12 +5,16 @@ import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ProducerDaoImpl extends AbstractDao<Producer> implements ProducerDao{
+public class ProducerDaoImpl extends AbstractDao<Producer> implements ProducerDao {
     private static final Logger LOG = LogManager.getLogger(ProducerDaoImpl.class);
     private static final String SQL_CREATE_PRODUCER = "INSERT INTO producer (producer_name)  VALUES (?)";
     private static final String SQL_FIND_ALL_PRODUCERS = "SELECT  id, producer_name FROM producer";
@@ -29,21 +33,21 @@ public class ProducerDaoImpl extends AbstractDao<Producer> implements ProducerDa
 
     @Override
     public Producer create(Producer entity) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_PRODUCER, Statement.RETURN_GENERATED_KEYS)){
-            preparedStatement.setString(1,entity.getName());
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_PRODUCER, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, entity.getName());
             final int countUpdatedRows = preparedStatement.executeUpdate();
-            if(countUpdatedRows>0){
+            if (countUpdatedRows > 0) {
                 final ResultSet resultSet = preparedStatement.getGeneratedKeys();
-                if(resultSet.next()){
+                if (resultSet.next()) {
                     return new Producer.Builder().
                             withId(resultSet.getInt(1)).
                             withName(entity.getName()).
                             build();
                 }
             }
-        }catch (SQLException e){
-            LOG.error("Cannot create producer",e);
-            throw new DaoException("Cannot create producer",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot create producer", e);
+            throw new DaoException("Cannot create producer", e);
         }
         LOG.error("Cannot create producer");
         throw new DaoException("Cannot create producer");
@@ -52,30 +56,30 @@ public class ProducerDaoImpl extends AbstractDao<Producer> implements ProducerDa
     @Override
     public List<Producer> findAll() throws DaoException {
         final List<Producer> producerList = new ArrayList<>();
-        try(final Statement statement = connection.createStatement()){
-           final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_PRODUCERS);
-           while (resultSet.next()){
-               final Producer producer = extractEntity(resultSet);
-               producerList.add(producer);
-           }
-        }catch (SQLException e){
-            LOG.error("Cannot find all producers",e);
-            throw new DaoException("Cannot find all producers",e);
+        try (final Statement statement = connection.createStatement()) {
+            final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_PRODUCERS);
+            while (resultSet.next()) {
+                final Producer producer = extractEntity(resultSet);
+                producerList.add(producer);
+            }
+        } catch (SQLException e) {
+            LOG.error("Cannot find all producers", e);
+            throw new DaoException("Cannot find all producers", e);
         }
         return producerList;
     }
 
     @Override
     public Optional<Producer> findProducerByProducerName(String producerName) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PRODUCER_BY_PRODUCER_NAME)){
-            preparedStatement.setString(1,producerName);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PRODUCER_BY_PRODUCER_NAME)) {
+            preparedStatement.setString(1, producerName);
             final ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 return Optional.of(extractEntity(resultSet));
             }
-        }catch (SQLException e){
-            LOG.error("Cannot find producer by producer name",e);
-            throw new DaoException("Cannot find producer by producer name",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot find producer by producer name", e);
+            throw new DaoException("Cannot find producer by producer name", e);
         }
         LOG.info("Cannot find producer by producer name");
         return Optional.empty();
@@ -83,15 +87,15 @@ public class ProducerDaoImpl extends AbstractDao<Producer> implements ProducerDa
 
     @Override
     public Optional<Producer> findEntityById(Integer id) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PRODUCER_BY_ID)){
-            preparedStatement.setInt(1,id);
-           final ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PRODUCER_BY_ID)) {
+            preparedStatement.setInt(1, id);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
                 return Optional.of(extractEntity(resultSet));
             }
-        }catch (SQLException e){
-            LOG.error("Cannot find producer by id",e);
-            throw new DaoException("Cannot find producer by id",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot find producer by id", e);
+            throw new DaoException("Cannot find producer by id", e);
         }
         LOG.info("Cannot find producer by id");
         return Optional.empty();
@@ -99,16 +103,16 @@ public class ProducerDaoImpl extends AbstractDao<Producer> implements ProducerDa
 
     @Override
     public Producer update(Producer entity) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_PRODUCER_BY_ID)){
-            preparedStatement.setString(1,entity.getName());
-            preparedStatement.setInt(2,entity.getId());
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_PRODUCER_BY_ID)) {
+            preparedStatement.setString(1, entity.getName());
+            preparedStatement.setInt(2, entity.getId());
             final int countUpdatedRows = preparedStatement.executeUpdate();
-            if(countUpdatedRows>0){
+            if (countUpdatedRows > 0) {
                 return entity;
             }
-        }catch (SQLException e){
-            LOG.error("Cannot update producer by id",e);
-            throw new DaoException("Cannot update producer by id",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot update producer by id", e);
+            throw new DaoException("Cannot update producer by id", e);
         }
         LOG.error("Cannot update producer by id");
         throw new DaoException("Cannot update producer by id");
@@ -116,11 +120,11 @@ public class ProducerDaoImpl extends AbstractDao<Producer> implements ProducerDa
 
     @Override
     public boolean delete(Integer id) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_PRODUCER_BY_ID)){
-            return deleteBillet(preparedStatement,id);
-        }catch (SQLException e){
-            LOG.error("Cannot delete producer by id",e);
-            throw new DaoException("Cannot delete producer by id",e);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_PRODUCER_BY_ID)) {
+            return deleteBillet(preparedStatement, id);
+        } catch (SQLException e) {
+            LOG.error("Cannot delete producer by id", e);
+            throw new DaoException("Cannot delete producer by id", e);
         }
     }
 

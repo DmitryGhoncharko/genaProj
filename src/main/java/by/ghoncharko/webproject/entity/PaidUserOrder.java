@@ -3,11 +3,12 @@ package by.ghoncharko.webproject.entity;
 import java.sql.Date;
 import java.util.Objects;
 
-public class PaidUserOrder implements Entity{
+public class PaidUserOrder implements Entity {
     private final Integer id;
     private final UserOrder userOrder;
     private final Date datePayed;
-    public PaidUserOrder(Builder builder){
+
+    public PaidUserOrder(Builder builder) {
         id = builder.id;
         userOrder = builder.userOrder;
         datePayed = builder.datePayed;
@@ -54,23 +55,28 @@ public class PaidUserOrder implements Entity{
                 ", datePayed=" + datePayed +
                 '}';
     }
-    public static class Builder{
+
+    public static class Builder {
         private Integer id;
         private UserOrder userOrder;
         private Date datePayed;
-        public Builder withId(Integer id){
+
+        public Builder withId(Integer id) {
             this.id = id;
             return this;
         }
-        public Builder withUserOrder(UserOrder userOrder){
+
+        public Builder withUserOrder(UserOrder userOrder) {
             this.userOrder = userOrder;
             return this;
         }
-        public Builder withDatePayed(Date datePayed){
+
+        public Builder withDatePayed(Date datePayed) {
             this.datePayed = datePayed;
             return this;
         }
-        public PaidUserOrder build(){
+
+        public PaidUserOrder build() {
             return new PaidUserOrder(this);
         }
     }

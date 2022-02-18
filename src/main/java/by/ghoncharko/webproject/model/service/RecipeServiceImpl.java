@@ -5,7 +5,7 @@ import by.ghoncharko.webproject.exception.ServiceException;
 
 import java.util.List;
 
-public class RecipeServiceImpl implements RecipeService{
+public class RecipeServiceImpl implements RecipeService {
     @Override
     public List<Recipe> findAll() throws ServiceException {
         return null;

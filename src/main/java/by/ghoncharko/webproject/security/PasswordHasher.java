@@ -2,11 +2,11 @@ package by.ghoncharko.webproject.security;
 
 public interface PasswordHasher {
 
-        boolean checkIsEqualsPasswordAndPasswordHash(String password, String passwordHash);
+    static PasswordHasher getInstance() {
+        return BcryptWithSaltHasherImpl.getInstance();
+    }
 
-        String hashPassword(String password);
+    boolean checkIsEqualsPasswordAndPasswordHash(String password, String passwordHash);
 
-         static PasswordHasher getInstance() {
-                return BcryptWithSaltHasherImpl.getInstance();
-        }
+    String hashPassword(String password);
 }

@@ -36,6 +36,7 @@ public class CommandRegistry {
     private static final CommandRegistry CREATE_DRUG_PAGE = new CommandRegistry(()->new ShowCreateDrugPageCommand(new SimpleRequestFactory()),"createDrug", Role.PHARMACY);
     private static final CommandRegistry CREATE_DRUG_COMMAND = new CommandRegistry(()->new CreateDrugCommand(new SimpleRequestFactory(), new DrugServiceImpl(new DaoHelperFactory(BlockingConnectionPool.getInstance()))),"createDrugcmnd",Role.PHARMACY);
     private static final CommandRegistry UPDATE_DRUG_COMMAND = new CommandRegistry(()-> new UpdateDrugCommand(new SimpleRequestFactory(), new DrugServiceImpl(new DaoHelperFactory(BlockingConnectionPool.getInstance()))),"updateDrug", Role.PHARMACY);
+
     private static final List<CommandRegistry> COMMAND_REGISTRY_LIST = Arrays.asList(MAIN_PAGE, LOGIN_PAGE, LOGOUT_COMMAND, REGISTRATION_PAGE, REGISTRATION_COMMAND, LOGIN_COMMAND, PREPARATES_PAGE, ADD_DRUG_TO_ORDER_COMMAND, BANK_CARD_PAGE, ADD_BANK_CARD_COMMAND, DELETE_BANK_CARD_COMMAND,ORDER_PAGE, DELETE_ORDER_COMMAND,PAY_ORDER_COMMAND, CREATE_DRUG_PAGE, CREATE_DRUG_COMMAND, UPDATE_DRUG_COMMAND);
     private final CommandCreator commandCreator;
     private final String commandName;

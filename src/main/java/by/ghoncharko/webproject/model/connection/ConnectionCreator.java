@@ -31,9 +31,6 @@ class ConnectionCreator {
     private static final String DATABASE_PASSWORD;
     private static final String DATABASE_DRIVER;
 
-    private ConnectionCreator() {
-    }
-
     static {
         try (InputStream inputStream = ConnectionCreator.class.getClassLoader()
                 .getResourceAsStream(PROPERTIES_FILE_NAME)) {
@@ -54,6 +51,9 @@ class ConnectionCreator {
             LOG.fatal("ClassNotFoundException", e);
             throw new RuntimeException("ClassNotFoundException", e);
         }
+    }
+
+    private ConnectionCreator() {
     }
 
     /**

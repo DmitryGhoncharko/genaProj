@@ -14,12 +14,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements PaidUserOrderDao{
-    private static final Logger LOG  = LogManager.getLogger(PaidUserOrderDaoImpl.class);
+public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements PaidUserOrderDao {
+    private static final Logger LOG = LogManager.getLogger(PaidUserOrderDaoImpl.class);
     private static final String SQL_CREATE_PAID_USER_ORDER = "INSERT INTO paid_user_order(user_order_id, date_payed) VALUES (?,?)";
     private static final String SQL_CREATE_PAID_USER_ORDER_WITH_CURRENT_DATE_BY_USER_ORDER_ID = "INSERT INTO paid_user_order(user_order_id, date_payed) VALUES (?,current_date)";
     private static final String SQL_FIND_ALL_PAID_USER_ORDERS = "SELECT paid_user_order.id, uo.id, u.id, login, password, r.role_name, first_name, last_name, is_banned,  date_payed" +
@@ -45,13 +44,13 @@ public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements 
 
     @Override
     public PaidUserOrder create(PaidUserOrder entity) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_PAID_USER_ORDER, Statement.RETURN_GENERATED_KEYS)){
-            preparedStatement.setInt(1,entity.getUserOrder().getId());
-            preparedStatement.setDate(2,entity.getDatePayed());
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_PAID_USER_ORDER, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setInt(1, entity.getUserOrder().getId());
+            preparedStatement.setDate(2, entity.getDatePayed());
             final int countRowsCreated = preparedStatement.executeUpdate();
-            if(countRowsCreated>0){
+            if (countRowsCreated > 0) {
                 final ResultSet resultSet = preparedStatement.executeQuery();
-                if(resultSet.next()){
+                if (resultSet.next()) {
                     return new PaidUserOrder.Builder().
                             withId(resultSet.getInt(1)).
                             withUserOrder(entity.getUserOrder()).
@@ -59,9 +58,9 @@ public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements 
                             build();
                 }
             }
-        }catch (SQLException e){
-            LOG.error("Cannot create PaidUserOrder",e);
-            throw new DaoException("Cannot create PaidUserOrder",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot create PaidUserOrder", e);
+            throw new DaoException("Cannot create PaidUserOrder", e);
         }
         LOG.error("Cannot create PaidUserOrder");
         throw new DaoException("Cannot create PaidUserOrder");
@@ -69,28 +68,28 @@ public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements 
 
     @Override
     public boolean createPaidUserOrderWithCurrentDateByUserOrderId(Integer userOrderId) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_PAID_USER_ORDER_WITH_CURRENT_DATE_BY_USER_ORDER_ID)){
-            preparedStatement.setInt(1,userOrderId);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_PAID_USER_ORDER_WITH_CURRENT_DATE_BY_USER_ORDER_ID)) {
+            preparedStatement.setInt(1, userOrderId);
             final int countCreatedRows = preparedStatement.executeUpdate();
-            return countCreatedRows>=0;
-        }catch (SQLException e){
-            LOG.error("Cannot create paid user order by user order id with current date",e);
-            throw new DaoException("Cannot create paid user order by user order id with current date",e);
+            return countCreatedRows >= 0;
+        } catch (SQLException e) {
+            LOG.error("Cannot create paid user order by user order id with current date", e);
+            throw new DaoException("Cannot create paid user order by user order id with current date", e);
         }
     }
 
     @Override
     public List<PaidUserOrder> findAll() throws DaoException {
         final List<PaidUserOrder> paidUserOrderList = new ArrayList<>();
-        try(final Statement statement = connection.createStatement()){
+        try (final Statement statement = connection.createStatement()) {
             final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_PAID_USER_ORDERS);
-            while (resultSet.next()){
-               final PaidUserOrder paidUserOrder = extractEntity(resultSet);
-                    paidUserOrderList.add(paidUserOrder);
+            while (resultSet.next()) {
+                final PaidUserOrder paidUserOrder = extractEntity(resultSet);
+                paidUserOrderList.add(paidUserOrder);
             }
-        }catch (SQLException e){
-            LOG.error("Cannot find all PaidUserOrders",e);
-            throw new DaoException("Cannot find all PaidUserOrders",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot find all PaidUserOrders", e);
+            throw new DaoException("Cannot find all PaidUserOrders", e);
         }
         LOG.info("Cannot find all PaidUserOrders");
         return paidUserOrderList;
@@ -98,15 +97,15 @@ public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements 
 
     @Override
     public Optional<PaidUserOrder> findEntityById(Integer id) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PAID_USER_ORDER_BY_ID)){
-            preparedStatement.setInt(1,id);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PAID_USER_ORDER_BY_ID)) {
+            preparedStatement.setInt(1, id);
             final ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 return Optional.of(extractEntity(resultSet));
             }
-        }catch (SQLException e){
-            LOG.error("Cannot find PaidUserOrder by id",e);
-            throw new DaoException("Cannot find PaidUserOrder by id",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot find PaidUserOrder by id", e);
+            throw new DaoException("Cannot find PaidUserOrder by id", e);
         }
         LOG.info("Cannot find paid PaidUserOrder by id");
         return Optional.empty();
@@ -114,18 +113,18 @@ public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements 
 
     @Override
     public PaidUserOrder update(PaidUserOrder entity) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_PAID_USER_ORDER_BY_ID)){
-            preparedStatement.setInt(1,entity.getUserOrder().getId());
-            preparedStatement.setDate(2,entity.getDatePayed());
-            preparedStatement.setInt(3,entity.getId());
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_PAID_USER_ORDER_BY_ID)) {
+            preparedStatement.setInt(1, entity.getUserOrder().getId());
+            preparedStatement.setDate(2, entity.getDatePayed());
+            preparedStatement.setInt(3, entity.getId());
             final int countUpdatedRows = preparedStatement.executeUpdate();
-            if(countUpdatedRows>0){
+            if (countUpdatedRows > 0) {
                 return entity;
             }
 
-        }catch (SQLException e){
-            LOG.error("Cannot update PaidUSerOrder by id",e);
-            throw new DaoException("Cannot update PaidUSerOrder by id",e);
+        } catch (SQLException e) {
+            LOG.error("Cannot update PaidUSerOrder by id", e);
+            throw new DaoException("Cannot update PaidUSerOrder by id", e);
         }
         LOG.error("Cannot update PaidUSerOrder by id");
         throw new DaoException("Cannot update PaidUSerOrder by id");
@@ -133,11 +132,11 @@ public class PaidUserOrderDaoImpl extends AbstractDao<PaidUserOrder> implements 
 
     @Override
     public boolean delete(Integer id) throws DaoException {
-        try(final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_PAID_USER_ORDER_BY_ID)){
-           return deleteBillet(preparedStatement,id);
-        }catch (SQLException e){
-            LOG.error("Cannot delete PaidUserOrder by id",e);
-            throw new DaoException("Cannot delete PaidUserOrder by id",e);
+        try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_PAID_USER_ORDER_BY_ID)) {
+            return deleteBillet(preparedStatement, id);
+        } catch (SQLException e) {
+            LOG.error("Cannot delete PaidUserOrder by id", e);
+            throw new DaoException("Cannot delete PaidUserOrder by id", e);
         }
     }
 

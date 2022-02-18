@@ -16,6 +16,7 @@ public class Recipe implements Entity {
     private final Date dateStart;
     private final Date dateEnd;
     private final User doctor;
+
     private Recipe(Builder builder) {
         id = builder.id;
         drug = builder.drug;
@@ -94,6 +95,7 @@ public class Recipe implements Entity {
         private Date dateEnd;
         private User user;
         private User doctor;
+
         public Builder withId(Integer id) {
             this.id = id;
             return this;
@@ -118,10 +120,12 @@ public class Recipe implements Entity {
             this.user = user;
             return this;
         }
-        public Builder withDoctor(User doctor){
+
+        public Builder withDoctor(User doctor) {
             this.doctor = doctor;
             return this;
         }
+
         public Recipe build() {
             return new Recipe(this);
         }

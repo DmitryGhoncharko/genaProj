@@ -7,7 +7,7 @@ import java.util.Objects;
  *
  * @author Dmitry Ghoncharko
  */
-public  class Producer implements Entity {
+public class Producer implements Entity {
     private final Integer id;
     private final String name;
 
@@ -22,26 +22,6 @@ public  class Producer implements Entity {
 
     public String getName() {
         return name;
-    }
-
-    public static class Builder {
-        private  Integer id;
-        private  String name;
-
-
-        public Builder withId(Integer id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder withName(String name) {
-           this.name = name;
-            return this;
-        }
-
-        public Producer build() {
-            return new Producer(this);
-        }
     }
 
     @Override
@@ -68,5 +48,25 @@ public  class Producer implements Entity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public static class Builder {
+        private Integer id;
+        private String name;
+
+
+        public Builder withId(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Producer build() {
+            return new Producer(this);
+        }
     }
 }

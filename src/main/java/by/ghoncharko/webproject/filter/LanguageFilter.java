@@ -32,10 +32,10 @@ public class LanguageFilter implements Filter {
         if (doesNotContainLangCookie((HttpServletRequest) request)) {
             addDefaultLangCookie((HttpServletResponse) response);
         }
-        if(!doesNotContainLangCookie((HttpServletRequest) request)&&languageFromRequest!=null){
-            addDefaultLangCookie((HttpServletResponse)response);
+        if (!doesNotContainLangCookie((HttpServletRequest) request) && languageFromRequest != null) {
+            addDefaultLangCookie((HttpServletResponse) response);
         }
-        if(!doesNotContainLangCookie((HttpServletRequest) request) && RUSSIAN_LANGUAGE.equalsIgnoreCase(languageFromRequest)){
+        if (!doesNotContainLangCookie((HttpServletRequest) request) && RUSSIAN_LANGUAGE.equalsIgnoreCase(languageFromRequest)) {
             addRussianLangCookie((HttpServletResponse) response);
         }
         chain.doFilter(request, response);

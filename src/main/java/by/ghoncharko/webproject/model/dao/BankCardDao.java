@@ -5,7 +5,7 @@ import by.ghoncharko.webproject.exception.DaoException;
 
 import java.util.List;
 
-public interface BankCardDao extends Dao<BankCard>{
+public interface BankCardDao extends Dao<BankCard> {
     boolean deleteCardByCardIdAndUserId(Integer cardId, Integer userId) throws DaoException;
 
     List<BankCard> findUserBankCardsByUserId(Integer userId) throws DaoException;

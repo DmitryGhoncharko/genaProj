@@ -48,19 +48,21 @@ public class DrugsPaginationDto {
         return result;
     }
 
-    public static class Builder{
+    public static class Builder {
         private List<Drug> drugList;
         private Integer countPages;
 
-        public Builder wuthDrugList(List<Drug> drugList){
+        public Builder wuthDrugList(List<Drug> drugList) {
             this.drugList = drugList;
             return this;
         }
-        public Builder withCountPages(Integer countPages){
+
+        public Builder withCountPages(Integer countPages) {
             this.countPages = countPages;
             return this;
         }
-        public DrugsPaginationDto build(){
+
+        public DrugsPaginationDto build() {
             return new DrugsPaginationDto(this);
         }
     }
