@@ -3,12 +3,8 @@ package by.ghoncharko.webproject.entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-/**
- * Entity class Drug
- *
- * @author Dmitry Ghoncharko
- */
-public class Drug implements Entity {
+
+public class Product implements Entity {
     private final Integer id;
     private final String name;
     private final BigDecimal price;
@@ -18,7 +14,7 @@ public class Drug implements Entity {
     private final Boolean needRecipe;
     private final Boolean isDeleted;
 
-    private Drug(Builder builder) {
+    private Product(Builder builder) {
         id = builder.id;
         name = builder.name;
         price = builder.price;
@@ -66,16 +62,16 @@ public class Drug implements Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Drug drug = (Drug) o;
+        Product product = (Product) o;
 
-        if (!Objects.equals(id, drug.id)) return false;
-        if (!Objects.equals(name, drug.name)) return false;
-        if (!Objects.equals(price, drug.price)) return false;
-        if (!Objects.equals(count, drug.count)) return false;
-        if (!Objects.equals(description, drug.description)) return false;
-        if (!Objects.equals(producer, drug.producer)) return false;
-        if (!Objects.equals(needRecipe, drug.needRecipe)) return false;
-        return Objects.equals(isDeleted, drug.isDeleted);
+        if (!Objects.equals(id, product.id)) return false;
+        if (!Objects.equals(name, product.name)) return false;
+        if (!Objects.equals(price, product.price)) return false;
+        if (!Objects.equals(count, product.count)) return false;
+        if (!Objects.equals(description, product.description)) return false;
+        if (!Objects.equals(producer, product.producer)) return false;
+        if (!Objects.equals(needRecipe, product.needRecipe)) return false;
+        return Objects.equals(isDeleted, product.isDeleted);
     }
 
     @Override
@@ -155,8 +151,8 @@ public class Drug implements Entity {
             return this;
         }
 
-        public Drug build() {
-            return new Drug(this);
+        public Product build() {
+            return new Product(this);
         }
     }
 }

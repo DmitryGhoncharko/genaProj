@@ -3,11 +3,6 @@ package by.ghoncharko.webproject.entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-/**
- * Entity class BankCard
- *
- * @author Dmitry Ghoncharko
- */
 public class BankCard implements Entity {
     private final Integer id;
     private final User user;

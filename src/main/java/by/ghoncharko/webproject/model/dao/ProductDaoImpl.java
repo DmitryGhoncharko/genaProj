@@ -1,7 +1,7 @@
 package by.ghoncharko.webproject.model.dao;
 
 
-import by.ghoncharko.webproject.entity.Drug;
+import by.ghoncharko.webproject.entity.Product;
 import by.ghoncharko.webproject.entity.Producer;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
-    private static final Logger LOG = LogManager.getLogger(DrugDaoImpl.class);
+public class ProductDaoImpl extends AbstractDao<Product> implements ProductDao {
+    private static final Logger LOG = LogManager.getLogger(ProductDaoImpl.class);
     private static final String SQL_CREATE_DRUG = "INSERT INTO drug(name, price, drug_count, description, producer_id, need_recipe)" +
             " VALUES (?,?,?,?,?,?);";
     private static final String SQL_FIND_ALL_DRUGS = "SELECT" +
@@ -66,12 +66,12 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     private static final String SQL_FIND_ALL_DRUGS_COUNT = "SELECT COUNT(drug.id) FROM drug";
     private static final String SQL_DELETE_DRUG_BY_DRUG_ID = "DELETE FROM drug WHERE id = ?";
 
-    public DrugDaoImpl(Connection connection) {
+    public ProductDaoImpl(Connection connection) {
         super(connection);
     }
 
     @Override
-    public Drug create(Drug entity) throws DaoException {
+    public Product create(Product entity) throws DaoException {
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_DRUG, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, entity.getName());
             preparedStatement.setDouble(2, entity.getPrice().doubleValue());
@@ -83,7 +83,7 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
             if (countUpdatedRows > 0) {
                 final ResultSet resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next()) {
-                    return new Drug.Builder().
+                    return new Product.Builder().
                             withId(resultSet.getInt(1)).
                             withName(entity.getName()).
                             withPrice(entity.getPrice()).
@@ -103,21 +103,21 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     }
 
     @Override
-    public List<Drug> findAllDrugsLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
-        final List<Drug> drugList = new ArrayList<>();
+    public List<Product> findAllDrugsLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
+        final List<Product> productList = new ArrayList<>();
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_LIMIT_OFFSET_PAGINATION)) {
             preparedStatement.setInt(1, limit);
             preparedStatement.setInt(2, offset);
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                final Drug drug = extractEntity(resultSet);
-                drugList.add(drug);
+                final Product product = extractEntity(resultSet);
+                productList.add(product);
             }
         } catch (SQLException e) {
             LOG.error("Cannot find all drugs", e);
             throw new DaoException("Cannot find all drugs", e);
         }
-        return drugList;
+        return productList;
     }
 
     @Override
@@ -158,60 +158,60 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     }
 
     @Override
-    public List<Drug> findAllDrugsWhereCountMoreThanZeroAndCalculateCountWithCountInOrderAndDrugIsNotDeletedWithLimitOffsetPagination(Integer userId, Integer limit, Integer offset) throws DaoException {
-        final List<Drug> drugList = new ArrayList<>();
+    public List<Product> findAllDrugsWhereCountMoreThanZeroAndCalculateCountWithCountInOrderAndDrugIsNotDeletedWithLimitOffsetPagination(Integer userId, Integer limit, Integer offset) throws DaoException {
+        final List<Product> productList = new ArrayList<>();
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_CALCULATE_COUNT_WITH_COUNT_IN_ORDER_AND_DRUG_IS_NOT_DELETED_LIMIT_OFFSET_PAGINATION)) {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, limit);
             preparedStatement.setInt(3, offset);
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                final Drug drug = extractEntity(resultSet);
-                drugList.add(drug);
+                final Product product = extractEntity(resultSet);
+                productList.add(product);
             }
         } catch (SQLException e) {
             LOG.error("Cannot find all drugs where count drug more than zero and drug is not deleted", e);
             throw new DaoException("Cannot find all drugs where count drug more than zero and drug is not deleted", e);
         }
-        return drugList;
+        return productList;
     }
 
     @Override
-    public List<Drug> findAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeletedLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
-        final List<Drug> drugList = new ArrayList<>();
+    public List<Product> findAllDrugsWhereCountMoreThanZeroAndDrugIsNotDeletedLimitOffsetPagination(Integer limit, Integer offset) throws DaoException {
+        final List<Product> productList = new ArrayList<>();
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_DRUGS_WHERE_COUNT_MORE_THAN_ZERO_AND_DRUG_IS_NOT_DELETED)) {
             preparedStatement.setInt(1, limit);
             preparedStatement.setInt(2, offset);
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                final Drug drug = extractEntity(resultSet);
-                drugList.add(drug);
+                final Product product = extractEntity(resultSet);
+                productList.add(product);
             }
         } catch (SQLException e) {
 
         }
-        return drugList;
+        return productList;
     }
 
     @Override
-    public List<Drug> findAll() throws DaoException {
-        final List<Drug> drugList = new ArrayList<>();
+    public List<Product> findAll() throws DaoException {
+        final List<Product> productList = new ArrayList<>();
         try (final Statement statement = connection.createStatement()) {
             final ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_DRUGS);
             while (resultSet.next()) {
-                final Drug drug = extractEntity(resultSet);
-                drugList.add(drug);
+                final Product product = extractEntity(resultSet);
+                productList.add(product);
             }
         } catch (SQLException e) {
             LOG.error("Cannot find all drugs", e);
             throw new DaoException("Cannot find all drugs", e);
         }
         LOG.info("Zero drugs found");
-        return drugList;
+        return productList;
     }
 
     @Override
-    public Optional<Drug> findEntityById(Integer id) throws DaoException {
+    public Optional<Product> findEntityById(Integer id) throws DaoException {
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_BY_DRUG_ID)) {
             preparedStatement.setInt(1, id);
             final ResultSet resultSet = preparedStatement.executeQuery();
@@ -227,7 +227,7 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     }
 
     @Override
-    public Optional<Drug> findDrugByDrugIdWhereCountMoreThanZeroAndCalculateCountFromUserOrderAndDrugDontDeleted(Integer userId, Integer drugId) throws DaoException {
+    public Optional<Product> findDrugByDrugIdWhereCountMoreThanZeroAndCalculateCountFromUserOrderAndDrugDontDeleted(Integer userId, Integer drugId) throws DaoException {
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_DRUG_BY_DRUG_ID_WHERE_COUNT_MORE_THAN_ZERO_WITH_CALCULATE_COUNT_FROM_USER_ORDER_AND_DRUG_DONT_DELETED)) {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, drugId);
@@ -244,7 +244,7 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     }
 
     @Override
-    public Drug update(Drug entity) throws DaoException {
+    public Product update(Product entity) throws DaoException {
 
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_DRUG_BY_DRUG_ID)) {
             preparedStatement.setString(1, entity.getName());
@@ -278,8 +278,8 @@ public class DrugDaoImpl extends AbstractDao<Drug> implements DrugDao {
     }
 
     @Override
-    protected Drug extractEntity(ResultSet resultSet) throws SQLException {
-        return new Drug.Builder().
+    protected Product extractEntity(ResultSet resultSet) throws SQLException {
+        return new Product.Builder().
                 withId(resultSet.getInt(1)).
                 withName(resultSet.getString(2)).
                 withPrice(BigDecimal.valueOf(resultSet.getDouble(3))).

@@ -1,10 +1,6 @@
 package by.ghoncharko.webproject.exception;
 
-/**
- * Dao exception
- *
- * @author Dmitry Ghoncharko
- */
+
 public class DaoException extends Exception {
     public DaoException() {
     }

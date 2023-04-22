@@ -3,26 +3,23 @@ package by.ghoncharko.webproject.model.service;
 import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
+import by.ghoncharko.webproject.model.connection.ConnectionPool;
 import by.ghoncharko.webproject.model.dao.BankCardDao;
-import by.ghoncharko.webproject.model.dao.DaoHelper;
-import by.ghoncharko.webproject.model.dao.DaoHelperFactory;
+import by.ghoncharko.webproject.model.dao.BankCardDaoImpl;
 import by.ghoncharko.webproject.validator.BankCardServiceValidator;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
-
+@RequiredArgsConstructor
 public class BankCardServiceImpl implements BankCardService {
     private static final Logger LOG = LogManager.getLogger(BankCardServiceImpl.class);
     private final BankCardServiceValidator bankCardServiceValidator;
-    private final DaoHelperFactory daoHelperFactory;
-
-    public BankCardServiceImpl(DaoHelperFactory daoHelperFactory, BankCardServiceValidator bankCardServiceValidator) {
-        this.daoHelperFactory = daoHelperFactory;
-        this.bankCardServiceValidator = bankCardServiceValidator;
-    }
+    private final ConnectionPool connectionPool;
 
     @Override
     public List<BankCard> findAll() throws ServiceException {
@@ -38,8 +35,8 @@ public class BankCardServiceImpl implements BankCardService {
                 withBalance(BigDecimal.valueOf(balance)).
                 withUser(user).
                 build();
-        try (final DaoHelper daoHelper = daoHelperFactory.create()) {
-            final BankCardDao bankCardDao = daoHelper.createBankCardDao();
+        try (final Connection connection = connectionPool.getConnection()) {
+            final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
             bankCardDao.create(bankCard);
         } catch (Exception e) {
             LOG.error("Cannot add bank card", e);
@@ -54,8 +51,8 @@ public class BankCardServiceImpl implements BankCardService {
             return Collections.emptyList();
         }
         final int userId = user.getId();
-        try (final DaoHelper daoHelper = daoHelperFactory.create()) {
-            final BankCardDao bankCardDao = daoHelper.createBankCardDao();
+        try (final Connection connection = connectionPool.getConnection()) {
+            final BankCardDao bankCardDao = new BankCardDaoImpl(connection);
             return bankCardDao.findUserBankCardsByUserId(userId);
         } catch (Exception e) {
             LOG.error("Cannot find bank cards by user id", e);
@@ -69,8 +66,8 @@ public class BankCardServiceImpl implements BankCardService {
             return;
         }
         final int userId = user.getId();
-        try (final DaoHelper daoHelper = daoHelperFactory.create()) {
-            final BankCardDao bankCardDao = daoHelper.createBankCardDao();
+        try (final Connection connection = connectionPool.getConnection()) {
+            final BankCardDao bankCardDao =new BankCardDaoImpl(connection);
             bankCardDao.deleteCardByCardIdAndUserId(cardId, userId);
         } catch (Exception e) {
             LOG.error("Cannot delete bank card by card id and user id ", e);

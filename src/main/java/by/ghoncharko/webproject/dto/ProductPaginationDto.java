@@ -1,21 +1,21 @@
 package by.ghoncharko.webproject.dto;
 
-import by.ghoncharko.webproject.entity.Drug;
+import by.ghoncharko.webproject.entity.Product;
 
 import java.util.List;
 import java.util.Objects;
 
-public class DrugsPaginationDto {
-    private final List<Drug> drugList;
+public class ProductPaginationDto {
+    private final List<Product> productList;
     private final Integer countPages;
 
-    private DrugsPaginationDto(Builder builder) {
-        this.drugList = builder.drugList;
+    private ProductPaginationDto(Builder builder) {
+        this.productList = builder.productList;
         this.countPages = builder.countPages;
     }
 
-    public List<Drug> getDrugList() {
-        return drugList;
+    public List<Product> getDrugList() {
+        return productList;
     }
 
     public Integer getCountPages() {
@@ -27,33 +27,33 @@ public class DrugsPaginationDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DrugsPaginationDto that = (DrugsPaginationDto) o;
+        ProductPaginationDto that = (ProductPaginationDto) o;
 
-        if (!Objects.equals(drugList, that.drugList)) return false;
+        if (!Objects.equals(productList, that.productList)) return false;
         return Objects.equals(countPages, that.countPages);
     }
 
     @Override
     public String toString() {
         return "DrugsPaginationDto{" +
-                "drugList=" + drugList +
+                "drugList=" + productList +
                 ", countDrugs=" + countPages +
                 '}';
     }
 
     @Override
     public int hashCode() {
-        int result = drugList != null ? drugList.hashCode() : 0;
+        int result = productList != null ? productList.hashCode() : 0;
         result = 31 * result + (countPages != null ? countPages.hashCode() : 0);
         return result;
     }
 
     public static class Builder {
-        private List<Drug> drugList;
+        private List<Product> productList;
         private Integer countPages;
 
-        public Builder wuthDrugList(List<Drug> drugList) {
-            this.drugList = drugList;
+        public Builder wuthDrugList(List<Product> productList) {
+            this.productList = productList;
             return this;
         }
 
@@ -62,8 +62,8 @@ public class DrugsPaginationDto {
             return this;
         }
 
-        public DrugsPaginationDto build() {
-            return new DrugsPaginationDto(this);
+        public ProductPaginationDto build() {
+            return new ProductPaginationDto(this);
         }
     }
 }

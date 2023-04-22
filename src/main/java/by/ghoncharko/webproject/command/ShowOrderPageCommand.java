@@ -1,7 +1,7 @@
 package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
-import by.ghoncharko.webproject.dto.DrugUserOrderDto;
+import by.ghoncharko.webproject.dto.ProductUserOrderDto;
 import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.DrugUserOrder;
 import by.ghoncharko.webproject.entity.User;
@@ -28,12 +28,12 @@ public class ShowOrderPageCommand implements Command{
         if(userFromSesstion.isPresent()){
             final User user = (User)userFromSesstion.get();
             final int userId = user.getId();
-            final Optional<DrugUserOrderDto> drugUserOrderDtoFromDB = orderService.findNotPaidOrderByUserId(userId);
+            final Optional<ProductUserOrderDto> drugUserOrderDtoFromDB = orderService.findNotPaidOrderByUserId(userId);
             if(drugUserOrderDtoFromDB.isPresent()){
-                final DrugUserOrderDto drugUserOrderDto = drugUserOrderDtoFromDB.get();
-                final List<DrugUserOrder> drugUserOrderList = drugUserOrderDto.getDrugUserOrderList();
-                final List<BankCard> bankCardList = drugUserOrderDto.getBankCardList();
-                final Double finalPrice = drugUserOrderDto.getFinalPrice().doubleValue();
+                final ProductUserOrderDto productUserOrderDto = drugUserOrderDtoFromDB.get();
+                final List<DrugUserOrder> drugUserOrderList = productUserOrderDto.getDrugUserOrderList();
+                final List<BankCard> bankCardList = productUserOrderDto.getBankCardList();
+                final Double finalPrice = productUserOrderDto.getFinalPrice().doubleValue();
                 request.addAttributeToJsp("drugUserOrders",drugUserOrderList);
                 request.addAttributeToJsp("bankCards", bankCardList);
                 request.addAttributeToJsp("orderFinalPrice",finalPrice);

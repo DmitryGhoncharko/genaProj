@@ -44,7 +44,7 @@
                 <input hidden="" name="userLastName" value="${user.lastName}"> <h5
                     class="card-title">${user.lastName}</h5> </input>
                 <button class="navbar-toggler" formaction="/controller?command=showPrepWithNeedRecipe" formmethod="post">Select preparate</button>
-                <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq product.id}">
                     <div class="alert alert-danger" role="alert">
                             ${requestScope.errorDelete}
                     </div>

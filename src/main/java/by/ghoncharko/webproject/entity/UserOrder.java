@@ -3,11 +3,7 @@ package by.ghoncharko.webproject.entity;
 
 import java.util.Objects;
 
-/**
- * Entity class Order
- *
- * @author Dmitry Ghoncharko
- */
+
 public class UserOrder implements Entity {
     private final Integer id;
     private final User user;

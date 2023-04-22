@@ -1,15 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<fmt:setLocale value="${cookie.lang.value}"/>
-<fmt:setBundle basename="l10n.page.main" var="loc"/>
-<fmt:message bundle="${loc}" key="label.main.title" var="mainTitle"/>
-<fmt:message bundle="${loc}" key="label.main.thumbnail1" var="thumbnail1"/>
-<fmt:message bundle="${loc}" key="label.main.thumbnail1p" var="thumbnail1p"/>
-<fmt:message bundle="${loc}" key="label.main.thumbnail2" var="thumbnail2"/>
-<fmt:message bundle="${loc}" key="label.main.thumbnail2p" var="thumbnail2p"/>
-<fmt:message bundle="${loc}" key="label.main.thumbnail3" var="thumbnail3"/>
-<fmt:message bundle="${loc}" key="label.main.thumbnail3p" var="thumbnail3p"/>
 <html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -52,7 +43,7 @@
 
 </style>
 <head>
-    <title>${mainTitle}</title>
+    <title>Главная страница</title>
 </head>
 <body>
 <div class="container-fluid flex">
@@ -77,32 +68,32 @@
                         <img class="d-block w-100 h-100" alt="Carousel Bootstrap First" src="${pageContext.request.contextPath}/static/main1.png"/>
                         <div class="carousel-caption">
                             <h4>
-                                ${thumbnail1}
+                               Магазин электроники
                             </h4>
                             <p>
-                                ${thumbnail1p}
+                               Всегда лучшие товары
                             </p>
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img class="d-block w-100 h-100" alt="Carousel Bootstrap Second" src="${pageContext.request.contextPath}/static/main2.png"/>
+                        <img class="d-block w-100 h-100" alt="Carousel Bootstrap Second" src="${pageContext.request.contextPath}/static/main2.jpg"/>
                         <div class="carousel-caption">
                             <h4>
-                                ${thumbnail2}
+                                Магазин электроники
                             </h4>
                             <p>
-                                ${thumbnail2p}
+                                Всегда лучшие товары
                             </p>
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img class="d-block w-100 h-100" alt="Carousel Bootstrap Third" src="${pageContext.request.contextPath}/static/main3.png"/>
+                        <img class="d-block w-100 h-100" alt="Carousel Bootstrap Third" src="${pageContext.request.contextPath}/static/main3.jpg"/>
                         <div class="carousel-caption">
                             <h4>
-                                ${thumbnail3}
+                                Магазин электроники
                             </h4>
                             <p>
-                                ${thumbnail3p}
+                                Всегда лучшие товары
                             </p>
                         </div>
                     </div>

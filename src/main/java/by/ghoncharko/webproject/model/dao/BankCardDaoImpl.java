@@ -18,11 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * BankCard dao class
- *
- * @author Dmitry Ghoncharko
- */
+
 public class BankCardDaoImpl extends AbstractDao<BankCard> implements BankCardDao {
     private static final Logger LOG = LogManager.getLogger(BankCardDaoImpl.class);
     private static final String SQL_CREATE_BANK_CARD = "INSERT INTO bank_card(user_id, balance) VALUES (?,?)";

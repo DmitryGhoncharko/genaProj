@@ -4,22 +4,18 @@ package by.ghoncharko.webproject.entity;
 import java.sql.Date;
 import java.util.Objects;
 
-/**
- * Entity class Recipe
- *
- * @author Dmitry Ghoncharko
- */
+
 public class Recipe implements Entity {
     private final Integer id;
     private final User user;
-    private final Drug drug;
+    private final Product product;
     private final Date dateStart;
     private final Date dateEnd;
     private final User doctor;
 
     private Recipe(Builder builder) {
         id = builder.id;
-        drug = builder.drug;
+        product = builder.product;
         dateStart = builder.dateStart;
         dateEnd = builder.dateEnd;
         user = builder.user;
@@ -30,8 +26,8 @@ public class Recipe implements Entity {
         return id;
     }
 
-    public Drug getDrug() {
-        return drug;
+    public Product getDrug() {
+        return product;
     }
 
     public Date getDateStart() {
@@ -59,7 +55,7 @@ public class Recipe implements Entity {
 
         if (!Objects.equals(id, recipe.id)) return false;
         if (!Objects.equals(user, recipe.user)) return false;
-        if (!Objects.equals(drug, recipe.drug)) return false;
+        if (!Objects.equals(product, recipe.product)) return false;
         if (!Objects.equals(dateStart, recipe.dateStart)) return false;
         if (!Objects.equals(dateEnd, recipe.dateEnd)) return false;
         return Objects.equals(doctor, recipe.doctor);
@@ -69,7 +65,7 @@ public class Recipe implements Entity {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (drug != null ? drug.hashCode() : 0);
+        result = 31 * result + (product != null ? product.hashCode() : 0);
         result = 31 * result + (dateStart != null ? dateStart.hashCode() : 0);
         result = 31 * result + (dateEnd != null ? dateEnd.hashCode() : 0);
         result = 31 * result + (doctor != null ? doctor.hashCode() : 0);
@@ -81,7 +77,7 @@ public class Recipe implements Entity {
         return "Recipe{" +
                 "id=" + id +
                 ", user=" + user +
-                ", drug=" + drug +
+                ", drug=" + product +
                 ", dateStart=" + dateStart +
                 ", dateEnd=" + dateEnd +
                 ", doctor=" + doctor +
@@ -90,7 +86,7 @@ public class Recipe implements Entity {
 
     public static class Builder {
         private Integer id;
-        private Drug drug;
+        private Product product;
         private Date dateStart;
         private Date dateEnd;
         private User user;
@@ -101,8 +97,8 @@ public class Recipe implements Entity {
             return this;
         }
 
-        public Builder withDrug(Drug drug) {
-            this.drug = drug;
+        public Builder withDrug(Product product) {
+            this.product = product;
             return this;
         }
 

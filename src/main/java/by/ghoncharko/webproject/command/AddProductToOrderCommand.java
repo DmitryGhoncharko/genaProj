@@ -9,11 +9,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
-public class AddDrugToOrderCommand implements Command{
-    private static final Logger LOG = LogManager.getLogger(AddDrugToOrderCommand.class);
+public class AddProductToOrderCommand implements Command{
+    private static final Logger LOG = LogManager.getLogger(AddProductToOrderCommand.class);
     private final RequestFactory requestFactory;
     private final OrderService orderService;
-    public AddDrugToOrderCommand(RequestFactory requestFactory, OrderService orderService){
+    public AddProductToOrderCommand(RequestFactory requestFactory, OrderService orderService){
         this.requestFactory = requestFactory;
         this.orderService = orderService;
     }

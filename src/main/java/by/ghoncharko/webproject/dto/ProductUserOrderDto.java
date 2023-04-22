@@ -7,12 +7,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-public class DrugUserOrderDto {
+public class ProductUserOrderDto {
     private final List<DrugUserOrder> drugUserOrderList;
     private final List<BankCard> bankCardList;
     private final BigDecimal finalPrice;
 
-    public DrugUserOrderDto(Builder builder) {
+    public ProductUserOrderDto(Builder builder) {
         drugUserOrderList = builder.drugUserOrderList;
         bankCardList = builder.bankCardList;
         finalPrice = builder.finalPrice;
@@ -35,7 +35,7 @@ public class DrugUserOrderDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DrugUserOrderDto that = (DrugUserOrderDto) o;
+        ProductUserOrderDto that = (ProductUserOrderDto) o;
 
         if (!Objects.equals(drugUserOrderList, that.drugUserOrderList))
             return false;
@@ -80,8 +80,8 @@ public class DrugUserOrderDto {
             return this;
         }
 
-        public DrugUserOrderDto build() {
-            return new DrugUserOrderDto(this);
+        public ProductUserOrderDto build() {
+            return new ProductUserOrderDto(this);
         }
     }
 }

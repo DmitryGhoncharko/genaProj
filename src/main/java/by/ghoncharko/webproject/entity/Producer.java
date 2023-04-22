@@ -2,11 +2,7 @@ package by.ghoncharko.webproject.entity;
 
 import java.util.Objects;
 
-/**
- * Entity class Producer
- *
- * @author Dmitry Ghoncharko
- */
+
 public class Producer implements Entity {
     private final Integer id;
     private final String name;

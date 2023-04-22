@@ -58,12 +58,12 @@
                 <div class="row">
                     <div class="col-md-6">
                         <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
-                            <input hidden="" name="drugId" value="${recipe.drug.id}">
+                            <input hidden="" name="drugId" value="${recipe.product.id}">
                             <input hidden="" name="userId" value="${recipe.user.id}">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
-                                    <h5 class="card-title">${recipe.drug.name}</h5>
-                                    <p class="card-text">${recipe.drug.producer.name}</p>
+                                    <h5 class="card-title">${recipe.product.name}</h5>
+                                    <p class="card-text">${recipe.product.producer.name}</p>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">${recipe.dateStart}</li>
@@ -72,7 +72,7 @@
                                 <div class="card-body">
                                     <button class="btn btn-primary" type="submit" formaction="/controller?command=createRecipeRequest" formmethod="post">Продлить рецепт</button>
                                     <button class="btn btn-primary" type="submit" formaction="/controller?command=deleteRecipecmnd" formmethod="post">Удалить рецепт</button>
-                                    <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                                    <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq product.id}">
                                         <div class="alert alert-danger" role="alert">
                                                 ${requestScope.errorDelete}
                                         </div>

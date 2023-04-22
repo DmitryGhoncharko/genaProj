@@ -9,8 +9,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import java.io.IOException;
 
-@WebFilter(filterName = "encodingFilter", initParams = {
-        @WebInitParam(name = "encoding", value = "UTF-8", description = "Encoding Param")})
+
 public class EncodingFilter implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {

@@ -4,7 +4,6 @@ import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.entity.BankCard;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
-import by.ghoncharko.webproject.model.dao.Dao;
 import by.ghoncharko.webproject.model.service.BankCardService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ShowBankCardsPageCommand implements Command{
-    private static final Logger LOG = LogManager.getLogger(ShowPreparatesPageCommand.class);
+    private static final Logger LOG = LogManager.getLogger(ShowProductsPageCommand.class);
     private final RequestFactory requestFactory;
     private final BankCardService bankCardService;
     public ShowBankCardsPageCommand(RequestFactory requestFactory, BankCardService bankCardService){

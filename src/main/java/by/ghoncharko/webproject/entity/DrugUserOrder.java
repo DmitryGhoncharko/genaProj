@@ -6,14 +6,14 @@ import java.util.Objects;
 public class DrugUserOrder implements Entity {
     private final Integer id;
     private final UserOrder userOrder;
-    private final Drug drug;
+    private final Product product;
     private final Integer drugCount;
     private final BigDecimal finalPrice;
 
     private DrugUserOrder(Builder builder) {
         id = builder.id;
         userOrder = builder.userOrder;
-        drug = builder.drug;
+        product = builder.product;
         drugCount = builder.drugCount;
         finalPrice = builder.finalPrice;
     }
@@ -26,8 +26,8 @@ public class DrugUserOrder implements Entity {
         return userOrder;
     }
 
-    public Drug getDrug() {
-        return drug;
+    public Product getProduct() {
+        return product;
     }
 
     public Integer getDrugCount() {
@@ -47,7 +47,7 @@ public class DrugUserOrder implements Entity {
 
         if (!Objects.equals(id, that.id)) return false;
         if (!Objects.equals(userOrder, that.userOrder)) return false;
-        if (!Objects.equals(drug, that.drug)) return false;
+        if (!Objects.equals(product, that.product)) return false;
         if (!Objects.equals(drugCount, that.drugCount)) return false;
         return Objects.equals(finalPrice, that.finalPrice);
     }
@@ -56,7 +56,7 @@ public class DrugUserOrder implements Entity {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (userOrder != null ? userOrder.hashCode() : 0);
-        result = 31 * result + (drug != null ? drug.hashCode() : 0);
+        result = 31 * result + (product != null ? product.hashCode() : 0);
         result = 31 * result + (drugCount != null ? drugCount.hashCode() : 0);
         result = 31 * result + (finalPrice != null ? finalPrice.hashCode() : 0);
         return result;
@@ -67,7 +67,7 @@ public class DrugUserOrder implements Entity {
         return "DrugUserOrder{" +
                 "id=" + id +
                 ", userOrder=" + userOrder +
-                ", drug=" + drug +
+                ", drug=" + product +
                 ", drugCount=" + drugCount +
                 ", drugFinalPrice=" + finalPrice +
                 '}';
@@ -76,7 +76,7 @@ public class DrugUserOrder implements Entity {
     public static class Builder {
         private Integer id;
         private UserOrder userOrder;
-        private Drug drug;
+        private Product product;
         private Integer drugCount;
         private BigDecimal finalPrice;
 
@@ -90,8 +90,8 @@ public class DrugUserOrder implements Entity {
             return this;
         }
 
-        public Builder withDrug(Drug drug) {
-            this.drug = drug;
+        public Builder withDrug(Product product) {
+            this.product = product;
             return this;
         }
 

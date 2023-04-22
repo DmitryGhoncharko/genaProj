@@ -2,15 +2,15 @@ package by.ghoncharko.webproject.command;
 
 import by.ghoncharko.webproject.controller.RequestFactory;
 import by.ghoncharko.webproject.exception.ServiceException;
-import by.ghoncharko.webproject.model.service.DrugService;
+import by.ghoncharko.webproject.model.service.ProductService;
 
-public class UpdateDrugCommand implements Command{
+public class UpdateProductCommand implements Command{
     private final RequestFactory requestFactory;
-    private final DrugService drugService;
+    private final ProductService productService;
 
-    public UpdateDrugCommand(RequestFactory requestFactory, DrugService drugService) {
+    public UpdateProductCommand(RequestFactory requestFactory, ProductService productService) {
         this.requestFactory = requestFactory;
-        this.drugService = drugService;
+        this.productService = productService;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class UpdateDrugCommand implements Command{
         final String drugDescription = request.getParameter("updateDrugDescription");
         final String drugProducerName = request.getParameter("updateDrugProducer");
         final Boolean drugIsDeleted = Boolean.valueOf(request.getParameter("updateDrugIsDeleted"));
-        final boolean drugIsUpdated = drugService.updateDrug(drugId,drugName, drugNeedRecipe, drugCount,drugPrice, drugDescription, drugProducerName, drugIsDeleted);
+        final boolean drugIsUpdated = productService.updateDrug(drugId,drugName, drugNeedRecipe, drugCount,drugPrice, drugDescription, drugProducerName, drugIsDeleted);
         if(drugIsUpdated){
             return requestFactory.createRedirectResponse(PagePath.INDEX_PATH);
         }else {

@@ -1,18 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="by.ghoncharko.webproject.entity.Role" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<fmt:setLocale value="${cookie.lang.value}"/>
-<fmt:setBundle basename="l10n.page.main" var="loc"/>
-<fmt:message bundle="${loc}" key="label.preparates.title" var="title"/>
-<fmt:message bundle="${loc}" key="label.preparates.name" var="name"/>
-<fmt:message bundle="${loc}" key="label.preparates.prodName" var="prodName"/>
-<fmt:message bundle="${loc}" key="label.preparates.drugCount" var="drugCount"/>
-<fmt:message bundle="${loc}" key="label.preparates.needRecipe" var="needRecipe"/>
-<fmt:message bundle="${loc}" key="label.preparates.isDeleted" var="isDeleted"/>
-<fmt:message bundle="${loc}" key="label.preparates.update" var="update"/>
-<fmt:message bundle="${loc}" key="label.preparates.description" var="description"/>
-<fmt:message bundle="${loc}" key="label.preparates.price" var="price"/>
+
 
 
 <html>
@@ -57,7 +46,7 @@
 
 </style>
 <head>
-    <title>${title}</title>
+    <title>Товары</title>
 </head>
 <body>
 <div class="container-fluid flex">
@@ -69,38 +58,26 @@
 
     <div class="row h100">
         <div class="col-md-12">
-            <c:forEach var="drug" items="${requestScope.drugs}">
+            <c:forEach var="product" items="${requestScope.drugs}">
                 <c:choose>
                     <c:when test="${not empty sessionScope.user && sessionScope.user.role eq Role.PHARMACY}">
                         <div class="row">
                             <div class="col-md-6">
                                 <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
-                                    <input hidden="" name="drugId" value="${drug.id}">
+                                    <input hidden="" name="drugId" value="${product.id}">
                                     <div class="card" style="width: 18rem;">
                                         <div class="card-body">
-                                            <input class="needs-validation" name="updateDrugName" type="text" value="${drug.name}" minlength="1" maxlength="45" placeholder="input new drug name" required>
-                                            <input class="needs-validation" name="updateDrugProducer" type="text" value="${drug.producer.name}" minlength="1" maxlength="45" placeholder="input new drug producer name" required>
+                                            <input class="needs-validation" name="updateDrugName" type="text" value="${product.name}" minlength="1" maxlength="45" placeholder="input new product name" required>
+                                            <input class="needs-validation" name="updateDrugProducer" type="text" value="${product.producer.name}" minlength="1" maxlength="45" placeholder="input new product producer name" required>
                                         </div>
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item">
-                                                <input class="needs-validation" name="updateDrugCount" type="number" value="${drug.count}" placeholder="write new drug count" min="0" minlength="1" maxlength="11" required>
+                                                <input class="needs-validation" name="updateDrugCount" type="number" value="${product.count}" placeholder="write new product count" min="0" minlength="1" maxlength="11" required>
                                             </li>
                                             <li class="list-group-item">
-                                                <select name="updateDrugNeedRecipe" class="needs-validation" required>
-                                                    <option selected value="${drug.needRecipe}"><button class="button-prmary">current need recipe ${drug.needRecipe}</button></option>
-                                                    <option value="true">
-                                                        <button class="btn btn-primary">
-                                                            true
-                                                        </button>
-                                                    </option>
-                                                    <option value="false">
-                                                        <button class="btn btn-primary">
-                                                            false
-                                                        </button>
-                                                    </option>
-                                                </select>
+                                                <input hidden="hidden" name="updateDrugNeedRecipe" value="false">
                                                 <select name="updateDrugIsDeleted" class="needs-validation" required>
-                                                    <option selected value="${drug.isDeleted}"><button class="button-prmary">current need recipe ${drug.isDeleted}</button></option>
+                                                    <option selected value="${product.deleted}"><button class="button-prmary">Удален ли ${product.deleted}</button></option>
                                                     <option value="true">
                                                         <button class="btn btn-primary">
                                                             true
@@ -114,14 +91,14 @@
                                                 </select>
                                             </li>
                                             <li class="list-group-item">
-                                                <input class="needs-validation" value="${drug.price}"  type="text" name="updateDrugPrice"
-                                                       placeholder="write new drug price" required>
+                                                <input class="needs-validation" value="${product.price}"  type="text" name="updateDrugPrice"
+                                                       placeholder="write new product price" required>
                                             </li>
-                                            <input hidden id="${drug.id}d" value="${drug.description}" name="updateDrugDescription" type="text">
+                                            <input hidden id="${product.id}d" value="${product.description}" name="updateDrugDescription" type="text">
                                         </ul>
                                         <div class="card-body">
-                                            <button class="btn btn-primary" type="submit" formaction="/controller?command=updateDrug" formmethod="post">Update</button>
-                                            <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                                            <button class="btn btn-primary" type="submit" formaction="/controller?command=updateDrug" formmethod="post">Обновить</button>
+                                            <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq product.id}">
                                                 <div class="alert alert-danger" role="alert">
                                                         ${requestScope.errorDelete}
                                                 </div>
@@ -131,9 +108,9 @@
                             </form>
                             </div>
                             <div class="col-md-6">
-                                <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">Description</p>
-                                <input  class="needs-validation" value="${drug.description}"  id="${drug.id}" onkeyup="copyValueTo(this,'${drug.id}d')"  type="text" minlength="1"
-                                        placeholder="write new drug description" style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%" required>
+                                <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">Описание</p>
+                                <input  class="needs-validation" value="${product.description}"  id="${product.id}" onkeyup="copyValueTo(this,'${product.id}d')"  type="text" minlength="1"
+                                        placeholder="write new product description" style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%" required>
                             </div>
                             <script>
                                 function copyValueTo(fromElem, toElemId) {
@@ -147,21 +124,20 @@
                 <div class="row">
                     <div class="col-md-6">
                         <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
-                            <input hidden="" name="drugId" value="${drug.id}">
+                            <input hidden="" name="drugId" value="${product.id}">
                                 <div class="card" style="width: 18rem;">
                                     <div class="card-body">
-                                        <h5 class="card-title">${name} ${drug.name}</h5>
-                                        <p class="card-text">${prodName} ${drug.producer.name}</p>
+                                        <h5 class="card-title">Название ${product.name}</h5>
+                                        <p class="card-text">Производитель ${product.producer.name}</p>
                                     </div>
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">${drugCount} ${drug.count}</li>
-                                        <li class="list-group-item">${needRecipe} ${drug.needRecipe}</li>
-                                        <li class="list-group-item">${price} ${drug.price}</li>
+                                        <li class="list-group-item">Колличество ${product.count}</li>
+                                        <li class="list-group-item">Цена ${product.price}</li>
                                         <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
                                             <li class="list-group-item">
                                                 <input class="needs-validation" type="number" name="countUserAddDrugsToOrder" placeholder="count drugs"
                                                        min="1"
-                                                       max="${drug.count}" required> Count Drugs</input>
+                                                       max="${product.count}" required> Колличество товаров для покупки</input>
                                                 <div class="invalid-feedback">
                                                     minimal login length = 6
                                                 </div>
@@ -170,9 +146,9 @@
                                     </ul>
                                     <div class="card-body">
                                         <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.CLIENT}">
-                                            <button class="btn btn-primary" type="submit" formaction="/controller?command=addToOrder" formmethod="post">Add to order</button>
+                                            <button class="btn btn-primary" type="submit" formaction="/controller?command=addToOrder" formmethod="post">Добавить в корзину</button>
                                         </c:if>
-                                        <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                                        <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq product.id}">
                                             <div class="alert alert-danger" role="alert">
                                                     ${requestScope.errorDelete}
                                             </div>
@@ -184,8 +160,8 @@
                         </form>
                     </div>
                     <div class="col-md-6">
-                        <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">${description}</p>
-                        <a style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%">${drug.description}</a>
+                        <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">Описание</p>
+                        <a style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%">${product.description}</a>
                     </div>
 
                 </div>

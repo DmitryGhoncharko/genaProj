@@ -3,28 +3,27 @@ package by.ghoncharko.webproject.model.service;
 import by.ghoncharko.webproject.entity.Role;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
-import by.ghoncharko.webproject.model.dao.DaoHelper;
-import by.ghoncharko.webproject.model.dao.DaoHelperFactory;
+import by.ghoncharko.webproject.model.connection.ConnectionPool;
 import by.ghoncharko.webproject.model.dao.UserDao;
+import by.ghoncharko.webproject.model.dao.UserDaoImpl;
 import by.ghoncharko.webproject.security.BcryptWithSaltHasherImpl;
 import by.ghoncharko.webproject.validator.UserServiceValidator;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
     private static final int LIMIT = 10;
-    private final DaoHelperFactory daoHelperFactory;
+    private final ConnectionPool connectionPool;
     private final UserServiceValidator userServiceValidator;
 
-    public UserServiceImpl(DaoHelperFactory daoHelperFactory, UserServiceValidator userServiceValidator) {
-        this.daoHelperFactory = daoHelperFactory;
-        this.userServiceValidator = userServiceValidator;
-    }
+
 
     @Override
     public List<User> findAll() throws ServiceException {
@@ -33,8 +32,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAllNotBannedUsersAsClients() {
-        try (final DaoHelper daoHelper = daoHelperFactory.create()) {
-            final UserDao userDao = daoHelper.createUserDao();
+        try (final Connection connection = connectionPool.getConnection()) {
+            final UserDao userDao = new UserDaoImpl(connection);
             return userDao.findAllNotBannedUsersAsClient();
         } catch (Exception e) {
 
@@ -47,9 +46,9 @@ public class UserServiceImpl implements UserService {
         if (!userServiceValidator.validateAuthenticate(login, password)) {
             return Optional.empty();
         }
-        try (final DaoHelper daoHelper = daoHelperFactory.create()) {
+        try (Connection connection = connectionPool.getConnection()) {
 
-            final UserDao userDao = daoHelper.createUserDao();
+            final UserDao userDao = new UserDaoImpl(connection);
             final Optional<User> user = userDao.findUserByLogin(login);
             if (user.isPresent()) {
                 final String userPasswordFromDB = user.get().getPassword();
@@ -71,7 +70,7 @@ public class UserServiceImpl implements UserService {
             return Optional.empty();
         }
 
-        try (final DaoHelper daoHelper = daoHelperFactory.create()) {
+        try (final Connection connection = connectionPool.getConnection()) {
             final String hashedPassword = BcryptWithSaltHasherImpl.getInstance().hashPassword(password);
             final User user = new User.Builder().
                     withLogin(login).
@@ -81,7 +80,7 @@ public class UserServiceImpl implements UserService {
                     withRole(Role.CLIENT).
                     withBannedStatus(false).
                     build();
-            final UserDao userDao = daoHelper.createUserDao();
+            final UserDao userDao = new UserDaoImpl(connection);
             final User userWithId = userDao.create(user);
             return Optional.of(userWithId);
         } catch (Exception e) {

@@ -41,9 +41,9 @@
                     class="card-title"></h5></input>
 
                 <input hidden="" name="userId" value="${recipe.user.id}">
-                <input hidden="" name="drugId" value="${recipe.drug.id}">
-                <input hidden="" name="drugName" type="text" value="${recipe.drug.name}"> <h5
-                    class="card-title">${recipe.drug.name}</h5> </input>
+                <input hidden="" name="drugId" value="${recipe.product.id}">
+                <input hidden="" name="drugName" type="text" value="${recipe.product.name}"> <h5
+                    class="card-title">${recipe.product.name}</h5> </input>
                 <input hidden="" name="dateStart" value="${recipe.dateStart}"> <h5
                     class="card-title">${recipe.dateStart}</h5> </input>
                 <input class="needs-validation" hidden="" name="dateEnd" value="${recipe.dateEnd}"> <h6

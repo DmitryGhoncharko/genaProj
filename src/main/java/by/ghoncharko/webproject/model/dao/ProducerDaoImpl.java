@@ -18,9 +18,9 @@ public class ProducerDaoImpl extends AbstractDao<Producer> implements ProducerDa
     private static final Logger LOG = LogManager.getLogger(ProducerDaoImpl.class);
     private static final String SQL_CREATE_PRODUCER = "INSERT INTO producer (producer_name)  VALUES (?)";
     private static final String SQL_FIND_ALL_PRODUCERS = "SELECT  id, producer_name FROM producer";
-    private static final String SQL_FIND_PRODUCER_BY_ID = "SELECT id producer_name FROM producer" +
+    private static final String SQL_FIND_PRODUCER_BY_ID = "SELECT id, producer_name FROM producer" +
             " WHERE id = ?";
-    private static final String SQL_FIND_PRODUCER_BY_PRODUCER_NAME = "SELECT id FROM producer" +
+    private static final String SQL_FIND_PRODUCER_BY_PRODUCER_NAME = "SELECT id, producer_name FROM producer" +
             " WHERE producer_name = ?";
     private static final String SQL_UPDATE_PRODUCER_BY_ID = "UPDATE producer SET producer_name = ?" +
             " WHERE id = ?";

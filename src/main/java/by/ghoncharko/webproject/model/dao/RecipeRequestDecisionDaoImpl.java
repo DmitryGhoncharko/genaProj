@@ -1,6 +1,6 @@
 package by.ghoncharko.webproject.model.dao;
 
-import by.ghoncharko.webproject.entity.Drug;
+import by.ghoncharko.webproject.entity.Product;
 import by.ghoncharko.webproject.entity.Producer;
 import by.ghoncharko.webproject.entity.Recipe;
 import by.ghoncharko.webproject.entity.RecipeRequest;
@@ -161,7 +161,7 @@ public class RecipeRequestDecisionDaoImpl extends AbstractDao<RecipeRequestDecis
                                         withLastName(resultSet.getString(9)).
                                         withBannedStatus(resultSet.getBoolean(10)).
                                         build()).
-                                withDrug(new Drug.Builder().
+                                withDrug(new Product.Builder().
                                         withId(resultSet.getInt(11)).
                                         withName(resultSet.getString(12)).
                                         withPrice(resultSet.getBigDecimal(13)).

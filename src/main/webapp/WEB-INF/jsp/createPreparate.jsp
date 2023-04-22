@@ -188,17 +188,17 @@
         <div class="col-md-offset-3 col-md-16">
             <form class="form-horizontal needs-validation" action="/controller?command=createDrugcmnd" method="post"
                   novalidate>
-                <span class="heading">Форма создания нового препарата</span>
+                <span class="heading">Форма создания нового товара</span>
                 <div class="form-group">
-                    <label>Название препарата</label>
+                    <label>Название товара</label>
                     <input type="text" name="drugName" pattern=".{1,45}" class="form-control"
-                           placeholder="Название препарата" required>
+                           placeholder="Название" required>
                     <div class="invalid-feedback">
-                        Название препарата не может превышать 45 символов
+                        Название товара не может превышать 45 символов
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Цена пепарата</label>
+                    <label>Цена товара</label>
                     <input type="text" name="drugPrice" pattern="[0-9]{1,14}[.][0-9]{1,2}" minlength="1" min="0"
                            class="form-control" placeholder="Цена" required>
                     <div class="invalid-feedback">
@@ -222,31 +222,22 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Drug ProducerName</label>
-                    <input hidden="" name="producerId" value="${drug.producer.id}">
+                    <label>Производитель</label>
+                    <input hidden="" name="producerId" value="${product.producer.id}">
                     <input type="text" name="drugProducerName" minlength="1" maxlength="45" class="form-control"
                            placeholder="Производитель" required>
                     <div class="invalid-feedback">
                         Имя производителя не должно быть длиннее 45 символов
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Нужен ли рецепт</label>
-                    <select class="custom-select" required name="drugNeedRecipe">
-                        <option value="false">
-                            false
-                        </option>
-                        <option value="true">
-                            true
-                        </option>
-                    </select>
+
+                    <input hidden="hidden" name="drugNeedRecipe" value="false">
                 </div>
                 <div class="form-group">
                     <c:if test="${not empty requestScope.errorLoginPassMessage}">
                         <b>${requestScope.errorLoginPassMessage}</b>
                     </c:if>
                     <a href="/controller?command=/">Отмена</a>
-                    <button type="submit" class="btn btn-default">Создать перпарат</button>
+                    <button type="submit" class="btn btn-default">Создать товар</button>
                 </div>
             </form>
         </div>

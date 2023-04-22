@@ -1,10 +1,7 @@
 package by.ghoncharko.webproject.model.dao;
 
-import by.ghoncharko.webproject.entity.Drug;
-import by.ghoncharko.webproject.entity.Producer;
-import by.ghoncharko.webproject.entity.Recipe;
-import by.ghoncharko.webproject.entity.Role;
-import by.ghoncharko.webproject.entity.User;
+import by.ghoncharko.webproject.entity.*;
+import by.ghoncharko.webproject.entity.Product;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -180,7 +177,7 @@ public class RecipeDaoImpl extends AbstractDao<Recipe> implements RecipeDao {
                         withLastName(resultSet.getString(7)).
                         withBannedStatus(resultSet.getBoolean(8)).
                         build()).
-                withDrug(new Drug.Builder().
+                withDrug(new Product.Builder().
                         withId(resultSet.getInt(9)).
                         withName(resultSet.getString(10)).
                         withPrice(BigDecimal.valueOf(resultSet.getDouble(11))).

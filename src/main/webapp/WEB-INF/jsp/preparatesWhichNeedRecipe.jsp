@@ -54,33 +54,33 @@
 
     <div class="row h100">
         <div class="col-md-12">
-            <c:forEach var="drug" items="${requestScope.drugs}">
+            <c:forEach var="product" items="${requestScope.drugs}">
                 <div class="row">
                     <div class="col-md-6">
                         <form class="needs-validation" style="margin-left: 30%; margin-top: 5%">
-                            <input hidden="" name="drugId" value="<c:out value="${drug.id}" />">
-                            <input hidden="" name="isNeedRecipe" value="${drug.needRecipe}">
-                            <input hidden="" name="drugName"  value="${drug.name}">
-                            <input hidden="" name="drugCount" value="${drug.count}">
-                            <input hidden="" name="drugPrice" value="${drug.price}">
-                            <input hidden="" name="drugProducerName" value="${drug.producer.name}">
+                            <input hidden="" name="drugId" value="<c:out value="${product.id}" />">
+                            <input hidden="" name="isNeedRecipe" value="${product.needRecipe}">
+                            <input hidden="" name="drugName"  value="${product.name}">
+                            <input hidden="" name="drugCount" value="${product.count}">
+                            <input hidden="" name="drugPrice" value="${product.price}">
+                            <input hidden="" name="drugProducerName" value="${product.producer.name}">
                             <input hidden="" name="userId" value="${requestScope.userId}">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
-                                    <h5 class="card-title">${drug.name}</h5>
-                                    <p class="card-text">${drug.producer.name}</p>
+                                    <h5 class="card-title">${product.name}</h5>
+                                    <p class="card-text">${product.producer.name}</p>
                                 </div>
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">${drug.count}</li>
-                                    <li class="list-group-item">${drug.needRecipe}</li>
-                                    <li class="list-group-item">${drug.price}</li>
+                                    <li class="list-group-item">${product.count}</li>
+                                    <li class="list-group-item">${product.needRecipe}</li>
+                                    <li class="list-group-item">${product.price}</li>
                                     <li class="list-group-item">${requestScope.userFirstName}</li>
                                     <li class="list-group-item">${requestScope.userLastName}</li>
                                 </ul>
                                 <div class="card-body">
                                     <input type="date" class="needs-validation" name="dateEnd" min="${requestScope.currentDate}" placeholder="date end recipe" required>
                                         <button class="btn btn-primary" type="submit" formaction="/controller?command=createRecipeForUser" formmethod="post">Create recipe</button>
-                                    <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                                    <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq product.id}">
                                         <div class="alert alert-danger" role="alert">
                                                 ${requestScope.errorDelete}
                                         </div>
@@ -93,7 +93,7 @@
                     </div>
                     <div class="col-md-6">
                         <p style="margin-left: 30%; margin-right: 30%; margin-bottom: 5%;margin-top: 5%">Description</p>
-                        <a style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%">${drug.description}</a>
+                        <a style="margin-left: 15%;margin-right: 15%;margin-bottom: 5%;margin-top: 5%">${product.description}</a>
                     </div>
 
                 </div>

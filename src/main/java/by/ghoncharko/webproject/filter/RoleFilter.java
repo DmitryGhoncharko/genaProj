@@ -17,12 +17,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Role filter
- *
- * @author Dmitry Ghoncharko
- */
-@WebFilter(filterName = "roleFilter")
+
+
 public class RoleFilter implements Filter {
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
     private static final String REDIRECT_ON_CONTROLLER_COMMAND = "controller?command=error";

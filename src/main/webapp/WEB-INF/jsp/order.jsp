@@ -64,18 +64,21 @@
                         <c:forEach var="drugUserOrder" items="${requestScope.drugUserOrders}">
                         <input hidden="" name="orderId" value="${drugUserOrder.id}">
                             <input hidden="" name="drugUserOrderId" value="${drugUserOrder.userOrder.id}">
-                        <input hidden="" name="drugId" value="${drugUserOrder.drug.id}">
-                        <input hidden="" name="drugName" type="text" value="${drugUserOrder.drug.name}">
+                        <input hidden="" name="drugId" value="${drugUserOrder.product.id}">
+                        <input hidden="" name="drugName" type="text" value="${drugUserOrder.product.name}">
                         <input hidden="" name="orderCount" value="${drugUserOrder.drugCount}">
                         <input hidden="" name="orderFinalPrice" value="${drugUserOrder.finalPrice}">
                         <div class="card" style="width: 18rem;">
                             <div class="card-body">
-                                <h5 class="card-title">${drugUserOrder.drug.name}</h5>
-                                <p class="card-text">${drugUserOrder.drug.producer.name}</p>
+                                <h5 class="card-title">${drugUserOrder.product.name}</h5>
+                                <p class="card-text">${drugUserOrder.product.producer.name}</p>
                             </div>
                             <ul class="list-group list-group-flush">
+                                <h6>Колличество: </h6>
+                                <br>
                                 <li class="list-group-item">${drugUserOrder.drugCount}</li>
-                                <li class="list-group-item">${drugUserOrder.drug.needRecipe}</li>
+                                <h6>Итоговая цена: </h6>
+                                <br>
                                 <li class="list-group-item">${drugUserOrder.finalPrice}</li>
 
                                     </c:forEach>
@@ -94,9 +97,9 @@
                                 </li>
                             </ul>
                             <div class="card-body">
-                                <button class="btn btn-primary" type="submit" formaction="/controller?command=payOrder" formmethod="post">Pay</button>
-                                <button class="btn btn-primary" formaction="/controller?command=deleteOrder" formmethod="post"> Delete</button>
-                                <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq drug.id}">
+                                <button class="btn btn-primary" type="submit" formaction="/controller?command=payOrder" formmethod="post">Оплатить</button>
+                                <button class="btn btn-primary" formaction="/controller?command=deleteOrder" formmethod="post"> Удалить из корзины</button>
+                                <c:if test="${not empty requestScope.errorDelete && not empty requestScope.drugId && requestScope.drugId eq product.id}">
                                     <div class="alert alert-danger" role="alert">
                                             ${requestScope.errorDelete}
                                     </div>

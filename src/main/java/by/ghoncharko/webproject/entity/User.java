@@ -3,11 +3,7 @@ package by.ghoncharko.webproject.entity;
 
 import java.util.Objects;
 
-/**
- * Entity class User
- *
- * @author Dmitry Ghoncharko
- */
+
 public class User implements Entity {
     private final Integer id;
     private final String login;

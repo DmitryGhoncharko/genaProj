@@ -1,6 +1,6 @@
 package by.ghoncharko.webproject.model.service;
 
-import by.ghoncharko.webproject.dto.DrugUserOrderDto;
+import by.ghoncharko.webproject.dto.ProductUserOrderDto;
 import by.ghoncharko.webproject.entity.DrugUserOrder;
 import by.ghoncharko.webproject.entity.User;
 import by.ghoncharko.webproject.exception.ServiceException;
@@ -15,7 +15,7 @@ public interface OrderService extends Service<DrugUserOrder> {
 
     boolean deleteNotPayedOrderByOrderIdAndUserId(User user, Integer orderId) throws ServiceException;
 
-    Optional<DrugUserOrderDto> findNotPaidOrderByUserId(Integer userId);
+    Optional<ProductUserOrderDto> findNotPaidOrderByUserId(Integer userId);
 
     boolean payOrder(User user, Integer cardId);
 }

@@ -1,11 +1,7 @@
 package by.ghoncharko.webproject.model.dao;
 
-import by.ghoncharko.webproject.entity.Drug;
-import by.ghoncharko.webproject.entity.DrugUserOrder;
-import by.ghoncharko.webproject.entity.Producer;
-import by.ghoncharko.webproject.entity.Role;
-import by.ghoncharko.webproject.entity.User;
-import by.ghoncharko.webproject.entity.UserOrder;
+import by.ghoncharko.webproject.entity.*;
+import by.ghoncharko.webproject.entity.Product;
 import by.ghoncharko.webproject.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements DrugUserOrderDao {
-    private static final Logger LOG = LogManager.getLogger(DrugUserOrderDaoImpl.class);
+public class ProductUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements DrugUserOrderDao {
+    private static final Logger LOG = LogManager.getLogger(ProductUserOrderDaoImpl.class);
     private static final String SQL_CREATE_DRUG_USER_ORDER = "INSERT INTO drug_user_order (user_order_id, drug_id, drug_count, final_price) VALUES (?, ?, ?, ?)";
     private static final String SQL_FIND_ALL_DRUG_USER_ORDERS = "SELECT" +
             " drug_user_order.id, uo.id, u.id, u.login, u.password, r.role_name, u.first_name, u.last_name," +
@@ -70,7 +66,7 @@ public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements 
             " WHERE user_order_id = ?";
     private static final String SQL_DELETE_DRUG_USER_ORDER_BY_ID = "DELETE FROM drug_user_order WHERE id = ?";
 
-    public DrugUserOrderDaoImpl(Connection connection) {
+    public ProductUserOrderDaoImpl(Connection connection) {
         super(connection);
     }
 
@@ -78,7 +74,7 @@ public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements 
     public DrugUserOrder create(DrugUserOrder entity) throws DaoException {
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_DRUG_USER_ORDER, PreparedStatement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, entity.getUserOrder().getId());
-            preparedStatement.setInt(2, entity.getDrug().getId());
+            preparedStatement.setInt(2, entity.getProduct().getId());
             preparedStatement.setInt(3, entity.getDrugCount());
             preparedStatement.setDouble(4,entity.getFinalPrice().doubleValue());
             final int countUpdatedRows = preparedStatement.executeUpdate();
@@ -88,7 +84,7 @@ public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements 
                     return new DrugUserOrder.Builder().
                             withId(resultSet.getInt(1)).
                             withUserOrder(entity.getUserOrder()).
-                            withDrug(entity.getDrug()).
+                            withDrug(entity.getProduct()).
                             withDrugCount(entity.getDrugCount()).
                             build();
                 }
@@ -194,7 +190,7 @@ public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements 
     public DrugUserOrder update(DrugUserOrder entity) throws DaoException {
         try (final PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_DRUG_USER_ORDER_BY_ID)) {
             preparedStatement.setInt(1, entity.getUserOrder().getId());
-            preparedStatement.setInt(2, entity.getDrug().getId());
+            preparedStatement.setInt(2, entity.getProduct().getId());
             preparedStatement.setInt(3, entity.getDrugCount());
             preparedStatement.setInt(4, entity.getId());
             final int countUpdatedRows = preparedStatement.executeUpdate();
@@ -235,7 +231,7 @@ public class DrugUserOrderDaoImpl extends AbstractDao<DrugUserOrder> implements 
                                 withBannedStatus(resultSet.getBoolean(9)).
                                 build()).
                         build()).
-                withDrug(new Drug.Builder().
+                withDrug(new Product.Builder().
                         withId(resultSet.getInt(10)).
                         withName(resultSet.getString(11)).
                         withPrice(BigDecimal.valueOf(resultSet.getDouble(12))).

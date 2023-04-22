@@ -57,18 +57,20 @@
                     <c:forEach var="bankCard" items="${requestScope.bankCards}">
                         <form >
                             <input name="cardId" value="${bankCard.id}" hidden="">
-                            <label>card balance</label>   <a> ${bankCard.balance}</a>
+                            <label>Баланс карты</label>   <a> ${bankCard.balance}</a>
                             <br/>
-                            <button class="btn btn-primary" formaction="/controller?command=deleteCard" formmethod="post">delete card</button>
+                            <button class="btn btn-primary" formaction="/controller?command=deleteCard" formmethod="post">Удалить карту</button>
                         </form>
                     </c:forEach>
                     <form action="/controller?command=addCard" method="post" novalidate class="needs-validation">
-                        <label>Balance</label>
+                        <label>Баланс карты </label>
                         <input class="form-control" placeholder="balance" name="balance" type="text" required pattern="^[0-9]{0,14}[.]?[0-9]{0,2}$">
                         <div class="invalid-feedback">
                             Баланс карты не может быть более чем девять цифр и всегда должен заканчиваться на баланс.00
                         </div>
-                        <button class="btn btn-primary" type="submit">add card</button>
+                        <br>
+                        <br>
+                        <button class="btn btn-primary" type="submit">Добавить карту</button>
                     </form>
                 </div>
     </div>
